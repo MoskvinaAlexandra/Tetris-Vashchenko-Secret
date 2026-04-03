@@ -77,7 +77,7 @@ function handleCreateGame(socket) {
             name: "Player 2",
             field: {},
         },
-        spectators: new Set(),
+        spectators: new Set(),///мб не set
     };
     rooms.set(roomId, data);
     socket?.send(JSON.stringify({type: "gameCreated", roomId: roomId, message: `Комната создана. Ваш ID комнаты: ${roomId}. Ожидание второго игрока...`}));
@@ -113,7 +113,7 @@ function handleDisconnect(socket) {
     for (const [roomId, room] of rooms) {
         if (room.player1.socket === socket) {
             room.player1.socket = null;
-            //что делать с комнатой, если игрок отключился? удалять её или ждать его возвращения?
+            //что делать с комнатой, если игрок отключился? удалять её или ждать его возвращения?(ждать таймаут какой-то и удалять комнату, 30 секунд?)
             break;
         } else if (room.player2.socket === socket) {
             room.player2.socket = null;
@@ -121,7 +121,7 @@ function handleDisconnect(socket) {
         }
     }
 }
-///reconnect надо бы, но непонятно, что пока по авторизации и id игроков
+///reconnect надо бы, но непонятно, что пока по авторизации и id игроков(по нику будем определять)
 
 function handleSpectate(socket, roomId) {
     const room = rooms.get(roomId);
