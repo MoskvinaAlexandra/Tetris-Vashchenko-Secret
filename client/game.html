@@ -67,6 +67,23 @@
         </div>
         <button onclick="leaveRoom()">Выйти из игры</button>
     </div>
+
+    <!-- Spectator Area -->
+    <div id="spectatorArea" style="display:none;">
+        <div class="game-container">
+            <div class="board-wrapper">
+                <h2 id="spectatorPlayer1Name">Игрок 1</h2>
+                <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
+                <div class="info">Счёт: <span id="spectatorScore1">0</span> | Линии: <span id="spectatorLines1">0</span></div>
+            </div>
+            <div class="board-wrapper">
+                <h2 id="spectatorPlayer2Name">Игрок 2</h2>
+                <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
+                <div class="info">Счёт: <span id="spectatorScore2">0</span> | Линии: <span id="spectatorLines2">0</span></div>
+            </div>
+        </div>
+        <button onclick="leaveRoom()">Выйти</button>
+    </div>
 </div>
 
 <script src="js/utils.js"></script>

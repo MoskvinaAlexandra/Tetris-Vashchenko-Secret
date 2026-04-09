@@ -65,8 +65,12 @@ let ws = null;
 let roomCode = null;
 let myRole = null;
 let myName = '';
+let player1Name = '';  // For spectator view
+let player2Name = '';  // For spectator view
 let myGame = null;
 let opponentGame = null;
+let spectatorGame1 = null;  // Player1 board for spectators
+let spectatorGame2 = null;  // Player2 board for spectators
 let gameInterval = null;
 let dropTime = 0;
 let dropInterval = 1000;
@@ -109,10 +113,34 @@ let gameStarted = false;
 function showLobby() {
   document.getElementById('menu').style.display = 'none';
   document.getElementById('lobby').style.display = 'block';
-  document.getElementById('myNameLobby').textContent = myName;
+  
+  // Spectator sees different lobby layout
+  if (myRole === 'spectator') {
+    document.getElementById('myNameLobby').textContent = 'ТЫ (ЗРИТЕЛЬ)';
+    const readyBtn = document.getElementById('readyBtn');
+    readyBtn.style.display = 'none';  // Hide ready button for spectators
+    const lobbyContainer = document.querySelector('.lobby-container');
+    if (lobbyContainer) {
+      lobbyContainer.style.flexDirection = 'row';  // Show both players waiting
+    }
+  } else {
+    document.getElementById('myNameLobby').textContent = myName;
+    const readyBtn = document.getElementById('readyBtn');
+    readyBtn.style.display = 'block';  // Show ready button for players
+    
+    // Swap для player2 в лобби - он видит себя справа
+    const lobbyContainer = document.querySelector('.lobby-container');
+    if (lobbyContainer) {
+      console.log(`👁️ showLobby: myRole=${myRole}, setting flexDirection to ${myRole === 'player2' ? 'row-reverse' : 'row'}`);
+      lobbyContainer.style.flexDirection = myRole === 'player2' ? 'row-reverse' : 'row';
+    }
+  }
 }
 
 function toggleReady() {
+  // Spectators cannot be ready
+  if (myRole === 'spectator') return;
+  
   isReady = !isReady;
   const btn = document.getElementById('readyBtn');
   btn.textContent = isReady ? 'Готов!' : 'Готов';
@@ -122,9 +150,44 @@ function toggleReady() {
   if (ws) ws.send(JSON.stringify({type: 'ready', code: roomCode, ready: isReady}));
 }
 
+function startSpectatorGame() {
+  console.log(`👁️ Spectator view initialized with names: "${player1Name}" vs "${player2Name}"`);
+  document.getElementById('lobby').style.display = 'none';
+  document.getElementById('spectatorArea').style.display = 'block';
+  
+  // Set player names
+  const p1NameEl = document.getElementById('spectatorPlayer1Name');
+  const p2NameEl = document.getElementById('spectatorPlayer2Name');
+  
+  p1NameEl.textContent = player1Name || 'Игрок 1';
+  p2NameEl.textContent = player2Name || 'Игрок 2';
+  
+  console.log(`✅ Set DOM names: "${p1NameEl.textContent}" vs "${p2NameEl.textContent}"`);
+  
+  // Create games for both players (read-only)
+  spectatorGame1 = new TetrisGame('spectatorCanvas1', true);
+  spectatorGame2 = new TetrisGame('spectatorCanvas2', true);
+  spectatorGame1.init();
+  spectatorGame2.init();
+  
+  console.log(`✅ Spectator games created and initialized`);
+  
+  startSpectatorRender();
+}
+
+function startSpectatorRender() {
+  function renderSpectator() {
+    if (spectatorGame1) spectatorGame1.render();
+    if (spectatorGame2) spectatorGame2.render();
+    requestAnimationFrame(renderSpectator);
+  }
+  renderSpectator();
+}
+
 function startGame() {
   console.log('🎮 Starting game...');
   gameStarted = true;
+  document.body.style.overflow = 'hidden';  // Disable scroll
   document.getElementById('lobby').style.display = 'none';
   document.getElementById('gameArea').style.display = 'block';
   const oppName = document.getElementById('oppNameLobby').textContent;
@@ -154,7 +217,7 @@ function startGame() {
   opponentGame.init();
   console.log('✅ Games initialized');
   
-  requestAnimationFrame(gameLoop);
+  startGameLoops();
 }
 
 // ====================== TETRIS CLASS ======================
@@ -329,7 +392,10 @@ class TetrisGame {
 
   setState(state) {
     if (!state) return;
-    this.board = state.board || this.board;
+    // Deep copy board to ensure updates are visible
+    if (state.board) {
+      this.board = state.board.map(row => [...row]);
+    }
     this.score = state.score || 0;
     this.lines = state.lines || 0;
     
@@ -424,8 +490,18 @@ function handleMessage(event) {
       roomCode = msg.code;
       myRole = msg.role;
       console.log(`✅ Joined room: ${roomCode}, I am ${msg.role}, opponent: ${msg.opponent}`);
-      document.getElementById('oppNameLobby').textContent = msg.opponent || 'AI';
-      showLobby();
+      if (msg.role === 'spectator') {
+        player1Name = msg.player1Name || 'Игрок 1';
+        player2Name = msg.player2Name || 'Игрок 2';
+        console.log(`👁️ Spectator names from server: "${player1Name}" vs "${player2Name}"`);
+        // Spectator sees lobby while waiting for game to start
+        document.getElementById('oppNameLobby').textContent = 'Ждём игроков...';
+        document.getElementById('oppStatus').textContent = '';
+        showLobby();
+      } else {
+        document.getElementById('oppNameLobby').textContent = msg.opponent || 'AI';
+        showLobby();
+      }
       break;
     case 'playerJoined':
       console.log(`🎮 Player joined: ${msg.name}`);
@@ -442,15 +518,52 @@ function handleMessage(event) {
       const cd = document.getElementById('countdown');
       cd.style.display = 'block';
       cd.textContent = msg.count;
-      if (msg.count === 0) setTimeout(startGame, 500);
+      if (msg.count === 0) {
+        setTimeout(() => {
+          if (myRole === 'spectator') {
+            startSpectatorGame();
+          } else {
+            startGame();
+          }
+        }, 500);
+      }
       break;
     }
     case 'startGame':
-      console.log(`🎮 Game start!`);
-      startGame();
+      console.log(`🎮 Game start! myRole=${myRole}, player1=${msg.player1Name}, player2=${msg.player2Name}`);
+      // Update spectator names if provided
+      if (msg.player1Name) {
+        player1Name = msg.player1Name;
+        console.log(`✅ Updated player1Name to: ${player1Name}`);
+      }
+      if (msg.player2Name) {
+        player2Name = msg.player2Name;
+        console.log(`✅ Updated player2Name to: ${player2Name}`);
+      }
+      
+      if (myRole === 'spectator') {
+        console.log('👁️ Starting SPECTATOR view');
+        startSpectatorGame();
+      } else {
+        console.log('🕹️ Starting PLAYER game');
+        startGame();
+      }
       break;
     case 'gameState':
-      if (opponentGame) {
+      if (myRole === 'spectator') {
+        // Spectator mode: update the appropriate game board
+        console.log(`📊 Spectator received gameState from ${msg.senderRole}, games ready: g1=${!!spectatorGame1} g2=${!!spectatorGame2}`);
+        if (msg.senderRole === 'player1' && spectatorGame1) {
+          spectatorGame1.setState(msg.state);
+          document.getElementById('spectatorScore1').textContent = spectatorGame1.score;
+          document.getElementById('spectatorLines1').textContent = spectatorGame1.lines;
+        } else if (msg.senderRole === 'player2' && spectatorGame2) {
+          spectatorGame2.setState(msg.state);
+          document.getElementById('spectatorScore2').textContent = spectatorGame2.score;
+          document.getElementById('spectatorLines2').textContent = spectatorGame2.lines;
+        }
+      } else if (opponentGame) {
+        // Player mode: update opponent game board
         const pieceBefore = opponentGame.piece ? `${opponentGame.piece.type}@(${opponentGame.piece.x},${opponentGame.piece.y})` : 'none';
         opponentGame.setState(msg.state);
         const pieceAfter = opponentGame.piece ? `${opponentGame.piece.type}@(${opponentGame.piece.x},${opponentGame.piece.y})` : 'none';
@@ -473,23 +586,33 @@ function sendReaction(emoji) {
 }
 
 function sendState() {
-  if (myGame && ws && gameStarted) {
+  if (myGame && ws && gameStarted && roomCode) {
+    const state = myGame.getState();
+    console.log(`📤 Sending gameState: piece=${state.piece?.type}@(${state.piece?.x},${state.piece?.y}), score=${state.score}`);
     ws.send(JSON.stringify({
       type: 'gameState',
       code: roomCode,
-      state: myGame.getState()
+      state: state
     }));
   }
 }
 
 function leaveRoom() {
+  document.body.style.overflow = 'auto';  // Re-enable scroll
   if (ws) ws.close();
   location.reload();
 }
 
 // ====================== INPUT ======================
 document.addEventListener('keydown', (e) => {
-  if (!myGame) return;
+  // Spectators cannot play, only players can
+  if (!myGame || myRole === 'spectator') return;
+  
+  // Prevent scroll during gameplay
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+    e.preventDefault();
+  }
+  
   switch(e.key) {
     case 'ArrowLeft': sendMove('left'); break;
     case 'ArrowRight': sendMove('right'); break;
@@ -501,23 +624,41 @@ document.addEventListener('keydown', (e) => {
 
 // ====================== GAME LOOP ======================
 let lastTime = 0;
-let lastSyncTime = 0;
-function gameLoop(time = 0) {
-  if (myGame && gameStarted) {
-    myGame.update(time);
-    myGame.render();
-  }
-  if (opponentGame && gameStarted) {
-    opponentGame.render();
-  }
+let gameLoopInterval = null;
+let renderLoopId = null;
+
+function startGameLoops() {
+  // Game logic loop - работает в фоне даже если вкладка скрыта
+  gameLoopInterval = setInterval(() => {
+    if (myGame && gameStarted) {
+      const now = Date.now();
+      myGame.update(now);
+    }
+  }, 50); // 50ms = ~20 FPS для game logic
   
-  // Отправляй состояние регулярно (каждые 100ms)
-  if (gameStarted && time - lastSyncTime > 100) {
-    sendState();
-    lastSyncTime = time;
-  }
+  // Sync state loop - отправляй регулярно
+  setInterval(() => {
+    if (gameStarted) {
+      sendState();
+    }
+  }, 100); // 100ms = 10x в секунду
   
-  requestAnimationFrame(gameLoop);
+  // Render loop - рендери когда видимо (может быть паузирован)
+  function renderLoop() {
+    if (myGame && gameStarted) {
+      myGame.render();
+    }
+    if (opponentGame && gameStarted) {
+      opponentGame.render();
+    }
+    renderLoopId = requestAnimationFrame(renderLoop);
+  }
+  renderLoopId = requestAnimationFrame(renderLoop);
+}
+
+function stopGameLoops() {
+  if (gameLoopInterval) clearInterval(gameLoopInterval);
+  if (renderLoopId) cancelAnimationFrame(renderLoopId);
 }
 
 // ====================== LEADERBOARD ======================

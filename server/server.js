@@ -55,16 +55,37 @@ wss.on('connection', (ws) => {
                     console.log(`Player2 ${msg.name} присоединился к комнате ${msg.code}`);
                 } else if (msg.role === 'spectator') {
                     room.spectators.add(ws);
-                    ws.send(JSON.stringify({ type: 'joined', role: 'spectator', code: msg.code }));
-                    console.log(`Зритель присоединился к комнате ${msg.code}`);
+                    ws.send(JSON.stringify({ 
+                        type: 'joined', 
+                        role: 'spectator', 
+                        code: msg.code,
+                        player1Name: room.names.player1 || 'Игрок 1',
+                        player2Name: room.names.player2 || 'Игрок 2'
+                    }));
+                    console.log(`Зритель${msg.name ? ' ' + msg.name : ''} присоединился к комнате ${msg.code}`);
                 }
             } else if (msg.type === 'move' && msg.code) {
                 const room = rooms.get(msg.code);
                 if (room) {
                     // Broadcast move/state to room
-                    const stateMsg = { type: 'gameState', state: msg.state || {} };
+                    const senderRole = room.player1 === ws ? 'player1' : room.player2 === ws ? 'player2' : null;
+                    const stateMsg = { type: 'gameState', state: msg.state || {}, senderRole: senderRole };
                     [room.player1, room.player2, ...room.spectators].forEach(client => {
-                        if (client && client.readyState === WebSocket.OPEN) client.send(JSON.stringify(stateMsg));
+                        if (client && client !== ws && client.readyState === WebSocket.OPEN) client.send(JSON.stringify(stateMsg));
+                    });
+                }
+            } else if (msg.type === 'gameState' && msg.code) {
+                const room = rooms.get(msg.code);
+                if (room) {
+                    console.log(`📊 Received gameState from room ${msg.code}, broadcasting...`);
+                    // Determine which player sent this state
+                    const senderRole = room.player1 === ws ? 'player1' : room.player2 === ws ? 'player2' : null;
+                    // Broadcast game state to all EXCEPT sender
+                    const stateMsg = { type: 'gameState', state: msg.state, senderRole: senderRole };
+                    [room.player1, room.player2, ...room.spectators].forEach(client => {
+                        if (client && client !== ws && client.readyState === WebSocket.OPEN) {
+                            client.send(JSON.stringify(stateMsg));
+                        }
                     });
                 }
             } else if (msg.type === 'ready' && msg.code) {
@@ -99,7 +120,12 @@ wss.on('connection', (ws) => {
                                 clearInterval(countdownInterval);
                                 [room.player1, room.player2, ...room.spectators].forEach(client => {
                                     if (client.readyState === WebSocket.OPEN) {
-                                        client.send(JSON.stringify({type: 'startGame', code: msg.code}));
+                                        client.send(JSON.stringify({
+                                            type: 'startGame', 
+                                            code: msg.code,
+                                            player1Name: room.names.player1 || 'Игрок 1',
+                                            player2Name: room.names.player2 || 'Игрок 2'
+                                        }));
                                     }
                                 });
                             }

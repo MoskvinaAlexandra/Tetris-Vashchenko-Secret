@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .lobby-container {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            border: 2px solid red;
+            padding: 20px;
+        }
+        
+        .player-slot {
+            text-align: center;
+            background: rgba(0, 30, 0, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            border: 3px solid #0f0;
+            min-width: 200px;
+            color: #0f0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test flexDirection swap for player2</h1>
+    
+    <h2>Player1 view (row):</h2>
+    <div class="lobby-container" id="container1">
+        <div class="player-slot">
+            <h3>ТЫ (left)</h3>
+            <p>Player 1</p>
+        </div>
+        <div class="player-slot">
+            <h3>Противник (right)</h3>
+            <p>AI</p>
+        </div>
+    </div>
+    
+    <h2>Player2 view (row-reverse):</h2>
+    <div class="lobby-container" id="container2">
+        <div class="player-slot">
+            <h3>ТЫ (left, but reversed)</h3>
+            <p>Player 2</p>
+        </div>
+        <div class="player-slot">
+            <h3>Противник (right, but reversed)</h3>
+            <p>Player 1</p>
+        </div>
+    </div>
+    
+    <script>
+        const container2 = document.getElementById('container2');
+        container2.style.flexDirection = 'row-reverse';
+        console.log('container2 flexDirection set to:', container2.style.flexDirection);
+    </script>
+</body>
+</html>
