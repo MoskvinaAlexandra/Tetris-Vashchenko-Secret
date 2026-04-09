@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris 1v1 — Дуэль</title>
+<link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+<div class="container">
+    <h1>TETRIS 1 VS 1 + ЗРИТЕЛИ 😎</h1>
+
+    <div id="menu">
+        <h2>Создание / Присоединение к дуэли</h2>
+
+        <button onclick="createRoom()" style="font-size:20px; padding:15px 30px;">Создать новую комнату</button>
+
+        <div style="margin:30px 0;">
+            <input type="text" id="roomInput" placeholder="Введите код комнаты" maxlength="8" style="padding:12px; font-size:18px; width:280px;">
+            <br><br>
+            <button onclick="joinAsPlayer()" style="margin-right:10px;">Присоединиться как ИГРОК</button>
+            <button onclick="joinAsSpectator()">Зайти как ЗРИТЕЛЬ</button>
+        </div>
+
+        <p id="status" style="font-size:20px; min-height:30px; color:#0f0;"></p>
+        <button onclick="location.href='index.html'">На главную</button>
+    </div>
+
+    <!-- Lobby -->
+    <div id="lobby" style="display:none;">
+        <div class="room-code" id="roomCodeDisplay" style="display:none;">
+            <h3>Код комнаты: <span id="roomCode"></span> <button onclick="copyCode()">📋 Копировать</button></h3>
+        </div>
+        <div class="lobby-container">
+            <div class="player-slot">
+                <h3 id="myNameLobby">ТЫ</h3>
+                <button id="readyBtn" onclick="toggleReady()">Готов</button>
+                <span id="myStatus" class="status">Ждёт...</span>
+            </div>
+            <div class="countdown" id="countdown" style="display:none;"></div>
+            <div class="player-slot">
+                <h3 id="oppNameLobby">Противник</h3>
+                <span id="oppStatus" class="status">Ждёт...</span>
+            </div>
+        </div>
+        <button onclick="leaveRoom()">Выйти</button>
+    </div>
+
+    <!-- Game Area -->
+    <div id="gameArea" style="display:none;">
+        <div class="game-container">
+            <div class="board-wrapper">
+                <h2 id="myNameBoard">ТЫ</h2>
+                <canvas id="myCanvas" width="240" height="480"></canvas>
+                <div class="info">Счёт: <span id="myScore">0</span> | Линии: <span id="myLines">0</span></div>
+            </div>
+            <div class="board-wrapper">
+                <h2 id="opponentNameBoard">Противник</h2>
+                <canvas id="opponentCanvas" width="240" height="480"></canvas>
+                <div class="info">Счёт: <span id="opponentScore">0</span> | Линии: <span id="opponentLines">0</span></div>
+            </div>
+        </div>
+        <div class="controls">
+            <span class="hint">←→↓↑ Поворот | Space Hard Drop</span>
+            <button onclick="sendReaction('👍')">👍</button>
+            <button onclick="sendReaction('🔥')">🔥</button>
+        </div>
+        <button onclick="leaveRoom()">Выйти из игры</button>
+    </div>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

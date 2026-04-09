@@ -1,0 +1,14 @@
+{
+  "name": "tetris-vashchenko-server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "init-db": "node init-db.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ws": "^8.18.0",
+    "pg": "^8.13.0"
+  }
+}
