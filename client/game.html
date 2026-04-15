@@ -3,90 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tetris 1v1 — Дуэль</title>
-<link rel="stylesheet" href="css/game.css">
+    <title>Vashchenko's Secret | Дуэль</title>
+    <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/game.css">
 </head>
-<body>
-<div class="container">
-    <h1>TETRIS 1 VS 1 + ЗРИТЕЛИ 😎</h1>
+<body class="game-page">
+    <div class="vs-shell">
+        <nav class="vs-nav">
+            <div class="vs-nav-links">
+                <a href="/" class="vs-link">Главная</a>
+                <a href="/leaderboard.html" class="vs-link">Лидеры</a>
+                <a href="/profile.html" class="vs-link">Профиль</a>
+            </div>
+            <div class="vs-nav-links">
+                <button class="vs-button-secondary" onclick="location.href='/'">В меню</button>
+            </div>
+        </nav>
 
-    <div id="menu">
-        <h2>Создание / Присоединение к дуэли</h2>
+        <header class="vs-header">
+            <div class="vs-logo">VS</div>
+            <div class="vs-title-wrap">
+                <h1 class="vs-title">Duel Room</h1>
+                <p class="vs-subtitle">Stay in the same room and queue the next round</p>
+            </div>
+            <div class="vs-logo">VS</div>
+        </header>
 
-        <button onclick="createRoom()" style="font-size:20px; padding:15px 30px;">Создать новую комнату</button>
+        <main class="vs-main">
+            <section id="menu" class="vs-panel game-menu-card">
+                <div class="menu-hero">
+                    <div>
+                        <h2 class="vs-section-title">Создание дуэли</h2>
+                        <p class="vs-section-copy">Создайте салонный приватный матч или войдите в уже существующий по коду комнаты.</p>
+                    </div>
 
-        <div style="margin:30px 0;">
-            <input type="text" id="roomInput" placeholder="Введите код комнаты" maxlength="8" style="padding:12px; font-size:18px; width:280px;">
-            <br><br>
-            <button onclick="joinAsPlayer()" style="margin-right:10px;">Присоединиться как ИГРОК</button>
-            <button onclick="joinAsSpectator()">Зайти как ЗРИТЕЛЬ</button>
-        </div>
+                    <div class="vs-actions" style="justify-content:center;">
+                        <button class="vs-button" onclick="createRoom()">Создать комнату</button>
+                    </div>
 
-        <p id="status" style="font-size:20px; min-height:30px; color:#0f0;"></p>
-        <button onclick="location.href='index.html'">На главную</button>
+                    <div class="menu-room-entry">
+                        <label class="vs-field" style="width:min(100%, 360px);">
+                            <span>Код комнаты</span>
+                            <input class="vs-input" type="text" id="roomInput" maxlength="8" placeholder="Введите код комнаты">
+                        </label>
+                        <div class="menu-room-actions">
+                            <button class="vs-button" onclick="joinAsPlayer()">Войти как игрок</button>
+                            <button class="vs-button-secondary" onclick="joinAsSpectator()">Войти как зритель</button>
+                        </div>
+                    </div>
+
+                    <p id="status" class="game-status"></p>
+                </div>
+            </section>
+
+            <section id="lobby" class="vs-panel" style="display:none;">
+                <div id="roomCodeDisplay" class="room-code-banner" style="display:none;">
+                    <span class="vs-card-title" style="margin:0;">Код комнаты</span>
+                    <span id="roomCode" class="room-code-value"></span>
+                    <button class="vs-button-secondary" onclick="copyCode()">Копировать</button>
+                </div>
+
+                <div class="lobby-grid">
+                    <div class="lobby-player">
+                        <h3 id="myNameLobby">Вы</h3>
+                        <button id="readyBtn" class="vs-button" onclick="toggleReady()">Готов</button>
+                        <div id="myStatus" class="status-pill">Ждёт...</div>
+                    </div>
+
+                    <div class="lobby-player">
+                        <h3 id="oppNameLobby">Противник</h3>
+                        <div id="oppStatus" class="status-pill">Ждёт...</div>
+                    </div>
+                </div>
+
+                <div id="countdown" class="countdown" style="display:none;"></div>
+
+                <div class="vs-actions" style="justify-content:center; margin-top:18px;">
+                    <button class="vs-button-secondary" onclick="leaveRoom()">Покинуть комнату</button>
+                </div>
+            </section>
+
+            <section id="gameArea" class="vs-panel" style="display:none;">
+                <div id="playerArena" class="arena-grid">
+                    <article id="player1Panel" class="board-panel player1">
+                        <h2 id="player1NameBoard">Игрок 1</h2>
+                        <canvas id="player1Canvas" width="240" height="480"></canvas>
+                        <div class="board-meta">
+                            <span>Счёт: <strong id="player1Score">0</strong></span>
+                            <span>Линии: <strong id="player1Lines">0</strong></span>
+                        </div>
+                    </article>
+
+                    <article id="player2Panel" class="board-panel player2">
+                        <h2 id="player2NameBoard">Игрок 2</h2>
+                        <canvas id="player2Canvas" width="240" height="480"></canvas>
+                        <div class="board-meta">
+                            <span>Счёт: <strong id="player2Score">0</strong></span>
+                            <span>Линии: <strong id="player2Lines">0</strong></span>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="game-controls">
+                    <div class="status-pill">Управление: ← → ↓ ↑ и пробел для hard drop</div>
+                    <div class="reaction-row">
+                        <button class="vs-button-secondary" onclick="sendReaction('👏')">👏</button>
+                        <button class="vs-button-secondary" onclick="sendReaction('🔥')">🔥</button>
+                        <button class="vs-button-secondary" onclick="sendReaction('💎')">💎</button>
+                    </div>
+                    <button class="vs-button-secondary" onclick="leaveRoom()">Покинуть комнату</button>
+                </div>
+            </section>
+
+            <section id="spectatorArea" class="vs-panel" style="display:none;">
+                <div class="arena-grid">
+                    <article class="board-panel player1">
+                        <h2 id="spectatorPlayer1Name">Игрок 1</h2>
+                        <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
+                        <div class="board-meta">
+                            <span>Счёт: <strong id="spectatorScore1">0</strong></span>
+                            <span>Линии: <strong id="spectatorLines1">0</strong></span>
+                        </div>
+                    </article>
+
+                    <article class="board-panel player2">
+                        <h2 id="spectatorPlayer2Name">Игрок 2</h2>
+                        <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
+                        <div class="board-meta">
+                            <span>Счёт: <strong id="spectatorScore2">0</strong></span>
+                            <span>Линии: <strong id="spectatorLines2">0</strong></span>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="spectator-note">Игрок 1 всегда слева, игрок 2 всегда справа. После матча вы вернётесь в комнату ожидания вместе с ними.</div>
+
+                <div class="vs-actions" style="justify-content:center; margin-top:18px;">
+                    <button class="vs-button-secondary" onclick="leaveRoom()">Покинуть комнату</button>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <!-- Lobby -->
-    <div id="lobby" style="display:none;">
-        <div class="room-code" id="roomCodeDisplay" style="display:none;">
-            <h3>Код комнаты: <span id="roomCode"></span> <button onclick="copyCode()">📋 Копировать</button></h3>
-        </div>
-        <div class="lobby-container">
-            <div class="player-slot">
-                <h3 id="myNameLobby">ТЫ</h3>
-                <button id="readyBtn" onclick="toggleReady()">Готов</button>
-                <span id="myStatus" class="status">Ждёт...</span>
+    <div id="matchOverlay" class="match-overlay">
+        <section id="matchResultCard" class="vs-panel match-result-card">
+            <h2 id="matchResultTitle" class="vs-section-title">Раунд завершён</h2>
+            <div class="match-scoreline">
+                <strong id="matchScoreLeft">0</strong>
+                <span>:</span>
+                <strong id="matchScoreRight">0</strong>
             </div>
-            <div class="countdown" id="countdown" style="display:none;"></div>
-            <div class="player-slot">
-                <h3 id="oppNameLobby">Противник</h3>
-                <span id="oppStatus" class="status">Ждёт...</span>
+            <div class="match-result-copy">
+                <p id="matchResultText">Ожидаем решение игроков.</p>
+                <p id="matchResultHint">Нажмите «Реванш», чтобы остаться в комнате и вернуться в экран ожидания.</p>
             </div>
-        </div>
-        <button onclick="leaveRoom()">Выйти</button>
+            <div class="vs-actions" style="justify-content:center;">
+                <button id="rematchBtn" class="vs-button" onclick="requestRematch()">Реванш</button>
+                <button class="vs-button-secondary" onclick="leaveRoom()">Покинуть комнату</button>
+            </div>
+        </section>
     </div>
 
-    <!-- Game Area -->
-    <div id="gameArea" style="display:none;">
-        <div class="game-container">
-            <div class="board-wrapper">
-                <h2 id="myNameBoard">ТЫ</h2>
-                <canvas id="myCanvas" width="240" height="480"></canvas>
-                <div class="info">Счёт: <span id="myScore">0</span> | Линии: <span id="myLines">0</span></div>
-            </div>
-            <div class="board-wrapper">
-                <h2 id="opponentNameBoard">Противник</h2>
-                <canvas id="opponentCanvas" width="240" height="480"></canvas>
-                <div class="info">Счёт: <span id="opponentScore">0</span> | Линии: <span id="opponentLines">0</span></div>
-            </div>
-        </div>
-        <div class="controls">
-            <span class="hint">←→↓↑ Поворот | Space Hard Drop</span>
-            <button onclick="sendReaction('👍')">👍</button>
-            <button onclick="sendReaction('🔥')">🔥</button>
-        </div>
-        <button onclick="leaveRoom()">Выйти из игры</button>
-    </div>
-
-    <!-- Spectator Area -->
-    <div id="spectatorArea" style="display:none;">
-        <div class="game-container">
-            <div class="board-wrapper">
-                <h2 id="spectatorPlayer1Name">Игрок 1</h2>
-                <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
-                <div class="info">Счёт: <span id="spectatorScore1">0</span> | Линии: <span id="spectatorLines1">0</span></div>
-            </div>
-            <div class="board-wrapper">
-                <h2 id="spectatorPlayer2Name">Игрок 2</h2>
-                <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
-                <div class="info">Счёт: <span id="spectatorScore2">0</span> | Линии: <span id="spectatorLines2">0</span></div>
-            </div>
-        </div>
-        <button onclick="leaveRoom()">Выйти</button>
-    </div>
-</div>
-
-<script src="js/utils.js"></script>
-<script src="js/game.js"></script>
+    <script src="/js/services/authService.js"></script>
+    <script type="module" src="/js/game.js"></script>
 </body>
 </html>

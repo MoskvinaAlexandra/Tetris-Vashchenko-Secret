@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vashchenko's Secret | Вход</title>
+    <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-page">
+    <div class="vs-shell">
+        <div class="vs-topbar">
+            <div class="vs-topbar-links">
+                <a href="/" class="vs-link">Главная</a>
+                <a href="/leaderboard.html" class="vs-link">Лидеры</a>
+            </div>
+        </div>
+
+        <header class="vs-header">
+            <div class="vs-logo">VS</div>
+            <div class="vs-title-wrap">
+                <h1 class="vs-title">Vashchenko's Secret</h1>
+                <p class="vs-subtitle">Member Entrance</p>
+            </div>
+            <div class="vs-logo">VS</div>
+        </header>
+
+        <main class="vs-main">
+            <section class="vs-panel narrow auth-card">
+                <h2 class="vs-section-title">Вход</h2>
+                <p class="vs-section-copy">Вернитесь в дуэльный зал под своим именем.</p>
+
+                <form id="loginForm" class="vs-form">
+                    <div class="vs-field">
+                        <label for="nameOrEmail">Имя или email</label>
+                        <input class="vs-input" type="text" id="nameOrEmail" name="nameOrEmail" required placeholder="Введите имя или email">
+                    </div>
+
+                    <div class="vs-field">
+                        <label for="password">Пароль</label>
+                        <input class="vs-input" type="password" id="password" name="password" required placeholder="Введите пароль">
+                    </div>
+
+                    <button type="submit" class="vs-button">Войти</button>
+                </form>
+
+                <div id="error" class="vs-error" style="margin-top:14px;"></div>
+                <div id="success" class="vs-success" style="margin-top:14px;"></div>
+
+                <p class="auth-footer">Нет аккаунта? <a href="/register.html">Зарегистрироваться</a></p>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/services/authService.js"></script>
+    <script src="/js/login.js"></script>
+</body>
+</html>

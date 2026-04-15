@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vashchenko's Secret | Регистрация</title>
+    <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-page">
+    <div class="vs-shell">
+        <div class="vs-topbar">
+            <div class="vs-topbar-links">
+                <a href="/" class="vs-link">Главная</a>
+                <a href="/leaderboard.html" class="vs-link">Лидеры</a>
+            </div>
+        </div>
+
+        <header class="vs-header">
+            <div class="vs-logo">VS</div>
+            <div class="vs-title-wrap">
+                <h1 class="vs-title">Vashchenko's Secret</h1>
+                <p class="vs-subtitle">Membership Registration</p>
+            </div>
+            <div class="vs-logo">VS</div>
+        </header>
+
+        <main class="vs-main">
+            <section class="vs-panel narrow auth-card">
+                <h2 class="vs-section-title">Регистрация</h2>
+                <p class="vs-section-copy">Создайте аккаунт и сохраните свои победы в фирменном рейтинге.</p>
+
+                <form id="registerForm" class="vs-form">
+                    <div class="vs-field">
+                        <label for="name">Имя игрока</label>
+                        <input class="vs-input" type="text" id="name" name="name" required minlength="3" maxlength="50" placeholder="3-50 символов">
+                    </div>
+
+                    <div class="vs-field">
+                        <label for="email">Email</label>
+                        <input class="vs-input" type="email" id="email" name="email" required placeholder="your@email.com">
+                    </div>
+
+                    <div class="vs-field">
+                        <label for="password">Пароль</label>
+                        <input class="vs-input" type="password" id="password" name="password" required minlength="6" placeholder="Минимум 6 символов">
+                    </div>
+
+                    <div class="vs-field">
+                        <label for="confirmPassword">Подтвердите пароль</label>
+                        <input class="vs-input" type="password" id="confirmPassword" name="confirmPassword" required placeholder="Повторите пароль">
+                    </div>
+
+                    <button type="submit" class="vs-button">Зарегистрироваться</button>
+                </form>
+
+                <div id="error" class="vs-error" style="margin-top:14px;"></div>
+                <div id="success" class="vs-success" style="margin-top:14px;"></div>
+
+                <p class="auth-footer">Уже есть аккаунт? <a href="/login.html">Войти</a></p>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/services/authService.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html>

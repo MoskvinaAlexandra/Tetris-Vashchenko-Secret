@@ -1,0 +1,99 @@
+.profile-page .vs-panel {
+  width: min(100%, 1120px);
+}
+
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(78, 106, 125, 0.25);
+}
+
+.profile-avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 2px solid var(--vs-border);
+  background: radial-gradient(circle at 30% 30%, #e8f3f8, #b9d4e1 60%, #86a6bb 100%);
+  display: grid;
+  place-items: center;
+  color: var(--vs-accent);
+  font-family: 'Perpetua Titling MT', "Times New Roman", serif;
+  font-size: 32px;
+}
+
+.profile-meta {
+  color: var(--vs-ink-muted);
+  display: grid;
+  gap: 6px;
+}
+
+.match-history {
+  margin-top: 30px;
+}
+
+.matches-list {
+  display: grid;
+  gap: 14px;
+}
+
+.match-card {
+  border: 1px solid var(--vs-border-soft);
+  border-radius: 14px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.match-card.win {
+  border-color: rgba(71, 101, 125, 0.45);
+}
+
+.match-card.loss {
+  border-color: rgba(138, 79, 99, 0.35);
+}
+
+.match-header,
+.match-details,
+.match-score {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.match-header {
+  margin-bottom: 12px;
+}
+
+.match-result {
+  font-weight: bold;
+}
+
+.match-date,
+.vs-text,
+.match-duration,
+.label {
+  color: var(--vs-ink-muted);
+}
+
+.score {
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--vs-accent);
+}
+
+.separator {
+  font-size: 28px;
+  color: var(--vs-ink-muted);
+}
+
+@media (max-width: 700px) {
+  .profile-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+}

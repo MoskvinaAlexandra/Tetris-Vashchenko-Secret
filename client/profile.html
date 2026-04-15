@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vashchenko's Secret | Профиль</title>
+    <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body class="profile-page">
+    <div class="vs-shell">
+        <nav class="vs-nav">
+            <div class="vs-nav-links">
+                <a href="/" class="vs-link">Главная</a>
+                <a href="/game.html" class="vs-link">Играть</a>
+                <a href="/leaderboard.html" class="vs-link">Лидеры</a>
+                <a href="/profile.html" class="vs-link is-active">Профиль</a>
+            </div>
+            <div class="vs-nav-links">
+                <button id="logoutBtn" class="vs-button-secondary">Выход</button>
+            </div>
+        </nav>
+
+        <header class="vs-header">
+            <div class="vs-logo">VS</div>
+            <div class="vs-title-wrap">
+                <h1 class="vs-title">Player Profile</h1>
+                <p class="vs-subtitle">Your Victoria Matchbook</p>
+            </div>
+            <div class="vs-logo">VS</div>
+        </header>
+
+        <main class="vs-main">
+            <section class="vs-panel">
+                <div class="profile-hero">
+                    <div class="profile-avatar">VS</div>
+                    <div class="profile-meta">
+                        <h2 id="playerName" class="vs-section-title" style="margin:0; text-align:left;">Загрузка...</h2>
+                        <p id="playerEmail">email@example.com</p>
+                        <p id="joinDate">Присоединился: -</p>
+                    </div>
+                </div>
+
+                <div class="vs-grid three">
+                    <div class="vs-card">
+                        <div class="vs-card-title">Лучший результат</div>
+                        <div class="vs-card-value" id="bestScore">0</div>
+                    </div>
+                    <div class="vs-card">
+                        <div class="vs-card-title">Победы</div>
+                        <div class="vs-card-value" id="wins">0</div>
+                    </div>
+                    <div class="vs-card">
+                        <div class="vs-card-title">Поражения</div>
+                        <div class="vs-card-value" id="losses">0</div>
+                    </div>
+                    <div class="vs-card">
+                        <div class="vs-card-title">Игр сыграно</div>
+                        <div class="vs-card-value" id="gamesPlayed">0</div>
+                    </div>
+                    <div class="vs-card">
+                        <div class="vs-card-title">Линий очищено</div>
+                        <div class="vs-card-value" id="totalLines">0</div>
+                    </div>
+                    <div class="vs-card">
+                        <div class="vs-card-title">Средний результат</div>
+                        <div class="vs-card-value" id="avgScore">0</div>
+                    </div>
+                    <div class="vs-card">
+                        <div class="vs-card-title">Лучше линий</div>
+                        <div class="vs-card-value" id="bestLines">0</div>
+                    </div>
+                    <div class="vs-card">
+                        <div class="vs-card-title">Всего очков</div>
+                        <div class="vs-card-value" id="totalScore">0</div>
+                    </div>
+                </div>
+
+                <section class="match-history">
+                    <h3 class="vs-section-title" style="font-size:24px;">История матчей</h3>
+                    <div id="matchesList" class="matches-list">
+                        <p>Загрузка истории...</p>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/services/authService.js"></script>
+    <script src="/js/services/playerService.js"></script>
+    <script src="/js/profile.js"></script>
+</body>
+</html>

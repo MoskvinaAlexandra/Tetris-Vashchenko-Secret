@@ -2,15 +2,81 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Топ игроков</title>
-<link rel="stylesheet" href="css/game.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vashchenko's Secret | Лидеры</title>
+    <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/leaderboard.css">
 </head>
-<body>
-<div class="container">
-    <h1>ТОП-10 ИГРОКОВ</h1>
-    <table id="leaderboard" border="1" style="margin: 0 auto; width: 80%; border-collapse: collapse;"></table>
-    <button onclick="location.href='index.html'">На главную</button>
-</div>
-<script src="js/game.js"></script>
+<body class="leaderboard-page">
+    <div class="vs-shell">
+        <nav class="vs-nav">
+            <div class="vs-nav-links">
+                <a href="/" class="vs-link">Главная</a>
+                <a href="/game.html" class="vs-link">Играть</a>
+                <a href="/leaderboard.html" class="vs-link is-active">Лидеры</a>
+                <a href="/profile.html" class="vs-link" id="profileLink" style="display:none;">Профиль</a>
+            </div>
+            <div class="vs-nav-links">
+                <a href="/login.html" class="vs-link" id="loginBtn">Вход</a>
+                <button id="logoutBtn" class="vs-button-secondary" style="display:none;">Выход</button>
+            </div>
+        </nav>
+
+        <header class="vs-header">
+            <div class="vs-logo">VS</div>
+            <div class="vs-title-wrap">
+                <h1 class="vs-title">Leaderboard</h1>
+                <p class="vs-subtitle">Victoria Ranking Table</p>
+            </div>
+            <div class="vs-logo">VS</div>
+        </header>
+
+        <main class="vs-main">
+            <section class="vs-panel">
+                <h2 class="vs-section-title">Таблица лидеров</h2>
+                <p class="vs-section-copy">Сортируйте рейтинг по любимому показателю и следите за ростом лучших игроков.</p>
+
+                <div class="leaderboard-toolbar">
+                    <label class="vs-field" style="min-width:260px;">
+                        <span>Сортировка</span>
+                        <select id="sortBy" class="vs-select">
+                            <option value="best_score">Лучший результат</option>
+                            <option value="wins">Победы</option>
+                            <option value="games_played">Игр сыграно</option>
+                            <option value="total_score">Всего очков</option>
+                            <option value="avg_score">Средний результат</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="vs-table-wrap">
+                    <table class="vs-table" id="leaderboardTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Игрок</th>
+                                <th>Лучший результат</th>
+                                <th>Победы</th>
+                                <th>Поражения</th>
+                                <th>Игр</th>
+                                <th>Линий</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody">
+                            <tr>
+                                <td colspan="7">Загрузка...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="errorMessage" class="vs-error" style="display:none; margin-top:16px;"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/services/authService.js"></script>
+    <script src="/js/leaderboard.js"></script>
 </body>
 </html>

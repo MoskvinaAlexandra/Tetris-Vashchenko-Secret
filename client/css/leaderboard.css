@@ -1,0 +1,21 @@
+.leaderboard-page .vs-panel {
+  width: min(100%, 1100px);
+}
+
+.leaderboard-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.leaderboard-rank {
+  font-weight: bold;
+  color: var(--vs-accent);
+}
+
+.leaderboard-name {
+  font-weight: bold;
+}

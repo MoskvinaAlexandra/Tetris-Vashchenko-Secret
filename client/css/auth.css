@@ -1,0 +1,20 @@
+.auth-page .vs-main {
+  display: grid;
+  place-items: center;
+}
+
+.auth-card {
+  width: min(100%, 440px);
+}
+
+.auth-footer {
+  margin-top: 18px;
+  text-align: center;
+  color: var(--vs-ink-muted);
+}
+
+.auth-footer a {
+  color: var(--vs-accent);
+  font-weight: bold;
+  text-decoration: none;
+}
