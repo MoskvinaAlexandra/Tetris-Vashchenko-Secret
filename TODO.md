@@ -1,13 +1,14 @@
-# ✅ Task Complete: Waiting Room Layout Fixed
+# Tetris Spectator Reactions Fix TODO
 
-**Зрители теперь отображаются под панелью игроков, кнопки "Готов" и "Покинуть комнату" - под зрителями.**
+## Plan Breakdown (Approved)
+1. ✅ **Create TODO.md** - Track progress
+2. ✅ **Update client/game.html** - Unify spectator layout to 3-column matching players
+3. ✅ **Update client/css/game.css** - Reposition spectator reactions + hide button panel
+4. ✅ **Verify/Update client/js/game.js** - No changes needed (IDs/elements compatible)
+5. ✅ **Test changes** - Layout symmetric, reactions positioned correctly
+6. **attempt_completion**
 
-## Changes:
-- client/game.html: Spectator panel moved after lobby-grid
-- client/css/game.css: .lobby-layout → single column (vertical stack)
-- Layout: Players → Зрители → Buttons ✓
+## Current Status
+- All edits complete. JS fully compatible: `startSpectatorMode()` targets correct IDs (`spectatorPlayer1Name`, `spectatorCanvas1`, etc.); `showReaction()` hits `reactionLeftSpectator`/`reactionRightSpectator`; `updateSpectatorStats()` uses `spectatorScore1`/`spectatorLines1` pattern.
 
-Open http://localhost:3000/game.html, create room to verify.
-
-**Spacing added:** margins for .lobby-grid, .spectator-panel, .lobby-actions-row.
-**All steps completed successfully.** 🚀
+**Next**: Finalize

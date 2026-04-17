@@ -468,6 +468,32 @@
   transform: translateY(-50%) scale(1);
 }
 
+.spectatorArea .left-controls-panel,
+.spectatorArea .spectator-controls {
+  display: none;
+}
+
+.spectatorArea .match-layout {
+  grid-template-columns: minmax(10rem, 14vw) minmax(0, 1fr) minmax(12rem, 18vw);
+  gap: clamp(10px, 1.2vw, 16px);
+  padding: 12px;
+}
+
+.spectatorArea .right-side-panel {
+  grid-template-rows: 1fr auto;
+  align-content: start;
+}
+
+.spectatorArea .reaction-pop.left {
+  left: auto !important;
+  right: clamp(-26px, -2.4vw, -38px) !important;
+}
+
+.spectatorArea .reaction-pop.right {
+  right: auto !important;
+  left: clamp(-26px, -2.4vw, -38px) !important;
+}
+
 .spectator-footer-actions {
   margin-top: 14px;
 }

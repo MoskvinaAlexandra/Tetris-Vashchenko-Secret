@@ -141,38 +141,43 @@
                 </div>
             </section>
 
-            <section id="spectatorArea" class="vs-panel match-panel" style="display:none;">
-                <div class="spectator-view-layout">
-                    <div class="arena-grid fixed-slots">
-                        <article class="board-panel player1">
-                            <div id="reactionLeftSpectator" class="reaction-pop left"></div>
-                            <h2 id="spectatorPlayer1Name">Игрок 1</h2>
-                            <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
-                            <div class="board-meta">
-                                <span>Счет: <strong id="spectatorScore1">0</strong></span>
-                                <span>Линии: <strong id="spectatorLines1">0</strong></span>
-                            </div>
-                        </article>
+<section id="spectatorArea" class="vs-panel match-panel spectator-area" style="display:none;">
+                <div class="match-layout">
+                    <aside class="left-controls-panel spectator-controls">
+                        <!-- Empty for spacing consistency, buttons hidden via CSS -->
+                    </aside>
 
-                        <article class="board-panel player2">
-                            <div id="reactionRightSpectator" class="reaction-pop right"></div>
-                            <h2 id="spectatorPlayer2Name">Игрок 2</h2>
-                            <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
-                            <div class="board-meta">
-                                <span>Счет: <strong id="spectatorScore2">0</strong></span>
-                                <span>Линии: <strong id="spectatorLines2">0</strong></span>
-                            </div>
-                        </article>
+                    <div class="center-arena-wrap">
+                        <div id="spectatorArena" class="arena-grid fixed-slots">
+                            <article id="spectatorPlayer1Panel" class="board-panel player1">
+                                <div id="reactionLeftSpectator" class="reaction-pop left"></div>
+                                <h2 id="spectatorPlayer1Name">Игрок 1</h2>
+                                <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
+                                <div class="board-meta">
+                                    <span>Счет: <strong id="spectatorScore1">0</strong></span>
+                                    <span>Линии: <strong id="spectatorLines1">0</strong></span>
+                                </div>
+                            </article>
+
+                            <article id="spectatorPlayer2Panel" class="board-panel player2">
+                                <div id="reactionRightSpectator" class="reaction-pop right"></div>
+                                <h2 id="spectatorPlayer2Name">Игрок 2</h2>
+                                <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
+                                <div class="board-meta">
+                                    <span>Счет: <strong id="spectatorScore2">0</strong></span>
+                                    <span>Линии: <strong id="spectatorLines2">0</strong></span>
+                                </div>
+                            </article>
+                        </div>
                     </div>
 
-                    <aside class="spectator-panel in-game">
-                        <h3>Зрители</h3>
-                        <ul id="spectatorModeList" class="spectator-list"></ul>
+                    <aside class="right-side-panel">
+                        <div class="spectator-panel in-game">
+                            <h3>Зрители</h3>
+                            <ul id="spectatorModeList" class="spectator-list"></ul>
+                        </div>
+                        <button class="vs-button-secondary leave-match-btn" type="button" onclick="leaveRoom()">Покинуть комнату</button>
                     </aside>
-                </div>
-
-                <div class="vs-actions lobby-actions-row spectator-footer-actions">
-                    <button class="vs-button-secondary" type="button" onclick="leaveRoom()">Покинуть комнату</button>
                 </div>
             </section>
         </main>
