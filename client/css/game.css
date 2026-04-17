@@ -228,7 +228,13 @@
   letter-spacing: 0.18em;
 }
 
-.lobby-layout,
+.lobby-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(14px, 1.6vw, 22px);
+  align-items: start;
+}
+
 .spectator-view-layout {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(15rem, 1.25fr);
@@ -236,7 +242,13 @@
   align-items: start;
 }
 
-.lobby-grid,
+.lobby-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 22px);
+  margin-bottom: clamp(20px, 2vw, 28px);
+}
+
 .arena-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -252,6 +264,10 @@
   border-radius: 16px;
   padding: clamp(14px, 1.4vw, 20px);
   background: var(--game-panel-bg);
+}
+
+.spectator-panel {
+  margin-bottom: clamp(18px, 2vw, 24px);
 }
 
 .lobby-player h3,
@@ -285,7 +301,12 @@
   color: var(--vs-accent);
 }
 
-.lobby-actions-row,
+.lobby-actions-row {
+  justify-content: center;
+  gap: 12px;
+  margin-top: clamp(14px, 1.6vw, 20px);
+}
+
 .match-overlay-actions,
 .settings-actions {
   justify-content: center;
