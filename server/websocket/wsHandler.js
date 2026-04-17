@@ -6,8 +6,9 @@ import { handleGameState } from './handlers/gameStateHandler.js';
 import { handleGameEnd } from './handlers/gameEndHandler.js';
 import { handleReaction } from './handlers/reactionHandler.js';
 import { handleRematchRequest } from './handlers/rematchRequestHandler.js';
+import { WebSocket } from 'ws';
 
-export async function handleWSMessage(ws, msg, rooms) {
+export async function handleWSMessage(ws, msg, roomManager) {
   try {
     if (msg.type !== 'ping') {
       const auth = authenticateWS(msg);
@@ -20,25 +21,31 @@ export async function handleWSMessage(ws, msg, rooms) {
 
     switch (msg.type) {
       case 'createRoom':
-        await handleCreateRoom(ws, msg, rooms);
+        await handleCreateRoom(ws, msg, roomManager);
         break;
       case 'joinRoom':
-        await handleJoinRoom(ws, msg, rooms);
+        await handleJoinRoom(ws, msg, roomManager);
+        break;
+      case 'leaveRoom':
+        await roomManager.handleSocketClose(ws, { intentional: true });
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close(1000, 'left room');
+        }
         break;
       case 'ready':
-        await handleReady(ws, msg, rooms);
+        await handleReady(ws, msg, roomManager);
         break;
       case 'gameState':
-        await handleGameState(ws, msg, rooms);
+        await handleGameState(ws, msg, roomManager);
         break;
       case 'gameEnd':
-        await handleGameEnd(ws, msg, rooms);
+        await handleGameEnd(ws, msg, roomManager);
         break;
       case 'reaction':
-        await handleReaction(ws, msg, rooms);
+        await handleReaction(ws, msg, roomManager);
         break;
       case 'rematchRequest':
-        await handleRematchRequest(ws, msg, rooms);
+        await handleRematchRequest(ws, msg, roomManager);
         break;
       case 'ping':
         ws.send(JSON.stringify({ type: 'pong' }));

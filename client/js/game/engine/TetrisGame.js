@@ -1,8 +1,10 @@
-// client/js/game/engine/TetrisGame.js — Pure game logic (SRP - Single Responsibility)
-import { BOARD_CONFIG, PIECES, COLORS } from '../constants/gameConstants.js';
+import { BOARD_CONFIG, PIECES } from '../constants/gameConstants.js';
 
 export class TetrisGame {
-  constructor() {
+  constructor(seed = Date.now()) {
+    this.randomState = (Number(seed) || Date.now()) >>> 0;
+    this.bag = [];
+
     this.board = this.createBoard();
     this.currentPiece = null;
     this.nextPiece = null;
@@ -14,18 +16,33 @@ export class TetrisGame {
     this.spawnNewPiece();
   }
 
-  /**
-   * Create empty 2D board
-   */
   createBoard() {
-    return Array(BOARD_CONFIG.HEIGHT).fill(null).map(() =>
-      Array(BOARD_CONFIG.WIDTH).fill(0)
-    );
+    return Array(BOARD_CONFIG.HEIGHT).fill(null).map(() => Array(BOARD_CONFIG.WIDTH).fill(0));
   }
 
-  /**
-   * Spawn new piece at top
-   */
+  nextRandom() {
+    this.randomState = (1664525 * this.randomState + 1013904223) >>> 0;
+    return this.randomState / 4294967296;
+  }
+
+  refillBag() {
+    const types = Array.from({ length: PIECES.length }, (_, index) => index + 1);
+
+    for (let i = types.length - 1; i > 0; i--) {
+      const j = Math.floor(this.nextRandom() * (i + 1));
+      [types[i], types[j]] = [types[j], types[i]];
+    }
+
+    this.bag = types;
+  }
+
+  drawPieceType() {
+    if (this.bag.length === 0) {
+      this.refillBag();
+    }
+    return this.bag.pop();
+  }
+
   spawnNewPiece() {
     if (this.nextPiece === null) {
       this.nextPiece = this.generateRandomPiece();
@@ -38,25 +55,19 @@ export class TetrisGame {
       this.isGameOver = true;
       return false;
     }
+
     return true;
   }
 
-  /**
-   * Generate random tetromino
-   */
   generateRandomPiece() {
-    const type = Math.floor(Math.random() * PIECES.length);
     return {
-      type: type + 1,
+      type: this.drawPieceType(),
       rotation: 0,
       x: Math.floor(BOARD_CONFIG.WIDTH / 2) - 1,
       y: 0
     };
   }
 
-  /**
-   * Check collision
-   */
   collides(piece, offsetX, offsetY) {
     const shape = PIECES[piece.type - 1][piece.rotation % PIECES[piece.type - 1].length];
 
@@ -76,12 +87,10 @@ export class TetrisGame {
         }
       }
     }
+
     return false;
   }
 
-  /**
-   * Lock piece on board
-   */
   lockPiece() {
     const shape = PIECES[this.currentPiece.type - 1][this.currentPiece.rotation];
 
@@ -102,14 +111,11 @@ export class TetrisGame {
     return this.spawnNewPiece();
   }
 
-  /**
-   * Clear completed lines
-   */
   clearLines() {
     let clearedLines = 0;
 
     for (let row = BOARD_CONFIG.HEIGHT - 1; row >= 0; row--) {
-      if (this.board[row].every(cell => cell !== 0)) {
+      if (this.board[row].every((cell) => cell !== 0)) {
         this.board.splice(row, 1);
         this.board.unshift(Array(BOARD_CONFIG.WIDTH).fill(0));
         clearedLines++;
@@ -119,16 +125,13 @@ export class TetrisGame {
 
     if (clearedLines > 0) {
       this.lines += clearedLines;
-      this.score += clearedLines * 100 + (this.level * 50);
+      this.score += clearedLines * 100 + this.level * 50;
       this.level = Math.floor(this.lines / 10) + 1;
     }
 
     return clearedLines;
   }
 
-  /**
-   * Move piece left/right
-   */
   move(direction) {
     if (!this.collides(this.currentPiece, direction, 0)) {
       this.currentPiece.x += direction;
@@ -137,9 +140,6 @@ export class TetrisGame {
     return false;
   }
 
-  /**
-   * Rotate piece
-   */
   rotate() {
     const oldRotation = this.currentPiece.rotation;
     this.currentPiece.rotation = (this.currentPiece.rotation + 1) % PIECES[this.currentPiece.type - 1].length;
@@ -151,21 +151,15 @@ export class TetrisGame {
     return true;
   }
 
-  /**
-   * Drop piece by one row
-   */
   drop() {
     if (!this.collides(this.currentPiece, 0, 1)) {
       this.currentPiece.y++;
       return true;
-    } else {
-      return this.lockPiece();
     }
+
+    return this.lockPiece();
   }
 
-  /**
-   * Hard drop to bottom
-   */
   hardDrop() {
     while (!this.collides(this.currentPiece, 0, 1)) {
       this.currentPiece.y++;
@@ -173,9 +167,6 @@ export class TetrisGame {
     return this.lockPiece();
   }
 
-  /**
-   * Get game state for rendering
-   */
   getState() {
     return {
       board: this.board,
@@ -188,4 +179,3 @@ export class TetrisGame {
     };
   }
 }
-

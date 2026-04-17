@@ -1,66 +1,99 @@
 import { MatchService } from '../../services/MatchService.js';
-import { WebSocket } from 'ws';
 
-export async function handleReady(ws, msg, rooms) {
-  const room = rooms.get(msg.code);
+function createSeed() {
+  return Math.floor(Math.random() * 2_147_483_647);
+}
+
+export async function handleReady(ws, msg, roomManager) {
+  const room = roomManager.getRoom(msg.code);
   if (!room || !room.player1 || !room.player2) {
     return;
   }
 
-  if (room.matchStarted) {
+  if (ws.role !== 'player1' && ws.role !== 'player2') {
+    return;
+  }
+
+  if (!room[ws.role]?.connected || room.matchStarted) {
     return;
   }
 
   room.matchCompleted = false;
   room.rematchVotes.clear();
+  room[ws.role].ready = Boolean(msg.ready);
+  roomManager.broadcastRoomState(msg.code);
 
-  if (ws.role === 'player1') {
-    room.player1.ready = msg.ready;
-  } else if (ws.role === 'player2') {
-    room.player2.ready = msg.ready;
+  const bothConnected = room.player1.connected && room.player2.connected;
+  const bothReady = room.player1.ready && room.player2.ready;
+  if (!bothConnected || !bothReady) {
+    if (room.countdownTimer) {
+      clearInterval(room.countdownTimer);
+      room.countdownTimer = null;
+    }
+    return;
   }
 
-  const other = ws.role === 'player1' ? room.player2 : room.player1;
-  if (other?.ws?.readyState === WebSocket.OPEN) {
-    other.ws.send(JSON.stringify({ type: 'playerReady', ready: msg.ready }));
+  if (room.countdownTimer) {
+    return;
   }
 
-  if (room.player1.ready && room.player2.ready) {
-    try {
-      room.matchStarted = true;
-      room.matchCompleted = false;
-      room.match = await MatchService.createMatch(msg.code, room.player1.playerId, room.player2.playerId);
+  try {
+    room.matchStarted = true;
+    room.gameLive = false;
+    room.seed = createSeed();
 
-      let count = 3;
-      const clients = [room.player1.ws, room.player2.ws, ...Array.from(room.spectators).map((spectator) => spectator.ws)];
+    let count = 3;
+    room.countdownTimer = setInterval(async () => {
+      try {
+        const freshRoom = roomManager.getRoom(msg.code);
+        if (!freshRoom || !freshRoom.player1 || !freshRoom.player2) {
+          clearInterval(room.countdownTimer);
+          room.countdownTimer = null;
+          return;
+        }
 
-      const countdownInterval = setInterval(() => {
-        clients.forEach((client) => {
-          if (client?.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({ type: 'countdown', count }));
-          }
-        });
+        const stillReady = freshRoom.player1.ready && freshRoom.player2.ready;
+        const stillConnected = freshRoom.player1.connected && freshRoom.player2.connected;
+        if (!stillReady || !stillConnected) {
+          clearInterval(freshRoom.countdownTimer);
+          freshRoom.countdownTimer = null;
+          freshRoom.matchStarted = false;
+          freshRoom.gameLive = false;
+          freshRoom.match = null;
+          return;
+        }
 
+        roomManager.broadcastToRoom(msg.code, { type: 'countdown', count });
         count -= 1;
 
         if (count < 0) {
-          clearInterval(countdownInterval);
-          clients.forEach((client) => {
-            if (client?.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({
-                type: 'startGame',
-                code: msg.code,
-                player1Name: room.player1.name,
-                player2Name: room.player2.name
-              }));
-            }
+          clearInterval(freshRoom.countdownTimer);
+          freshRoom.countdownTimer = null;
+          freshRoom.gameLive = true;
+          if (!freshRoom.match) {
+            freshRoom.match = await MatchService.createMatch(msg.code, freshRoom.player1.playerId, freshRoom.player2.playerId);
+          }
+
+          roomManager.broadcastToRoom(msg.code, {
+            type: 'startGame',
+            code: msg.code,
+            player1Name: freshRoom.player1.name,
+            player2Name: freshRoom.player2.name,
+            seed: freshRoom.seed
           });
         }
-      }, 1000);
-    } catch (error) {
-      room.matchStarted = false;
-      room.matchCompleted = false;
-      console.error('Match creation error:', error);
+      } catch (error) {
+        console.error('Countdown/start error:', error);
+      }
+    }, 1000);
+  } catch (error) {
+    room.matchStarted = false;
+    room.gameLive = false;
+    room.matchCompleted = false;
+    if (room.countdownTimer) {
+      clearInterval(room.countdownTimer);
+      room.countdownTimer = null;
     }
+    console.error('Match creation error:', error);
   }
 }

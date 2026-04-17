@@ -1,19 +1,29 @@
 import { RoomService } from '../../services/RoomService.js';
 
-export async function handleCreateRoom(ws, msg, rooms) {
+export async function handleCreateRoom(ws, msg, roomManager) {
   try {
     const playerId = ws.playerId;
     const room = await RoomService.createRoom(playerId);
     const roomCode = room.room_code;
 
-    rooms.set(roomCode, {
-      player1: { ws, playerId, name: msg.name, ready: false },
+    roomManager.addRoom(roomCode, {
+      player1: {
+        ws,
+        playerId,
+        name: msg.name,
+        ready: false,
+        connected: true,
+        lastState: null
+      },
       player2: null,
       spectators: new Set(),
       match: null,
       matchStarted: false,
+      gameLive: false,
       matchCompleted: false,
-      rematchVotes: new Set()
+      rematchVotes: new Set(),
+      countdownTimer: null,
+      seed: null
     });
 
     ws.currentRoom = roomCode;
@@ -25,6 +35,8 @@ export async function handleCreateRoom(ws, msg, rooms) {
       role: 'player1',
       message: `Room created. Share code: ${roomCode}`
     }));
+
+    roomManager.broadcastRoomState(roomCode);
   } catch (error) {
     console.error('Create room error:', error);
     ws.send(JSON.stringify({ type: 'error', message: error.message }));

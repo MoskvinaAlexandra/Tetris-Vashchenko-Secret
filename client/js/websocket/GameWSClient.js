@@ -24,6 +24,9 @@ export class GameWSClient {
       case 'joined':
         this.onJoined(message);
         break;
+      case 'roomState':
+        this.onRoomState(message);
+        break;
       case 'playerJoined':
         this.onPlayerJoined(message);
         break;
@@ -51,6 +54,9 @@ export class GameWSClient {
       case 'reaction':
         this.onReaction(message);
         break;
+      case 'roomClosed':
+        this.onRoomClosed(message);
+        break;
       case 'error':
         this.onError(message);
         break;
@@ -67,6 +73,10 @@ export class GameWSClient {
     this.roomCode = code;
     this.role = role;
     this.send({ type: 'joinRoom', code, role, name, token });
+  }
+
+  leaveRoom() {
+    this.send({ type: 'leaveRoom', code: this.roomCode });
   }
 
   sendReady(ready) {
@@ -108,6 +118,7 @@ export class GameWSClient {
 
   onRoomCreated() {}
   onJoined() {}
+  onRoomState() {}
   onPlayerJoined() {}
   onPlayerReady() {}
   onCountdown() {}
@@ -117,6 +128,7 @@ export class GameWSClient {
   onRematchStatus() {}
   onRematchLobby() {}
   onReaction() {}
+  onRoomClosed() {}
   onError() {}
   onClose() {}
 }

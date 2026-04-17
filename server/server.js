@@ -1,4 +1,3 @@
-// server/server.js — Main Express + WebSocket server (refactored for SOLID)
 import express from 'express';
 import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
@@ -20,43 +19,38 @@ const httpServer = createServer(app);
 const wss = new WebSocketServer({ server: httpServer });
 const roomManager = new RoomManager();
 
-// Middleware
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/player', playerRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 
-// WebSocket connection handler
 wss.on('connection', (ws) => {
-  console.log('🔌 New WebSocket client connected');
+  console.log('New WebSocket client connected');
 
   ws.on('message', async (data) => {
     try {
       const msg = JSON.parse(data.toString());
-      await handleWSMessage(ws, msg, roomManager.rooms);
+      await handleWSMessage(ws, msg, roomManager);
     } catch (err) {
-      console.error('❌ WS Parse Error:', err);
+      console.error('WS Parse Error:', err);
       ws.send(JSON.stringify({ type: 'error', message: 'Invalid JSON' }));
     }
   });
 
   ws.on('close', async () => {
-    console.log('🔌 Client disconnected');
-    await roomManager.handleClientDisconnect(ws.playerId, ws.currentRoom);
+    console.log('Client disconnected');
+    await roomManager.handleSocketClose(ws, { intentional: false });
   });
 
   ws.on('error', (err) => {
-    console.error('❌ WS Error:', err);
+    console.error('WS Error:', err);
   });
 });
 
-// Start server
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`🌐 WebSocket ready on ws://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`WebSocket ready on ws://localhost:${PORT}`);
 });
-

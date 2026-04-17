@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vashchenko's Secret | Дуэль</title>
+    <title>Vashchenko's Secret | Duel Room</title>
     <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/game.css">
 </head>
 <body class="game-page">
-    <div class="vs-shell">
+    <div class="vs-shell compact-shell">
         <nav class="vs-nav">
             <div class="vs-nav-links">
                 <a href="/" class="vs-link">Главная</a>
@@ -17,39 +17,40 @@
                 <a href="/profile.html" class="vs-link">Профиль</a>
             </div>
             <div class="vs-nav-links">
-                <button class="vs-button-secondary" onclick="location.href='/'">В меню</button>
+                <button class="vs-button-secondary" type="button" onclick="toggleSettings()">Настройки</button>
+                <button class="vs-button-secondary" type="button" onclick="location.href='/'">В меню</button>
             </div>
         </nav>
 
-        <header class="vs-header">
+        <header class="vs-header compact-header">
             <div class="vs-logo">VS</div>
             <div class="vs-title-wrap">
                 <h1 class="vs-title">Duel Room</h1>
-                <p class="vs-subtitle">Stay in the same room and queue the next round</p>
+                <p class="vs-subtitle">Victoria Secret salon for room duels and spectators</p>
             </div>
             <div class="vs-logo">VS</div>
         </header>
 
-        <main class="vs-main">
+        <main class="vs-main compact-main">
             <section id="menu" class="vs-panel game-menu-card">
                 <div class="menu-hero">
                     <div>
                         <h2 class="vs-section-title">Создание дуэли</h2>
-                        <p class="vs-section-copy">Создайте салонный приватный матч или войдите в уже существующий по коду комнаты.</p>
+                        <p class="vs-section-copy">Создайте приватный матч или войдите в комнату по коду.</p>
                     </div>
 
                     <div class="vs-actions" style="justify-content:center;">
-                        <button class="vs-button" onclick="createRoom()">Создать комнату</button>
+                        <button class="vs-button" type="button" onclick="createRoom()">Создать комнату</button>
                     </div>
 
                     <div class="menu-room-entry">
-                        <label class="vs-field" style="width:min(100%, 360px);">
+                        <label class="vs-field menu-room-field">
                             <span>Код комнаты</span>
                             <input class="vs-input" type="text" id="roomInput" maxlength="8" placeholder="Введите код комнаты">
                         </label>
                         <div class="menu-room-actions">
-                            <button class="vs-button" onclick="joinAsPlayer()">Войти как игрок</button>
-                            <button class="vs-button-secondary" onclick="joinAsSpectator()">Войти как зритель</button>
+                            <button class="vs-button" type="button" onclick="joinAsPlayer()">Войти как игрок</button>
+                            <button class="vs-button-secondary" type="button" onclick="joinAsSpectator()">Войти как зритель</button>
                         </div>
                     </div>
 
@@ -59,88 +60,116 @@
 
             <section id="lobby" class="vs-panel" style="display:none;">
                 <div id="roomCodeDisplay" class="room-code-banner" style="display:none;">
-                    <span class="vs-card-title" style="margin:0;">Код комнаты</span>
+                    <span class="vs-card-title room-code-label">Код комнаты</span>
                     <span id="roomCode" class="room-code-value"></span>
-                    <button class="vs-button-secondary" onclick="copyCode()">Копировать</button>
+                    <button class="vs-button-secondary" type="button" onclick="copyCode()">Копировать</button>
                 </div>
 
-                <div class="lobby-grid">
-                    <div class="lobby-player">
-                        <h3 id="myNameLobby">Вы</h3>
-                        <button id="readyBtn" class="vs-button" onclick="toggleReady()">Готов</button>
-                        <div id="myStatus" class="status-pill">Ждёт...</div>
+                <div class="lobby-layout">
+                    <div class="lobby-grid">
+                        <div class="lobby-player">
+                            <h3 id="player1LobbyName">Игрок 1</h3>
+                            <div id="player1LobbyStatus" class="status-pill">Ждет...</div>
+                        </div>
+
+                        <div class="lobby-player">
+                            <h3 id="player2LobbyName">Игрок 2</h3>
+                            <div id="player2LobbyStatus" class="status-pill">Ждет...</div>
+                        </div>
                     </div>
 
-                    <div class="lobby-player">
-                        <h3 id="oppNameLobby">Противник</h3>
-                        <div id="oppStatus" class="status-pill">Ждёт...</div>
-                    </div>
+                    <aside class="spectator-panel">
+                        <h3>Зрители</h3>
+                        <ul id="lobbySpectatorsList" class="spectator-list"></ul>
+                    </aside>
                 </div>
 
                 <div id="countdown" class="countdown" style="display:none;"></div>
 
-                <div class="vs-actions" style="justify-content:center; margin-top:18px;">
-                    <button class="vs-button-secondary" onclick="leaveRoom()">Покинуть комнату</button>
+                <div class="vs-actions lobby-actions-row">
+                    <button id="readyBtn" class="vs-button" type="button" onclick="toggleReady()">Готов</button>
+                    <button class="vs-button-secondary" type="button" onclick="leaveRoom()">Покинуть комнату</button>
                 </div>
             </section>
 
-            <section id="gameArea" class="vs-panel" style="display:none;">
-                <div id="playerArena" class="arena-grid">
-                    <article id="player1Panel" class="board-panel player1">
-                        <h2 id="player1NameBoard">Игрок 1</h2>
-                        <canvas id="player1Canvas" width="240" height="480"></canvas>
-                        <div class="board-meta">
-                            <span>Счёт: <strong id="player1Score">0</strong></span>
-                            <span>Линии: <strong id="player1Lines">0</strong></span>
+            <section id="gameArea" class="vs-panel match-panel" style="display:none;">
+                <div class="match-layout">
+                    <aside class="left-controls-panel">
+                        <div class="status-pill controls-help">Управление: ← → ↓ ↑ и пробел</div>
+                        <div class="reaction-column">
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('👏')"><span>👏</span></button>
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('🔥')"><span>🔥</span></button>
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('💎')"><span>💎</span></button>
                         </div>
-                    </article>
+                    </aside>
 
-                    <article id="player2Panel" class="board-panel player2">
-                        <h2 id="player2NameBoard">Игрок 2</h2>
-                        <canvas id="player2Canvas" width="240" height="480"></canvas>
-                        <div class="board-meta">
-                            <span>Счёт: <strong id="player2Score">0</strong></span>
-                            <span>Линии: <strong id="player2Lines">0</strong></span>
+                    <div class="center-arena-wrap">
+                        <div id="playerArena" class="arena-grid fixed-slots">
+                            <article id="player1Panel" class="board-panel player1">
+                                <div id="reactionLeft" class="reaction-pop left"></div>
+                                <h2 id="player1NameBoard">Игрок 1</h2>
+                                <canvas id="player1Canvas" width="240" height="480"></canvas>
+                                <div class="board-meta">
+                                    <span>Счет: <strong id="player1Score">0</strong></span>
+                                    <span>Линии: <strong id="player1Lines">0</strong></span>
+                                </div>
+                            </article>
+
+                            <article id="player2Panel" class="board-panel player2">
+                                <div id="reactionRight" class="reaction-pop right"></div>
+                                <h2 id="player2NameBoard">Игрок 2</h2>
+                                <canvas id="player2Canvas" width="240" height="480"></canvas>
+                                <div class="board-meta">
+                                    <span>Счет: <strong id="player2Score">0</strong></span>
+                                    <span>Линии: <strong id="player2Lines">0</strong></span>
+                                </div>
+                            </article>
                         </div>
-                    </article>
-                </div>
-
-                <div class="game-controls">
-                    <div class="status-pill">Управление: ← → ↓ ↑ и пробел для hard drop</div>
-                    <div class="reaction-row">
-                        <button class="vs-button-secondary" onclick="sendReaction('👏')">👏</button>
-                        <button class="vs-button-secondary" onclick="sendReaction('🔥')">🔥</button>
-                        <button class="vs-button-secondary" onclick="sendReaction('💎')">💎</button>
                     </div>
-                    <button class="vs-button-secondary" onclick="leaveRoom()">Покинуть комнату</button>
+
+                    <aside class="right-side-panel">
+                        <button class="vs-button-secondary" type="button" onclick="toggleSettings()" title="Открыть настройки">⚙️ Настройки</button>
+                        <div class="spectator-panel in-game">
+                            <h3>Зрители</h3>
+                            <ul id="gameSpectatorsList" class="spectator-list"></ul>
+                        </div>
+                        <button class="vs-button-secondary leave-match-btn" type="button" onclick="leaveRoom()">Выйти из матча</button>
+                    </aside>
                 </div>
             </section>
 
-            <section id="spectatorArea" class="vs-panel" style="display:none;">
-                <div class="arena-grid">
-                    <article class="board-panel player1">
-                        <h2 id="spectatorPlayer1Name">Игрок 1</h2>
-                        <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
-                        <div class="board-meta">
-                            <span>Счёт: <strong id="spectatorScore1">0</strong></span>
-                            <span>Линии: <strong id="spectatorLines1">0</strong></span>
-                        </div>
-                    </article>
+            <section id="spectatorArea" class="vs-panel match-panel" style="display:none;">
+                <div class="spectator-view-layout">
+                    <div class="arena-grid fixed-slots">
+                        <article class="board-panel player1">
+                            <div id="reactionLeftSpectator" class="reaction-pop left"></div>
+                            <h2 id="spectatorPlayer1Name">Игрок 1</h2>
+                            <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
+                            <div class="board-meta">
+                                <span>Счет: <strong id="spectatorScore1">0</strong></span>
+                                <span>Линии: <strong id="spectatorLines1">0</strong></span>
+                            </div>
+                        </article>
 
-                    <article class="board-panel player2">
-                        <h2 id="spectatorPlayer2Name">Игрок 2</h2>
-                        <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
-                        <div class="board-meta">
-                            <span>Счёт: <strong id="spectatorScore2">0</strong></span>
-                            <span>Линии: <strong id="spectatorLines2">0</strong></span>
-                        </div>
-                    </article>
+                        <article class="board-panel player2">
+                            <div id="reactionRightSpectator" class="reaction-pop right"></div>
+                            <h2 id="spectatorPlayer2Name">Игрок 2</h2>
+                            <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
+                            <div class="board-meta">
+                                <span>Счет: <strong id="spectatorScore2">0</strong></span>
+                                <span>Линии: <strong id="spectatorLines2">0</strong></span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <aside class="spectator-panel in-game">
+                        <h3>Зрители</h3>
+                        <ul id="spectatorModeList" class="spectator-list"></ul>
+                    </aside>
                 </div>
 
-                <div class="spectator-note">Игрок 1 всегда слева, игрок 2 всегда справа. После матча вы вернётесь в комнату ожидания вместе с ними.</div>
-
-                <div class="vs-actions" style="justify-content:center; margin-top:18px;">
-                    <button class="vs-button-secondary" onclick="leaveRoom()">Покинуть комнату</button>
+                <div class="vs-actions lobby-actions-row spectator-footer-actions">
+                    <button class="vs-button-secondary" type="button" onclick="leaveRoom()">Покинуть комнату</button>
                 </div>
             </section>
         </main>
@@ -148,7 +177,7 @@
 
     <div id="matchOverlay" class="match-overlay">
         <section id="matchResultCard" class="vs-panel match-result-card">
-            <h2 id="matchResultTitle" class="vs-section-title">Раунд завершён</h2>
+            <h2 id="matchResultTitle" class="vs-section-title">Раунд завершен</h2>
             <div class="match-scoreline">
                 <strong id="matchScoreLeft">0</strong>
                 <span>:</span>
@@ -156,11 +185,53 @@
             </div>
             <div class="match-result-copy">
                 <p id="matchResultText">Ожидаем решение игроков.</p>
-                <p id="matchResultHint">Нажмите «Реванш», чтобы остаться в комнате и вернуться в экран ожидания.</p>
+                <p id="matchResultHint">Нажмите «Реванш», чтобы остаться в комнате.</p>
             </div>
-            <div class="vs-actions" style="justify-content:center;">
-                <button id="rematchBtn" class="vs-button" onclick="requestRematch()">Реванш</button>
-                <button class="vs-button-secondary" onclick="leaveRoom()">Покинуть комнату</button>
+            <div class="vs-actions match-overlay-actions">
+                <button id="rematchBtn" class="vs-button" type="button" onclick="requestRematch()">Реванш</button>
+                <button class="vs-button-secondary" type="button" onclick="leaveRoom()">Покинуть комнату</button>
+            </div>
+        </section>
+    </div>
+
+    <div id="settingsOverlay" class="settings-overlay" aria-hidden="true">
+        <section class="vs-panel settings-panel">
+            <div class="settings-panel-head">
+                <div>
+                    <h2 class="vs-section-title">Настройки игры</h2>
+                    <p class="vs-section-copy" style="margin-bottom: 0;">Кастомизируйте Ваш игровой опыт</p>
+                </div>
+                <button class="vs-button-secondary settings-close" type="button" onclick="toggleSettings(false)" title="Закрыть">✕</button>
+            </div>
+
+            <div class="settings-grid">
+                <label class="settings-item" for="themeToggle">
+                    <span class="settings-copy">
+                        <strong>Темная тема</strong>
+                        <small>Вечерний режим в стиле Victoria Secret</small>
+                    </span>
+                    <input id="themeToggle" type="checkbox">
+                </label>
+
+                <label class="settings-item" for="glowToggle">
+                    <span class="settings-copy">
+                        <strong>Свечение фигур</strong>
+                        <small>Мягкое свечение активных клеток игрового поля</small>
+                    </span>
+                    <input id="glowToggle" type="checkbox" checked>
+                </label>
+
+                <label class="settings-item" for="cellHighlightToggle">
+                    <span class="settings-copy">
+                        <strong>Подсветка пустых клеток</strong>
+                        <small>Визуальная сетка в цветах фигур для лучшего обзора</small>
+                    </span>
+                    <input id="cellHighlightToggle" type="checkbox" checked>
+                </label>
+            </div>
+
+            <div class="vs-actions settings-actions">
+                <button class="vs-button" type="button" onclick="toggleSettings(false)">Применить</button>
             </div>
         </section>
     </div>

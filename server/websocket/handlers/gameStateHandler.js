@@ -1,9 +1,18 @@
-// server/websocket/handlers/gameStateHandler.js
 import { WebSocket } from 'ws';
 
-export async function handleGameState(ws, msg, rooms) {
-  const room = rooms.get(msg.code);
-  if (!room) return;
+export async function handleGameState(ws, msg, roomManager) {
+  const room = roomManager.getRoom(msg.code);
+  if (!room || !msg.state) return;
+
+  if (ws.role === 'player1' || ws.role === 'player2') {
+    const slot = room[ws.role];
+    if (slot) {
+      slot.lastState = {
+        score: Number(msg.state.score) || 0,
+        lines: Number(msg.state.lines) || 0
+      };
+    }
+  }
 
   const stateMsg = {
     type: 'gameState',
@@ -11,10 +20,9 @@ export async function handleGameState(ws, msg, rooms) {
     senderRole: ws.role
   };
 
-  [room.player1.ws, room.player2.ws, ...Array.from(room.spectators).map(s => s.ws)].forEach(client => {
+  roomManager.getRoomClients(room).forEach((client) => {
     if (client !== ws && client?.readyState === WebSocket.OPEN) {
       client.send(JSON.stringify(stateMsg));
     }
   });
 }
-

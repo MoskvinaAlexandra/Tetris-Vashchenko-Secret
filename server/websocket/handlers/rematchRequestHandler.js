@@ -1,7 +1,5 @@
-import { WebSocket } from 'ws';
-
-export async function handleRematchRequest(ws, msg, rooms) {
-  const room = rooms.get(msg.code);
+export async function handleRematchRequest(ws, msg, roomManager) {
+  const room = roomManager.getRoom(msg.code);
   if (!room || !room.matchCompleted || !room.player1 || !room.player2) {
     return;
   }
@@ -12,37 +10,32 @@ export async function handleRematchRequest(ws, msg, rooms) {
 
   room.rematchVotes.add(ws.role);
 
-  const clients = [room.player1.ws, room.player2.ws, ...Array.from(room.spectators).map((spectator) => spectator.ws)];
-
   if (room.rematchVotes.size < 2) {
-    clients.forEach((client) => {
-      if (client?.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({
-          type: 'rematchStatus',
-          waitingFor: client === ws ? 'opponent' : 'you',
-          requestedBy: ws.role
-        }));
-      }
+    roomManager.broadcastToRoom(msg.code, {
+      type: 'rematchStatus',
+      requestedBy: ws.role
     });
     return;
   }
 
   room.match = null;
   room.matchStarted = false;
+  room.gameLive = false;
   room.matchCompleted = false;
+  room.seed = null;
   room.player1.ready = false;
   room.player2.ready = false;
+  room.player1.lastState = null;
+  room.player2.lastState = null;
   room.rematchVotes.clear();
 
-  clients.forEach((client) => {
-    if (client?.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({
-        type: 'rematchLobby',
-        code: msg.code,
-        player1Name: room.player1.name,
-        player2Name: room.player2.name,
-        message: 'Комната готова к реваншу. Нажмите "Готов", когда будете готовы к следующей дуэли.'
-      }));
-    }
+  roomManager.broadcastToRoom(msg.code, {
+    type: 'rematchLobby',
+    code: msg.code,
+    player1Name: room.player1.name,
+    player2Name: room.player2.name,
+    message: 'Комната готова к реваншу. Нажмите "Готов", когда будете готовы к следующей дуэли.'
   });
+
+  roomManager.broadcastRoomState(msg.code);
 }

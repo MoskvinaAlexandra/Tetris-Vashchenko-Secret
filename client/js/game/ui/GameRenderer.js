@@ -21,6 +21,7 @@ export class GameRenderer {
    */
   render(gameState) {
     this.clear();
+    this.drawCellHighlights(gameState.board);
     this.drawBoard(gameState.board);
     this.drawCurrentPiece(gameState.currentPiece);
   }
@@ -31,6 +32,34 @@ export class GameRenderer {
   clear() {
     this.ctx.fillStyle = '#0a0a0a';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  /**
+   * Draw cell highlights for empty cells (grid effect)
+   */
+  drawCellHighlights(board) {
+    const highlightEnabled = !document.body.classList.contains('no-cell-highlight');
+    if (!highlightEnabled) return;
+
+    // Get current piece to determine highlight color
+    const highlightColor = 'rgba(93, 217, 161, 0.08)'; // Default accent color with transparency
+
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        const cellValue = board[row][col];
+        
+        // Only highlight empty cells
+        if (cellValue === 0) {
+          this.ctx.fillStyle = highlightColor;
+          this.ctx.fillRect(
+            col * BOARD_CONFIG.CELL_SIZE + 1,
+            row * BOARD_CONFIG.CELL_SIZE + 1,
+            BOARD_CONFIG.CELL_SIZE - 2,
+            BOARD_CONFIG.CELL_SIZE - 2
+          );
+        }
+      }
+    }
   }
 
   /**
@@ -86,16 +115,15 @@ export class GameRenderer {
    */
   drawCell(x, y, color) {
     this.ctx.fillStyle = color;
+    const glowEnabled = !document.body.classList.contains('no-glow');
+    this.ctx.shadowColor = color;
+    this.ctx.shadowBlur = glowEnabled ? 4 : 0;
     this.ctx.fillRect(
       x * BOARD_CONFIG.CELL_SIZE + 1,
       y * BOARD_CONFIG.CELL_SIZE + 1,
       BOARD_CONFIG.CELL_SIZE - 2,
       BOARD_CONFIG.CELL_SIZE - 2
     );
-
-    // Glow effect
-    this.ctx.shadowColor = color;
-    this.ctx.shadowBlur = 8;
     this.ctx.strokeStyle = color;
     this.ctx.lineWidth = 1;
     this.ctx.strokeRect(
@@ -104,6 +132,7 @@ export class GameRenderer {
       BOARD_CONFIG.CELL_SIZE - 2,
       BOARD_CONFIG.CELL_SIZE - 2
     );
+    this.ctx.shadowBlur = 0;
   }
 
   /**

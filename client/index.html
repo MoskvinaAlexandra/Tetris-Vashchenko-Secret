@@ -15,6 +15,7 @@
                 <a href="/vanya.html" class="vs-link">О нас</a>
             </div>
             <div class="vs-topbar-links">
+                <button class="vs-button-secondary js-settings-toggle" type="button">Настройки</button>
                 <a href="/login.html" class="vs-link" id="loginBtn">Вход</a>
                 <a href="/register.html" class="vs-link" id="registerBtn">Регистрация</a>
                 <a href="/profile.html" class="vs-link" id="profileBtn" style="display:none;">Профиль</a>
@@ -36,15 +37,16 @@
                 <h2 class="vs-section-title">Salon Menu</h2>
                 <p class="vs-section-copy">Дуэли, статистика и фирменная эстетика без лишнего хаоса.</p>
                 <div class="vs-actions stack">
-                    <button class="vs-button" onclick="location.href='/game.html'">Играть</button>
-                    <button class="vs-button" onclick="location.href='/leaderboard.html'">Статистика</button>
-                    <button class="vs-button-secondary" onclick="location.href='/vanya.html'">Ваня Ващенко</button>
+                    <button class="vs-button" type="button" onclick="location.href='/game.html'">Играть</button>
+                    <button class="vs-button" type="button" onclick="location.href='/leaderboard.html'">Статистика</button>
+                    <button class="vs-button-secondary" type="button" onclick="location.href='/vanya.html'">Ваня Ващенко</button>
                 </div>
             </section>
         </main>
     </div>
 
     <script src="/js/services/authService.js"></script>
+    <script src="/js/settings.js"></script>
     <script>
         if (authService.isLoggedIn()) {
             document.getElementById('profileBtn').style.display = 'inline-flex';

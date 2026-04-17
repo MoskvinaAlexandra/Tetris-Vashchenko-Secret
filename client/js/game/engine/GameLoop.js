@@ -1,5 +1,27 @@
-// client/js/game/engine/GameLoop.js — Game loop management (SRP)
 import { GAME_SPEED } from '../constants/gameConstants.js';
+
+function createTickerWorker() {
+  const source = `
+    let intervalId = null;
+
+    self.onmessage = (event) => {
+      if (event.data?.type === 'start') {
+        clearInterval(intervalId);
+        intervalId = setInterval(() => {
+          self.postMessage({ type: 'tick', now: Date.now() });
+        }, event.data.interval || 16);
+      }
+
+      if (event.data?.type === 'stop') {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    };
+  `;
+
+  const blob = new Blob([source], { type: 'application/javascript' });
+  return new Worker(URL.createObjectURL(blob));
+}
 
 export class GameLoop {
   constructor(game, renderer) {
@@ -8,67 +30,65 @@ export class GameLoop {
     this.isRunning = false;
     this.frameCount = 0;
     this.dropInterval = GAME_SPEED.INITIAL_DROP_INTERVAL;
-    this.lastDropTime = Date.now();
-    this.frameRate = 60;
-    this.frameTime = 1000 / this.frameRate;
+    this.accumulator = 0;
+    this.lastFrameTime = 0;
+    this.worker = null;
     this.onUpdate = null;
   }
 
-  /**
-   * Start game loop
-   */
   start() {
+    if (this.isRunning) return;
+
     this.isRunning = true;
-    this.lastDropTime = Date.now();
-    this.gameLoopId = setInterval(() => this.update(), this.frameTime);
+    this.accumulator = 0;
+    this.lastFrameTime = Date.now();
+    this.worker = createTickerWorker();
+    this.worker.onmessage = (event) => {
+      if (event.data?.type === 'tick') {
+        this.update(event.data.now);
+      }
+    };
+    this.worker.postMessage({ type: 'start', interval: 16 });
   }
 
-  /**
-   * Stop game loop
-   */
   stop() {
     this.isRunning = false;
-    if (this.gameLoopId) {
-      clearInterval(this.gameLoopId);
+    if (this.worker) {
+      this.worker.postMessage({ type: 'stop' });
+      this.worker.terminate();
+      this.worker = null;
     }
   }
 
-  /**
-   * Update game state and render
-   */
-  update() {
+  update(timestamp) {
     if (!this.isRunning || this.game.isGameOver) {
       this.stop();
       return;
     }
 
-    const now = Date.now();
-    const timeSinceLastDrop = now - this.lastDropTime;
+    const delta = Math.max(0, timestamp - this.lastFrameTime);
+    this.lastFrameTime = timestamp;
+    this.accumulator += delta;
 
-    // Update drop interval based on level
     this.dropInterval = Math.max(
       GAME_SPEED.MIN_DROP_INTERVAL,
-      GAME_SPEED.INITIAL_DROP_INTERVAL - (this.game.lines * GAME_SPEED.ACCELERATION_PER_LINES)
+      GAME_SPEED.INITIAL_DROP_INTERVAL - this.game.lines * GAME_SPEED.ACCELERATION_PER_LINES
     );
 
-    // Auto-drop piece
-    if (timeSinceLastDrop >= this.dropInterval) {
+    while (this.accumulator >= this.dropInterval && !this.game.isGameOver) {
       this.game.drop();
-      this.lastDropTime = now;
+      this.accumulator -= this.dropInterval;
     }
 
-    // Render current state
     const state = this.game.getState();
-    this.renderer.render(state);
-    this.renderer.updateStats(state.score, state.lines, state.level);
+    if (!document.hidden) {
+      this.renderer.render(state);
+      this.renderer.updateStats(state.score, state.lines, state.level);
+    }
     this.onUpdate?.(state);
-
     this.frameCount++;
   }
 
-  /**
-   * Handle input
-   */
   handleInput(key) {
     if (!this.isRunning || this.game.isGameOver) return;
 
@@ -84,25 +104,22 @@ export class GameLoop {
         break;
       case 'ArrowDown':
         this.game.drop();
-        this.lastDropTime = Date.now();
+        this.accumulator = 0;
         break;
       case ' ':
         this.game.hardDrop();
-        this.lastDropTime = Date.now();
+        this.accumulator = 0;
+        break;
+      default:
         break;
     }
 
-    // Render after input
     const state = this.game.getState();
     this.renderer.render(state);
     this.onUpdate?.(state);
   }
 
-  /**
-   * Get current FPS
-   */
   getFPS() {
     return this.frameCount;
   }
 }
-
