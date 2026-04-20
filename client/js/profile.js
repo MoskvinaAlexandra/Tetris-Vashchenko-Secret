@@ -58,7 +58,7 @@ async function loadMatches(playerId) {
         return `
           <div class="match-card ${isWinner ? 'win' : 'loss'}">
             <div class="match-header">
-              <span class="match-result">${isWinner ? '✅ ПОБЕДА' : '❌ ПОРАЖЕНИЕ'}</span>
+              <span class="match-result">${isWinner ? 'ПОБЕДА' : 'ПОРАЖЕНИЕ'}</span>
               <span class="match-date">${date.toLocaleDateString('ru-RU')} ${date.toLocaleTimeString('ru-RU')}</span>
             </div>
             <div class="match-details">
