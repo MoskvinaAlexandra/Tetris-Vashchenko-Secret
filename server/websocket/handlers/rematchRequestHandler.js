@@ -27,6 +27,8 @@ export async function handleRematchRequest(ws, msg, roomManager) {
   room.player2.ready = false;
   room.player1.lastState = null;
   room.player2.lastState = null;
+  room.player1.lastGameState = null;
+  room.player2.lastGameState = null;
   room.rematchVotes.clear();
 
   roomManager.broadcastToRoom(msg.code, {

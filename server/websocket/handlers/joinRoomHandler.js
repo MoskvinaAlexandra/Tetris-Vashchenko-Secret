@@ -15,15 +15,56 @@ function resolvePlayerRole(room, wsPlayerId, requestedRole) {
   return null;
 }
 
+function sendOngoingMatchSnapshot(ws, room, code) {
+  if (!room.gameLive) {
+    return;
+  }
+
+  ws.send(JSON.stringify({
+    type: 'startGame',
+    code,
+    player1Name: room.player1?.name || 'Игрок 1',
+    player2Name: room.player2?.name || 'Игрок 2',
+    seed: room.seed
+  }));
+
+  if (room.player1?.lastGameState) {
+    ws.send(JSON.stringify({
+      type: 'gameState',
+      senderRole: 'player1',
+      state: room.player1.lastGameState
+    }));
+  }
+
+  if (room.player2?.lastGameState) {
+    ws.send(JSON.stringify({
+      type: 'gameState',
+      senderRole: 'player2',
+      state: room.player2.lastGameState
+    }));
+  }
+}
+
+function buildJoinedSnapshot(room) {
+  return {
+    gameLive: Boolean(room.gameLive),
+    matchStarted: Boolean(room.matchStarted),
+    seed: room.seed || null,
+    player1State: room.player1?.lastGameState || null,
+    player2State: room.player2?.lastGameState || null
+  };
+}
+
 export async function handleJoinRoom(ws, msg, roomManager) {
   try {
-    const room = roomManager.getRoom(msg.code);
+    const code = String(msg.code || '').trim().toUpperCase();
+    const room = roomManager.getRoom(code);
     if (!room) {
       ws.send(JSON.stringify({ type: 'error', message: 'Room not found' }));
       return;
     }
 
-    ws.currentRoom = msg.code;
+    ws.currentRoom = code;
 
     if (msg.role === 'spectator') {
       const existingSpectator = Array.from(room.spectators).find((spectator) => spectator.playerId === ws.playerId);
@@ -37,12 +78,14 @@ export async function handleJoinRoom(ws, msg, roomManager) {
       ws.send(JSON.stringify({
         type: 'joined',
         role: 'spectator',
-        code: msg.code,
+        code,
         player1Name: room.player1?.name || 'Игрок 1',
-        player2Name: room.player2?.name || 'Игрок 2'
+        player2Name: room.player2?.name || 'Игрок 2',
+        ...buildJoinedSnapshot(room)
       }));
 
-      roomManager.broadcastRoomState(msg.code);
+      sendOngoingMatchSnapshot(ws, room, code);
+      roomManager.broadcastRoomState(code);
       return;
     }
 
@@ -64,11 +107,12 @@ export async function handleJoinRoom(ws, msg, roomManager) {
       name: slot?.name || msg.name,
       ready: false,
       connected: true,
-      lastState: slot?.lastState || null
+      lastState: slot?.lastState || null,
+      lastGameState: slot?.lastGameState || null
     };
 
     ws.role = resolvedRole;
-    roomManager.clearReconnectTimer(msg.code, resolvedRole);
+    roomManager.clearReconnectTimer(code, resolvedRole);
 
     const opponentRole = resolvedRole === 'player1' ? 'player2' : 'player1';
     const opponent = room[opponentRole];
@@ -76,11 +120,13 @@ export async function handleJoinRoom(ws, msg, roomManager) {
     ws.send(JSON.stringify({
       type: 'joined',
       role: resolvedRole,
-      code: msg.code,
-      opponent: opponent?.name || null
+      code,
+      opponent: opponent?.name || null,
+      ...buildJoinedSnapshot(room)
     }));
 
-    roomManager.broadcastRoomState(msg.code);
+    sendOngoingMatchSnapshot(ws, room, code);
+    roomManager.broadcastRoomState(code);
 
     if (!slot && opponent?.ws?.readyState === WebSocket.OPEN) {
       opponent.ws.send(JSON.stringify({

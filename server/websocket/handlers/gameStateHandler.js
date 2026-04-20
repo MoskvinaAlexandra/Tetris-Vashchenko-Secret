@@ -11,6 +11,7 @@ export async function handleGameState(ws, msg, roomManager) {
         score: Number(msg.state.score) || 0,
         lines: Number(msg.state.lines) || 0
       };
+      slot.lastGameState = msg.state;
     }
   }
 

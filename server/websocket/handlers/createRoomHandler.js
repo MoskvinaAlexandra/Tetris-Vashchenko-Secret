@@ -13,7 +13,8 @@ export async function handleCreateRoom(ws, msg, roomManager) {
         name: msg.name,
         ready: false,
         connected: true,
-        lastState: null
+        lastState: null,
+        lastGameState: null
       },
       player2: null,
       spectators: new Set(),

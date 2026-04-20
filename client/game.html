@@ -109,7 +109,8 @@
                     <div class="center-arena-wrap">
                         <div id="playerArena" class="arena-grid fixed-slots">
                             <article id="player1Panel" class="board-panel player1">
-                                <div id="reactionLeft" class="reaction-pop left"></div>
+                                <div id="reactionPlayer1Center" class="reaction-pop center-right"></div>
+                                <div id="reactionPlayer1Edge" class="reaction-pop edge-left"></div>
                                 <h2 id="player1NameBoard">Игрок 1</h2>
                                 <canvas id="player1Canvas" width="240" height="480"></canvas>
                                 <div class="board-meta">
@@ -119,7 +120,8 @@
                             </article>
 
                             <article id="player2Panel" class="board-panel player2">
-                                <div id="reactionRight" class="reaction-pop right"></div>
+                                <div id="reactionPlayer2Center" class="reaction-pop center-left"></div>
+                                <div id="reactionPlayer2Edge" class="reaction-pop edge-right"></div>
                                 <h2 id="player2NameBoard">Игрок 2</h2>
                                 <canvas id="player2Canvas" width="240" height="480"></canvas>
                                 <div class="board-meta">
@@ -144,13 +146,27 @@
 <section id="spectatorArea" class="vs-panel match-panel spectator-area" style="display:none;">
                 <div class="match-layout">
                     <aside class="left-controls-panel spectator-controls">
-                        <!-- Empty for spacing consistency, buttons hidden via CSS -->
+                        <p class="reaction-target-label">Реакции для</p>
+                        <div class="reaction-target-row">
+                            <button id="spectatorTargetPlayer1" class="vs-button-secondary target-toggle-button" type="button" onclick="setSpectatorReactionTarget('player1')">Игрок 1</button>
+                            <button id="spectatorTargetPlayer2" class="vs-button-secondary target-toggle-button" type="button" onclick="setSpectatorReactionTarget('player2')">Игрок 2</button>
+                        </div>
+                        <div class="reaction-column">
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('👏')"><span>👏</span></button>
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('🔥')"><span>🔥</span></button>
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('💎')"><span>💎</span></button>
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('❤️')"><span>❤️</span></button>
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('😡')"><span>😡</span></button>
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('🎉')"><span>🎉</span></button>
+                            <button class="vs-button-secondary reaction-button" type="button" onclick="sendReaction('⚡')"><span>⚡</span></button>
+                        </div>
                     </aside>
 
                     <div class="center-arena-wrap">
                         <div id="spectatorArena" class="arena-grid fixed-slots">
                             <article id="spectatorPlayer1Panel" class="board-panel player1">
-                                <div id="reactionLeftSpectator" class="reaction-pop left"></div>
+                                <div id="reactionPlayer1CenterSpectator" class="reaction-pop center-right"></div>
+                                <div id="reactionPlayer1EdgeSpectator" class="reaction-pop edge-left"></div>
                                 <h2 id="spectatorPlayer1Name">Игрок 1</h2>
                                 <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
                                 <div class="board-meta">
@@ -160,7 +176,8 @@
                             </article>
 
                             <article id="spectatorPlayer2Panel" class="board-panel player2">
-                                <div id="reactionRightSpectator" class="reaction-pop right"></div>
+                                <div id="reactionPlayer2CenterSpectator" class="reaction-pop center-left"></div>
+                                <div id="reactionPlayer2EdgeSpectator" class="reaction-pop edge-right"></div>
                                 <h2 id="spectatorPlayer2Name">Игрок 2</h2>
                                 <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
                                 <div class="board-meta">

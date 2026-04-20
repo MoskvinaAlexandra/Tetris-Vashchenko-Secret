@@ -364,6 +364,27 @@
   gap: 12px;
 }
 
+.reaction-target-label {
+  margin: 0;
+  text-align: center;
+  color: var(--vs-ink-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.reaction-target-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.target-toggle-button.active-target {
+  background: var(--vs-accent);
+  color: #fff;
+  border-color: var(--vs-accent);
+}
+
 .reaction-button {
   width: 100%;
   min-height: clamp(2.8rem, 6vh, 4rem);
@@ -385,7 +406,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .arena-grid.fixed-slots {
@@ -455,12 +476,20 @@
   z-index: 4;
 }
 
-.reaction-pop.left {
+.reaction-pop.center-left {
   left: clamp(-26px, -2.4vw, -38px);
 }
 
-.reaction-pop.right {
+.reaction-pop.center-right {
   right: clamp(-26px, -2.4vw, -38px);
+}
+
+.reaction-pop.edge-left {
+  left: 10px;
+}
+
+.reaction-pop.edge-right {
+  right: 10px;
 }
 
 .reaction-pop.visible {
@@ -468,30 +497,15 @@
   transform: translateY(-50%) scale(1);
 }
 
-.spectatorArea .left-controls-panel,
-.spectatorArea .spectator-controls {
-  display: none;
-}
-
-.spectatorArea .match-layout {
+.spectator-area .match-layout {
   grid-template-columns: minmax(10rem, 14vw) minmax(0, 1fr) minmax(12rem, 18vw);
   gap: clamp(10px, 1.2vw, 16px);
   padding: 12px;
 }
 
-.spectatorArea .right-side-panel {
+.spectator-area .right-side-panel {
   grid-template-rows: 1fr auto;
   align-content: start;
-}
-
-.spectatorArea .reaction-pop.left {
-  left: auto !important;
-  right: clamp(-26px, -2.4vw, -38px) !important;
-}
-
-.spectatorArea .reaction-pop.right {
-  right: auto !important;
-  left: clamp(-26px, -2.4vw, -38px) !important;
 }
 
 .spectator-footer-actions {
@@ -689,10 +703,16 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .reaction-pop.left,
-  .reaction-pop.right {
+  .reaction-pop.center-left,
+  .reaction-pop.edge-left {
     left: 10px;
     right: auto;
+  }
+
+  .reaction-pop.center-right,
+  .reaction-pop.edge-right {
+    right: 10px;
+    left: auto;
   }
 }
 

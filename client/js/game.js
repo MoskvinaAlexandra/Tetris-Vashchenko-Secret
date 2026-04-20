@@ -37,9 +37,13 @@ class GameManager {
     this.rematchRequested = false;
     this.lastStateSentAt = 0;
     this.reactionTimers = {
-      player1: null,
-      player2: null
+      player1Center: null,
+      player2Center: null,
+      player1Edge: null,
+      player2Edge: null
     };
+    this.spectatorReactionTarget = 'player1';
+    this.currentSection = 'menu';
 
     this.settings = { ...DEFAULT_SETTINGS };
   }
@@ -99,8 +103,20 @@ class GameManager {
       if (message.role === 'spectator') {
         this.playerNames.player1 = message.player1Name || this.playerNames.player1;
         this.playerNames.player2 = message.player2Name || this.playerNames.player2;
-        this.showSpectatorLobby();
-        this.setStatus(`Вы вошли в комнату ${message.code} как зритель.`);
+        if (message.gameLive) {
+          this.matchSeed = Number(message.seed) || Date.now();
+          this.startSpectatorMode();
+          if (message.player1State) {
+            this.renderRemoteState(message.player1State, 'player1');
+          }
+          if (message.player2State) {
+            this.renderRemoteState(message.player2State, 'player2');
+          }
+          this.setStatus(`Вы подключились к уже идущему матчу в комнате ${message.code}.`);
+        } else {
+          this.showSpectatorLobby();
+          this.setStatus(`Вы вошли в комнату ${message.code} как зритель.`);
+        }
         return;
       }
 
@@ -110,6 +126,10 @@ class GameManager {
 
     this.wsClient.onRoomState = (message) => {
       this.applyRoomState(message);
+      if (this.role === 'spectator' && message.gameLive && this.currentSection !== 'spectatorArea') {
+        this.startSpectatorMode();
+        this.setStatus(`Вы подключились к уже идущему матчу в комнате ${message.code}.`);
+      }
     };
 
     this.wsClient.onPlayerJoined = (message) => {
@@ -158,7 +178,10 @@ class GameManager {
 
     this.wsClient.onReaction = (message) => {
       const senderRole = message.senderRole || this.resolveReactionRole(message.from);
-      this.showReaction(senderRole, message.reaction || '👏');
+      const targetRole = message.targetRole === 'player1' || message.targetRole === 'player2'
+        ? message.targetRole
+        : null;
+      this.showReaction(senderRole, message.reaction || '👏', targetRole);
     };
 
     this.wsClient.onRoomClosed = (message) => {
@@ -342,6 +365,7 @@ class GameManager {
 
   startSpectatorMode() {
     this.showOnly('spectatorArea');
+    this.updateSpectatorReactionTargetUI();
 
     this.renderers = {
       player1: new GameRenderer('spectatorCanvas1'),
@@ -524,9 +548,29 @@ class GameManager {
   }
 
   sendReaction(emoji) {
-    if (!this.roomCode || this.role === 'spectator') return;
-    this.showReaction(this.role, emoji);
-    this.wsClient.sendReaction(emoji, this.myName);
+    if (!this.roomCode) return;
+
+    const targetRole = this.role === 'spectator' ? this.spectatorReactionTarget : this.role;
+    this.showReaction(this.role, emoji, targetRole);
+    this.wsClient.sendReaction(emoji, this.myName, targetRole);
+  }
+
+  setSpectatorReactionTarget(role) {
+    if (this.role !== 'spectator') return;
+    if (role !== 'player1' && role !== 'player2') return;
+    this.spectatorReactionTarget = role;
+    this.updateSpectatorReactionTargetUI();
+  }
+
+  updateSpectatorReactionTargetUI() {
+    const player1Btn = document.getElementById('spectatorTargetPlayer1');
+    const player2Btn = document.getElementById('spectatorTargetPlayer2');
+    if (!player1Btn || !player2Btn) {
+      return;
+    }
+
+    player1Btn.classList.toggle('active-target', this.spectatorReactionTarget === 'player1');
+    player2Btn.classList.toggle('active-target', this.spectatorReactionTarget === 'player2');
   }
 
   resolveReactionRole(fromName) {
@@ -536,15 +580,32 @@ class GameManager {
     return null;
   }
 
-  showReaction(senderRole, emoji) {
+  showReaction(senderRole, emoji, targetRole = null) {
     const normalizedEmoji = String(emoji || '').trim() || '👏';
-    const targets = senderRole === 'player1'
-      ? ['reactionLeft', 'reactionLeftSpectator']
-      : senderRole === 'player2'
-        ? ['reactionRight', 'reactionRightSpectator']
-        : [];
+    let targets = [];
+    let timerKey = null;
 
-    if (!targets.length) return;
+    if (senderRole === 'player1') {
+      targets = ['reactionPlayer1Center', 'reactionPlayer1CenterSpectator'];
+      timerKey = 'player1Center';
+    } else if (senderRole === 'player2') {
+      targets = ['reactionPlayer2Center', 'reactionPlayer2CenterSpectator'];
+      timerKey = 'player2Center';
+    } else if (senderRole === 'spectator') {
+      if (targetRole !== 'player1' && targetRole !== 'player2') {
+        return;
+      }
+      const resolvedTargetRole = targetRole;
+      if (resolvedTargetRole === 'player1') {
+        targets = ['reactionPlayer1Edge', 'reactionPlayer1EdgeSpectator'];
+        timerKey = 'player1Edge';
+      } else {
+        targets = ['reactionPlayer2Edge', 'reactionPlayer2EdgeSpectator'];
+        timerKey = 'player2Edge';
+      }
+    }
+
+    if (!targets.length || !timerKey) return;
 
     targets.forEach((id) => {
       const target = document.getElementById(id);
@@ -553,18 +614,18 @@ class GameManager {
       target.classList.add('visible');
     });
 
-    if (this.reactionTimers[senderRole]) {
-      clearTimeout(this.reactionTimers[senderRole]);
+    if (this.reactionTimers[timerKey]) {
+      clearTimeout(this.reactionTimers[timerKey]);
     }
 
-    this.reactionTimers[senderRole] = setTimeout(() => {
+    this.reactionTimers[timerKey] = setTimeout(() => {
       targets.forEach((id) => {
         const target = document.getElementById(id);
         if (!target) return;
         target.classList.remove('visible');
         target.textContent = '';
       });
-      this.reactionTimers[senderRole] = null;
+      this.reactionTimers[timerKey] = null;
     }, 1400);
   }
 
@@ -593,6 +654,7 @@ class GameManager {
   }
 
   showOnly(sectionId) {
+    this.currentSection = sectionId;
     document.body.classList.toggle('in-match', sectionId === 'gameArea' || sectionId === 'spectatorArea');
     ['menu', 'lobby', 'gameArea', 'spectatorArea'].forEach((id) => {
       document.getElementById(id).style.display = id === sectionId ? 'block' : 'none';
@@ -710,6 +772,7 @@ window.joinAsSpectator = () => window.gameManager?.joinRoom('spectator');
 window.toggleReady = () => window.gameManager?.toggleReady();
 window.leaveRoom = () => window.gameManager?.leaveRoom();
 window.sendReaction = (emoji) => window.gameManager?.sendReaction(emoji);
+window.setSpectatorReactionTarget = (role) => window.gameManager?.setSpectatorReactionTarget(role);
 window.copyCode = () => window.gameManager?.copyCode();
 window.requestRematch = () => window.gameManager?.requestRematch();
 window.toggleSettings = (force) => window.gameManager?.toggleSettings(force);

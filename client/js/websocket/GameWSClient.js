@@ -99,8 +99,8 @@ export class GameWSClient {
     });
   }
 
-  sendReaction(reaction, name) {
-    this.send({ type: 'reaction', code: this.roomCode, reaction, name });
+  sendReaction(reaction, name, targetRole = null) {
+    this.send({ type: 'reaction', code: this.roomCode, reaction, name, targetRole });
   }
 
   requestRematch() {
