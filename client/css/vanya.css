@@ -1,0 +1,348 @@
+/* VANYA PAGE — Victoria Secret / Vashchenko's Signature Styling */
+/* this file extends global style.css and preserves the VS aesthetic */
+
+.vanya-page {
+    --vanya-accent-glow: rgba(140, 61, 96, 0.2);
+    --vanya-card-bg: rgba(255, 255, 255, 0.48);
+}
+
+.vanya-page.theme-dark {
+    --vanya-card-bg: rgba(35, 12, 21, 0.65);
+    --vanya-accent-glow: rgba(207, 111, 149, 0.28);
+}
+
+/* main container refinement */
+.vanya-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.2rem;
+}
+
+/* Hero grid : portrait + intro */
+.vanya-hero-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    background: var(--vs-panel-soft);
+    border-radius: 32px;
+    padding: 1.8rem 2.2rem;
+    border: 1px solid var(--vs-border-soft);
+    backdrop-filter: blur(2px);
+}
+
+.vanya-portrait {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.vanya-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #f5e2ec, #d69bb4 70%, #b45c7e);
+    border: 3px solid var(--vs-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Perpetua Titling MT', 'Times New Roman', serif;
+    font-size: 3.8rem;
+    font-weight: bold;
+    color: var(--vs-accent);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
+
+.theme-dark .vanya-avatar {
+    background: radial-gradient(circle at 30% 30%, #823b58, #501f32 70%, #2c0f1a);
+    border-color: var(--vs-accent);
+    color: #fad4e3;
+}
+
+.vanya-avatar:hover {
+    transform: scale(1.02);
+}
+
+.vanya-title-badge {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.vanya-headline {
+    text-align: left;
+}
+
+.vanya-name {
+    font-family: 'Perpetua Titling MT', 'Times New Roman', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: 0.08em;
+    color: var(--vs-accent);
+    margin-bottom: 0.4rem;
+}
+
+.vanya-subheadline {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--vs-ink-muted);
+    margin-bottom: 0.8rem;
+}
+
+.vanya-divider {
+    width: 70px;
+    height: 2px;
+    background: var(--vs-accent);
+    margin: 1rem 0 1rem 0;
+    opacity: 0.6;
+}
+
+.vanya-lead {
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--vs-ink);
+    max-width: 85%;
+}
+
+/* stats cards customisation */
+.vanya-stats {
+    margin: 0.5rem 0;
+}
+
+.vs-card {
+    background: var(--vanya-card-bg);
+    backdrop-filter: blur(4px);
+    transition: all 0.2s;
+    border: 1px solid var(--vs-border-soft);
+}
+
+.vs-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--vs-accent);
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.08);
+}
+
+.vs-card-sub {
+    font-size: 12px;
+    color: var(--vs-ink-muted);
+    margin-top: 6px;
+    letter-spacing: 0.3px;
+}
+
+/* Story & legacy double grid */
+.vanya-story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.8rem;
+    margin: 0.8rem 0;
+}
+
+.vanya-bio-card, .vanya-legacy-card {
+    background: var(--vs-panel);
+    border-radius: 28px;
+    padding: 1.8rem 2rem;
+    border: 1px solid var(--vs-border-soft);
+    backdrop-filter: blur(2px);
+    transition: background 0.2s;
+}
+
+.vanya-section-title {
+    font-family: 'Perpetua Titling MT', 'Times New Roman', serif;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: var(--vs-accent);
+    letter-spacing: 0.06em;
+    border-left: 4px solid var(--vs-accent);
+    padding-left: 0.9rem;
+}
+
+.vanya-bio-card p {
+    line-height: 1.55;
+    margin-bottom: 1rem;
+    color: var(--vs-ink);
+}
+
+.vanya-quote-block {
+    margin-top: 1.6rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem 1.4rem;
+    border-radius: 28px;
+    position: relative;
+    font-style: normal;
+}
+
+.theme-dark .vanya-quote-block {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.quote-mark {
+    font-size: 3rem;
+    font-family: serif;
+    color: var(--vs-accent);
+    opacity: 0.5;
+    line-height: 1;
+    margin-right: 6px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.vanya-quote-block p {
+    display: inline;
+    font-size: 1rem;
+    font-style: italic;
+}
+
+.quote-author {
+    display: block;
+    margin-top: 10px;
+    text-align: right;
+    font-weight: 500;
+    color: var(--vs-ink-muted);
+    font-size: 0.85rem;
+}
+
+/* legacy list */
+.vanya-legacy-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+}
+
+.vanya-legacy-list li {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px dashed var(--vs-border-soft);
+    padding-bottom: 0.7rem;
+    font-size: 0.98rem;
+    color: var(--vs-ink);
+}
+
+.vanya-legacy-list li strong {
+    color: var(--vs-accent);
+}
+
+.vanya-signature {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    opacity: 0.75;
+}
+
+.signature-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--vs-accent), transparent);
+}
+
+.signature-text {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--vs-ink-muted);
+}
+
+/* community banner */
+.vanya-community {
+    margin-top: 0.5rem;
+}
+
+.vanya-community-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.vanya-community-stats div {
+    background: rgba(255, 255, 255, 0.28);
+    padding: 0.5rem 1rem;
+    border-radius: 60px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    border: 1px solid var(--vs-border-soft);
+}
+
+.vanya-community-stats div span {
+    font-size: 1.2rem;
+}
+
+/* responsive adjustments */
+@media (max-width: 980px) {
+    .vanya-hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 1.8rem;
+    }
+    .vanya-headline {
+        text-align: center;
+    }
+    .vanya-divider {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .vanya-lead {
+        max-width: 100%;
+    }
+    .vanya-story-grid {
+        grid-template-columns: 1fr;
+    }
+    .vanya-community-stats {
+        gap: 1rem;
+        flex-direction: column;
+        align-items: center;
+    }
+    .vanya-avatar {
+        width: 110px;
+        height: 110px;
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 680px) {
+    .vanya-container {
+        gap: 1.5rem;
+    }
+    .vs-card-value {
+        font-size: 1.8rem;
+    }
+    .vanya-quote-block p {
+        font-size: 0.9rem;
+    }
+    .vanya-legacy-list li {
+        font-size: 0.88rem;
+    }
+}
+
+/* subtle addition: soft glow for cards when dark mode */
+.theme-dark .vanya-bio-card,
+.theme-dark .vanya-legacy-card {
+    background: rgba(54, 20, 33, 0.8);
+}
+
+/* setting overlay improvements to match vanya page */
+.settings-overlay .settings-panel {
+    background: var(--vs-panel);
+    border: 2px solid var(--vs-accent);
+}
+
+/* keep interactions smooth */
+button, .vs-button, .vs-button-secondary {
+    cursor: pointer;
+}
+
+/* touch-ups for vs-badge inside vanya */
+.vs-badge {
+    font-size: 0.7rem;
+    font-weight: 500;
+}

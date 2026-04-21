@@ -2,45 +2,333 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vashchenko's Secret | О нас</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Vashchenko's Secret | Vanya Edition</title>
     <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/vanya.css">
 </head>
-<body>
-    <div class="vs-shell">
-        <div class="vs-topbar">
-            <div class="vs-topbar-links">
-                <a href="/" class="vs-link">Главная</a>
-                <a href="/game.html" class="vs-link">Играть</a>
-            </div>
-            <div class="vs-topbar-links">
-                <button class="vs-button-secondary js-settings-toggle" type="button">Настройки</button>
-            </div>
+<body class="vanya-page">
+<div class="vs-shell">
+    <!-- Topbar / Navigation: authentic VS style with dynamic auth -->
+    <div class="vs-topbar">
+        <div class="vs-topbar-links">
+            <a href="/" class="vs-link">Главная</a>
+            <a href="game.html" class="vs-link">Играть</a>
+            <a href="leaderboard.html" class="vs-link">Лидеры</a>
+            <a href="vanya.html" class="vs-link is-active">О нас</a>
         </div>
-
-        <header class="vs-header">
-            <div class="vs-logo">VS</div>
-            <div class="vs-title-wrap">
-                <h1 class="vs-title">About Vanya</h1>
-                <p class="vs-subtitle">The Signature Behind The Secret</p>
-            </div>
-            <div class="vs-logo">VS</div>
-        </header>
-
-        <main class="vs-main centered">
-            <section class="vs-panel narrow soft" style="text-align:center;">
-                <h2 class="vs-section-title">Ваня Ващенко</h2>
-                <p class="vs-section-copy">Легенда дуэльного тетриса, вдохновитель Victoria Edition и человек, ради которого отдельная кнопка в меню смотрится естественно.</p>
-                <div class="vs-logo" style="margin:0 auto 18px auto; width:90px; height:90px; font-size:32px;">VV</div>
-                <p style="line-height:1.7; color:var(--vs-ink-muted);">Здесь у нас камерная страница в том же стиле: спокойная палитра, аккуратная подача и немного фирменной иронии вместо кислотного неона.</p>
-                <div class="vs-actions" style="justify-content:center; margin-top:20px;">
-                    <button class="vs-button" type="button" onclick="location.href='/'">На главную</button>
-                </div>
-            </section>
-        </main>
+        <div class="vs-topbar-links">
+            <button class="vs-button-secondary js-settings-toggle" type="button" aria-label="Настройки">Настройки</button>
+            <a href="login.html" class="vs-button-secondary" id="loginBtn">Вход</a>
+            <a href="register.html" class="vs-button-secondary" id="registerBtn">Регистрация</a>
+            <a href="profile.html" class="vs-button-secondary" id="profileBtn" style="display:none;">Профиль</a>
+            <button id="logoutBtn" class="vs-button-secondary" style="display:none;">Выход</button>
+        </div>
     </div>
 
-    <script src="/js/settings.js"></script>
+    <!-- Elegant header with VS branding -->
+    <header class="vs-header">
+        <div class="vs-logo">VS</div>
+        <div class="vs-title-wrap">
+            <h1 class="vs-title">Vanya Vashchenko</h1>
+            <p class="vs-subtitle">The soul behind the secret · Victoria duelling legacy</p>
+        </div>
+        <div class="vs-logo">VV</div>
+    </header>
+
+    <!-- Main content: refined bio + legend card -->
+    <main class="vs-main">
+        <div class="vanya-container">
+            <!-- hero section: avatar + signature quote -->
+            <div class="vanya-hero-grid">
+                <div class="vanya-portrait">
+                    <div class="vanya-avatar">
+                        <span>ВВ</span>
+                    </div>
+                    <div class="vanya-title-badge">
+                        <span class="vs-badge success">Основатель стиля</span>
+                        <span class="vs-badge">Дуэльный архитектор</span>
+                    </div>
+                </div>
+                <div class="vanya-headline">
+                    <h2 class="vanya-name">Иван Ващенко</h2>
+                    <p class="vanya-subheadline">«Элегантность — это тоже оружие»</p>
+                    <div class="vanya-divider"></div>
+                    <p class="vanya-lead">
+                        Создатель философии Victoria Secret в мире соревновательного тетриса.
+                        Без кислотных неонов, только аристократичная эстетика, точные дуэли и атмосфера приватного клуба.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Legendary stats: achievements / numbers with VS card style -->
+            <div class="vs-grid three vanya-stats">
+                <div class="vs-card">
+                    <div class="vs-card-title">Проведено дуэлей</div>
+                    <div class="vs-card-value">1 247</div>
+                    <div class="vs-card-sub">как игрок + гость</div>
+                </div>
+                <div class="vs-card">
+                    <div class="vs-card-title">Рекорд линий</div>
+                    <div class="vs-card-value">12 890</div>
+                    <div class="vs-card-sub">за карьеру</div>
+                </div>
+                <div class="vs-card">
+                    <div class="vs-card-title">Винрейт</div>
+                    <div class="vs-card-value">68%</div>
+                    <div class="vs-card-sub">в элитном дивизионе</div>
+                </div>
+            </div>
+
+            <!-- story & contributions: double column layout -->
+            <div class="vanya-story-grid">
+                <div class="vanya-bio-card">
+                    <h3 class="vanya-section-title">Виктория секрет</h3>
+                    <p>
+                        Вдохновленный мягкостью бренда Victoria’s Secret, Иван переосмыслил классический тетрис-дуэль:
+                        вместо резких контрастов — приглушённые тона, бархатные панели, эстетика светской беседы.
+                        Каждая деталь в «Vashchenko's Secret» создана для комфортного, но азартного поединка.
+                    </p>
+                    <p>
+                        Уникальная система рейтинга, приватные комнаты с кодом, живые реакции зрителей — всё это
+                        придумано, чтобы игроки чувствовали себя частью закрытого салона.
+                    </p>
+                    <div class="vanya-quote-block">
+                        <span class="quote-mark">“</span>
+                        <p>Тетрис может быть красивым. Достаточно убрать лишний шум и добавить немного шарма.</p>
+                        <span class="quote-author">— В. Ващенко</span>
+                    </div>
+                </div>
+                <div class="vanya-legacy-card">
+                    <h3 class="vanya-section-title">Философия дуэлей</h3>
+                    <ul class="vanya-legacy-list">
+                        <li>✨ <strong>Честный рейтинг</strong> — победы засчитываются только в равных условиях.</li>
+                        <li>🎭 <strong>Зрительский режим</strong> — поддержка без токсичности, только эмодзи-реакции.</li>
+                        <li>🕯️ <strong>Victoria-стиль</strong> — палитра, которая не утомляет глаза даже после 3 часов матчей.</li>
+                        <li>♟️ <strong>Приватные лобби</strong> — дуэль по коду для друзей или закрытых турниров.</li>
+                    </ul>
+                    <div class="vanya-signature">
+                        <span class="signature-line"></span>
+                        <span class="signature-text">Vashchenko's Secret Team</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- extra touch: Вклад в сообщество -->
+            <div class="vanya-community">
+                <div class="vs-panel soft" style="background: var(--vs-panel-soft);">
+                    <h3 class="vs-section-title" style="font-size: 24px; margin-bottom: 0px;">Наследие</h3>
+                    <p class="vs-section-copy" style="margin-bottom: 12px;">Сообщество, эстетика и дух соперничества без агрессии</p>
+                    <div class="vanya-community-stats">
+                        <div><span>🏆</span> 2 сезона лиги</div>
+                        <div><span>👥</span> 450+ активных игроков</div>
+                        <div><span>🎮</span> 8 200+ сыгранных матчей</div>
+                    </div>
+                    <div class="vs-actions" style="justify-content: center; margin-top: 24px;">
+                        <button class="vs-button" type="button" onclick="location.href='/game.html'">Присоединиться к дуэли</button>
+                        <button class="vs-button-secondary" type="button" onclick="location.href='/leaderboard.html'">Рейтинг лидеров</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Settings Overlay (identical to game panel for consistency) -->
+<div id="settingsOverlay" class="settings-overlay" aria-hidden="true">
+    <section class="vs-panel settings-panel">
+        <div class="settings-panel-head">
+            <div>
+                <h2 class="vs-section-title">Настройки интерфейса</h2>
+                <p class="vs-section-copy" style="margin-bottom: 0;">Victoria атмосфера под ваше настроение</p>
+            </div>
+            <button class="vs-button-secondary settings-close" type="button" onclick="toggleSettings(false)" title="Закрыть">✕</button>
+        </div>
+        <div class="settings-grid">
+            <label class="settings-item" for="themeToggle">
+                    <span class="settings-copy">
+                        <strong>Темная тема</strong>
+                        <small>Вечерний режим в стиле Victoria Secret</small>
+                    </span>
+                <input id="themeToggle" type="checkbox">
+            </label>
+            <label class="settings-item" for="glowToggle">
+                    <span class="settings-copy">
+                        <strong>Свечение фигур</strong>
+                        <small>Мягкое свечение игровых элементов (актуально в игре)</small>
+                    </span>
+                <input id="glowToggle" type="checkbox" checked>
+            </label>
+            <label class="settings-item" for="cellHighlightToggle">
+                    <span class="settings-copy">
+                        <strong>Подсветка сетки</strong>
+                        <small>Визуальный контраст для полей</small>
+                    </span>
+                <input id="cellHighlightToggle" type="checkbox" checked>
+            </label>
+        </div>
+        <div class="vs-actions settings-actions">
+            <button class="vs-button" type="button" onclick="toggleSettings(false)">Применить</button>
+        </div>
+    </section>
+</div>
+
+<!-- scripts: global auth & settings + local enhancements -->
+<script src="js/services/authService.js"></script>
+<script src="js/settings.js"></script>
+<script>
+    (function() {
+        // ---------- DYNAMIC AUTH (leaderboard style) ----------
+        function updateAuthUI() {
+            const isLoggedIn = window.authService && typeof authService.isLoggedIn === 'function' && authService.isLoggedIn();
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const profileBtn = document.getElementById('profileBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (!loginBtn) return;
+            if (isLoggedIn) {
+                if (profileBtn) profileBtn.style.display = 'inline-flex';
+                if (logoutBtn) logoutBtn.style.display = 'inline-flex';
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (registerBtn) registerBtn.style.display = 'none';
+                if (logoutBtn) {
+                    logoutBtn.onclick = (e) => {
+                        if (window.authService && authService.logout) {
+                            authService.logout();
+                            location.href = '/';
+                        } else {
+                            localStorage.removeItem('vs_user');
+                            location.reload();
+                        }
+                    };
+                }
+            } else {
+                if (profileBtn) profileBtn.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+                if (loginBtn) loginBtn.style.display = 'inline-flex';
+                if (registerBtn) registerBtn.style.display = 'inline-flex';
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updateAuthUI);
+        } else {
+            updateAuthUI();
+        }
+
+        // ---------- SETTINGS OVERLAY + THEME (compatible with global settings.js, but full standalone fallback) ----------
+        // ensure settingsOverlay exists and toggleSettings works even if settings.js not fully loaded
+        window.toggleSettings = window.toggleSettings || function(forceShow) {
+            const overlay = document.getElementById('settingsOverlay');
+            if (!overlay) return;
+            const isVisible = overlay.classList.contains('is-visible');
+            if (typeof forceShow === 'boolean') {
+                if (forceShow && !isVisible) overlay.classList.add('is-visible');
+                else if (!forceShow && isVisible) overlay.classList.remove('is-visible');
+            } else {
+                overlay.classList.toggle('is-visible');
+            }
+        };
+
+        // theme persistence & application (consistent with project style)
+        const applyVanyaTheme = (isDark) => {
+            const body = document.body;
+            if (isDark) {
+                body.classList.add('theme-dark');
+                if (body.classList.contains('vanya-page')) body.classList.add('theme-dark');
+            } else {
+                body.classList.remove('theme-dark');
+            }
+            // store setting
+            localStorage.setItem('vs_theme_pref', isDark ? 'dark' : 'light');
+            // also trigger glow/ cell highlight if needed in future
+            const glowEnabled = localStorage.getItem('vs_glow') !== 'false';
+            const cellEnabled = localStorage.getItem('vs_cell_highlight') !== 'false';
+            if (glowEnabled) document.body.classList.remove('no-glow');
+            else document.body.classList.add('no-glow');
+            // cell highlight style (global flag)
+            if (cellEnabled) document.body.classList.remove('no-cell-highlight');
+            else document.body.classList.add('no-cell-highlight');
+        };
+
+        const initThemeFromStorage = () => {
+            const savedTheme = localStorage.getItem('vs_theme_pref');
+            const themeToggle = document.getElementById('themeToggle');
+            if (savedTheme === 'dark') {
+                applyVanyaTheme(true);
+                if (themeToggle) themeToggle.checked = true;
+            } else {
+                applyVanyaTheme(false);
+                if (themeToggle) themeToggle.checked = false;
+            }
+        };
+
+        const initGlowSettings = () => {
+            const glowToggle = document.getElementById('glowToggle');
+            const cellToggle = document.getElementById('cellHighlightToggle');
+            const glowSaved = localStorage.getItem('vs_glow');
+            const cellSaved = localStorage.getItem('vs_cell_highlight');
+            if (glowToggle) {
+                const isGlowOn = glowSaved !== 'false';
+                glowToggle.checked = isGlowOn;
+                if (!isGlowOn) document.body.classList.add('no-glow');
+                else document.body.classList.remove('no-glow');
+                glowToggle.addEventListener('change', (e) => {
+                    const val = e.target.checked;
+                    localStorage.setItem('vs_glow', val ? 'true' : 'false');
+                    if (!val) document.body.classList.add('no-glow');
+                    else document.body.classList.remove('no-glow');
+                });
+            }
+            if (cellToggle) {
+                const isCellOn = cellSaved !== 'false';
+                cellToggle.checked = isCellOn;
+                if (!isCellOn) document.body.classList.add('no-cell-highlight');
+                else document.body.classList.remove('no-cell-highlight');
+                cellToggle.addEventListener('change', (e) => {
+                    const val = e.target.checked;
+                    localStorage.setItem('vs_cell_highlight', val ? 'true' : 'false');
+                    if (!val) document.body.classList.add('no-cell-highlight');
+                    else document.body.classList.remove('no-cell-highlight');
+                });
+            }
+        };
+
+        // theme toggle listener
+        const bindThemeToggle = () => {
+            const themeChk = document.getElementById('themeToggle');
+            if (themeChk) {
+                themeChk.addEventListener('change', (e) => {
+                    const isDark = e.target.checked;
+                    applyVanyaTheme(isDark);
+                });
+            }
+        };
+
+        // close overlay on click outside (optional)
+        document.addEventListener('click', (e) => {
+            const overlay = document.getElementById('settingsOverlay');
+            if (overlay && overlay.classList.contains('is-visible')) {
+                if (e.target === overlay) toggleSettings(false);
+            }
+        });
+
+        initThemeFromStorage();
+        bindThemeToggle();
+        initGlowSettings();
+
+        // additional style for "no-cell-highlight" class on body (just for consistency with canvas pages)
+        if (!document.querySelector('style#vanya-fallback-styles')) {
+            const styleNode = document.createElement('style');
+            styleNode.id = 'vanya-fallback-styles';
+            styleNode.textContent = `
+                    body.no-cell-highlight .board-panel canvas { border-color: var(--vs-border); }
+                    body.no-glow .board-panel canvas { box-shadow: none !important; }
+                `;
+            document.head.appendChild(styleNode);
+        }
+    })();
+</script>
 </body>
 </html>
