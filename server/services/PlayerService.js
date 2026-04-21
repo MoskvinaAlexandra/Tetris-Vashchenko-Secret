@@ -49,7 +49,6 @@ export class PlayerService {
       throw new Error('Invalid password');
     }
 
-    // Update last_active_at
     await pool.query(
       `UPDATE players SET last_active_at = NOW() WHERE player_id = $1`,
       [player.player_id]

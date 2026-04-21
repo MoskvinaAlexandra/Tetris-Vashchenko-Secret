@@ -28,7 +28,6 @@ export class MatchService {
         [player1Score, player2Score, player1Lines, player2Lines, durationSeconds, winnerId, matchId]
       );
 
-      // Update player stats
       await this.updatePlayerStats(matchId);
     } catch (err) {
       throw new Error(`Failed to update match: ${err.message}`);

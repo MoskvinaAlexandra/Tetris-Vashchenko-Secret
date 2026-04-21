@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/vanya.css">
 </head>
 <body class="vanya-page">
-<div class="vs-shell">
+<section class="vs-shell">
     <nav class="vs-topbar">
         <div class="vs-topbar-links">
             <a href="/" class="vs-link">Главная</a>
@@ -36,7 +36,7 @@
     </header>
 
     <main class="vs-main">
-        <div class="vanya-container">
+        <section class="vanya-container">
             <div class="vanya-hero-grid">
                 <div class="vanya-portrait">
                     <div class="vanya-avatar">
@@ -120,10 +120,10 @@
                         <button class="vs-button-secondary" type="button" onclick="location.href='/leaderboard.html'">Рейтинг лидеров</button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+        </section>
     </main>
-</div>
+</section>
 <div id="settingsOverlay" class="settings-overlay" aria-hidden="true">
     <section class="vs-panel settings-panel">
         <div class="settings-panel-head">
@@ -202,8 +202,6 @@
             updateAuthUI();
         }
 
-        // ---------- SETTINGS OVERLAY + THEME (compatible with global settings.js, but full standalone fallback) ----------
-        // ensure settingsOverlay exists and toggleSettings works even if settings.js not fully loaded
         window.toggleSettings = window.toggleSettings || function(forceShow) {
             const overlay = document.getElementById('settingsOverlay');
             if (!overlay) return;
@@ -216,7 +214,6 @@
             }
         };
 
-        // theme persistence & application (consistent with project style)
         const applyVanyaTheme = (isDark) => {
             const body = document.body;
             if (isDark) {
@@ -280,7 +277,6 @@
             }
         };
 
-        // theme toggle listener
         const bindThemeToggle = () => {
             const themeChk = document.getElementById('themeToggle');
             if (themeChk) {
@@ -303,7 +299,6 @@
         bindThemeToggle();
         initGlowSettings();
 
-        // additional style for "no-cell-highlight" class on body (just for consistency with canvas pages)
         if (!document.querySelector('style#vanya-fallback-styles')) {
             const styleNode = document.createElement('style');
             styleNode.id = 'vanya-fallback-styles';
@@ -313,7 +308,6 @@
                 `;
             document.head.appendChild(styleNode);
         }
-    })();
 </script>
 </body>
 </html>
