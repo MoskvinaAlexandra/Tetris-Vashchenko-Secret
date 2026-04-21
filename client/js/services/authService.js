@@ -1,13 +1,9 @@
-// client/js/services/authService.js — Frontend authentication service
 class AuthService {
   constructor() {
     this.token = localStorage.getItem('token');
     this.player = JSON.parse(localStorage.getItem('player') || 'null');
   }
 
-  /**
-   * Register new player
-   */
   async register(name, email, password) {
     const response = await fetch('/api/auth/register', {
       method: 'POST',
@@ -28,9 +24,6 @@ class AuthService {
     return data;
   }
 
-  /**
-   * Login player
-   */
   async login(nameOrEmail, password) {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
@@ -51,9 +44,6 @@ class AuthService {
     return data;
   }
 
-  /**
-   * Verify token
-   */
   async verify() {
     if (!this.token) {
       return false;
@@ -74,25 +64,16 @@ class AuthService {
     return true;
   }
 
-  /**
-   * Set token
-   */
   setToken(token) {
     this.token = token;
     localStorage.setItem('token', token);
   }
 
-  /**
-   * Set player data
-   */
   setPlayer(player) {
     this.player = player;
     localStorage.setItem('player', JSON.stringify(player));
   }
 
-  /**
-   * Logout
-   */
   logout() {
     this.token = null;
     this.player = null;
@@ -100,30 +81,18 @@ class AuthService {
     localStorage.removeItem('player');
   }
 
-  /**
-   * Get authorization header
-   */
   getAuthHeader() {
     return this.token ? { 'Authorization': `Bearer ${this.token}` } : {};
   }
 
-  /**
-   * Check if logged in
-   */
   isLoggedIn() {
     return !!this.token && !!this.player;
   }
 
-  /**
-   * Get current player
-   */
   getCurrentPlayer() {
     return this.player;
   }
 
-  /**
-   * Get current player ID
-   */
   getCurrentPlayerId() {
     return this.player?.player_id;
   }
@@ -137,7 +106,6 @@ class AuthService {
   }
 }
 
-// Global instance
 const authService = new AuthService();
 window.authService = authService;
 

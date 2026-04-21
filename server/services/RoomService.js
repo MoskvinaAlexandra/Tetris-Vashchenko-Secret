@@ -1,20 +1,10 @@
-// server/services/RoomService.js — Room management (SOLID principle)
 import pool from '../db.js';
 
 export class RoomService {
-  /**
-   * Generate random room code (6 characters)
-   * @returns {string}
-   */
   static generateRoomCode() {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
-  /**
-   * Create a new room
-   * @param {number} createdByPlayerId
-   * @returns {Promise<{room_code, created_by_player_id, created_at, is_active}>}
-   */
   static async createRoom(createdByPlayerId) {
     const roomCode = this.generateRoomCode();
 
@@ -31,13 +21,6 @@ export class RoomService {
     }
   }
 
-  /**
-   * Add participant to room
-   * @param {string} roomCode
-   * @param {number} playerId
-   * @param {string} role - 'player1', 'player2', or 'spectator'
-   * @returns {Promise<void>}
-   */
   static async addParticipant(roomCode, playerId, role) {
     try {
       await pool.query(

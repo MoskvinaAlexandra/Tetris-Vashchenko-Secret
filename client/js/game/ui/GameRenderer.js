@@ -1,4 +1,3 @@
-// client/js/game/ui/GameRenderer.js — Only rendering logic (SRP)
 import { BOARD_CONFIG, COLORS, PIECES } from '../constants/gameConstants.js';
 
 export class GameRenderer {
@@ -8,17 +7,11 @@ export class GameRenderer {
     this.setupCanvas();
   }
 
-  /**
-   * Setup canvas dimensions
-   */
   setupCanvas() {
     this.canvas.width = BOARD_CONFIG.WIDTH * BOARD_CONFIG.CELL_SIZE;
     this.canvas.height = BOARD_CONFIG.HEIGHT * BOARD_CONFIG.CELL_SIZE;
   }
 
-  /**
-   * Render game state
-   */
   render(gameState) {
     this.clear();
     this.drawCellHighlights(gameState.board);
@@ -26,23 +19,16 @@ export class GameRenderer {
     this.drawCurrentPiece(gameState.currentPiece);
   }
 
-  /**
-   * Clear canvas
-   */
   clear() {
     this.ctx.fillStyle = '#0a0a0a';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  /**
-   * Draw cell highlights for empty cells (grid effect)
-   */
   drawCellHighlights(board) {
     const highlightEnabled = !document.body.classList.contains('no-cell-highlight');
     if (!highlightEnabled) return;
 
-    // Get current piece to determine highlight color
-    const highlightColor = 'rgba(93, 217, 161, 0.08)'; // Default accent color with transparency
+    const highlightColor = 'rgba(93, 217, 161, 0.08)';
 
     for (let row = 0; row < board.length; row++) {
       for (let col = 0; col < board[row].length; col++) {

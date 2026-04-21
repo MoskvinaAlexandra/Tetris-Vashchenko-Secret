@@ -1,14 +1,9 @@
-// server/routes/auth.js — Authentication routes
 import express from 'express';
 import { PlayerService } from '../services/PlayerService.js';
 import { generateToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-/**
- * POST /api/auth/register
- * Register new player
- */
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -34,10 +29,6 @@ router.post('/register', async (req, res) => {
   }
 });
 
-/**
- * POST /api/auth/login
- * Login player
- */
 router.post('/login', async (req, res) => {
   try {
     const { nameOrEmail, password } = req.body;
@@ -63,10 +54,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-/**
- * POST /api/auth/verify
- * Verify token
- */
 router.post('/verify', (req, res) => {
   const token = req.headers['authorization']?.replace('Bearer ', '');
 

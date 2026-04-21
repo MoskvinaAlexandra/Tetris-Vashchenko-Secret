@@ -1,4 +1,3 @@
-// client/js/profile.js — Player profile page
 // Check auth
 if (!authService.isLoggedIn()) {
   window.location.href = '/login.html';
@@ -34,9 +33,6 @@ async function loadProfile() {
   }
 }
 
-/**
- * Load match history
- */
 async function loadMatches(playerId) {
   try {
     const matches = await PlayerService.getMatches(playerId, 20);

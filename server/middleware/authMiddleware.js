@@ -1,14 +1,7 @@
-// server/middleware/authMiddleware.js — JWT authentication
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-key-change-in-production';
 
-/**
- * Generate JWT token
- * @param {number} playerId
- * @param {string} name
- * @returns {string}
- */
 export function generateToken(playerId, name) {
   return jwt.sign(
     { playerId, name },
@@ -17,11 +10,6 @@ export function generateToken(playerId, name) {
   );
 }
 
-/**
- * Verify JWT token
- * @param {string} token
- * @returns {object|null}
- */
 export function verifyToken(token) {
   try {
     return jwt.verify(token, JWT_SECRET);
@@ -30,9 +18,6 @@ export function verifyToken(token) {
   }
 }
 
-/**
- * Express middleware for protecting routes
- */
 export function authMiddleware(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.startsWith('Bearer ')
@@ -52,9 +37,6 @@ export function authMiddleware(req, res, next) {
   next();
 }
 
-/**
- * WebSocket authentication helper
- */
 export function authenticateWS(message) {
   const token = message.token;
   if (!token) {

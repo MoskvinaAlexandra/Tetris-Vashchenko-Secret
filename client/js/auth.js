@@ -1,4 +1,3 @@
-// client/js/auth.js — Register page logic
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -21,7 +20,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
 
   try {
     const result = await authService.register(name, email, password);
-    successDiv.textContent = '✅ Регистрация успешна! Перенаправление...';
+    successDiv.textContent = 'Регистрация успешна! Перенаправление...';
     setTimeout(() => {
       window.location.href = '/game.html';
     }, 1500);

@@ -31,7 +31,7 @@
             <div class="vs-logo">VS</div>
         </header>
 
-        <main class="vs-main compact-main">
+<main class="vs-main compact-main" role="main">
             <section id="menu" class="vs-panel game-menu-card">
                 <div class="menu-hero">
                     <div>
@@ -64,7 +64,6 @@
                     <span id="roomCode" class="room-code-value"></span>
                     <button class="vs-button-secondary" type="button" onclick="copyCode()">Копировать</button>
                 </div>
-
                 <div class="lobby-layout">
                     <div class="lobby-grid">
                         <div class="lobby-player">
@@ -91,7 +90,6 @@
                     <button class="vs-button-secondary" type="button" onclick="leaveRoom()">Покинуть комнату</button>
                 </div>
             </section>
-
             <section id="gameArea" class="vs-panel match-panel" style="display:none;">
                 <div class="match-layout">
                     <aside class="left-controls-panel">
@@ -108,32 +106,32 @@
 
                     <div class="center-arena-wrap">
                         <div id="playerArena" class="arena-grid fixed-slots">
-                            <article id="player1Panel" class="board-panel player1">
-                                <div id="reactionPlayer1Center" class="reaction-pop center-right"></div>
-                                <div id="reactionPlayer1Edge" class="reaction-pop edge-left"></div>
+<article id="player1Panel" class="board-panel player1" role="region" aria-label="Доска игрока 1">
+                                <div id="reactionPlayer1Center" class="reaction-pop center-right" aria-live="polite"></div>
+                                <div id="reactionPlayer1Edge" class="reaction-pop edge-left" aria-live="polite"></div>
                                 <h2 id="player1NameBoard">Игрок 1</h2>
-                                <canvas id="player1Canvas" width="240" height="480"></canvas>
-                                <div class="board-meta">
+                                <canvas id="player1Canvas" width="240" height="480" aria-label="Игровое поле игрока 1"></canvas>
+                                <footer class="board-meta" role="contentinfo">
                                     <span>Счет: <strong id="player1Score">0</strong></span>
                                     <span>Линии: <strong id="player1Lines">0</strong></span>
-                                </div>
+                                </footer>
                             </article>
 
-                            <article id="player2Panel" class="board-panel player2">
-                                <div id="reactionPlayer2Center" class="reaction-pop center-left"></div>
-                                <div id="reactionPlayer2Edge" class="reaction-pop edge-right"></div>
+<article id="player2Panel" class="board-panel player2" role="region" aria-label="Доска игрока 2">
+                                <div id="reactionPlayer2Center" class="reaction-pop center-left" aria-live="polite"></div>
+                                <div id="reactionPlayer2Edge" class="reaction-pop edge-right" aria-live="polite"></div>
                                 <h2 id="player2NameBoard">Игрок 2</h2>
-                                <canvas id="player2Canvas" width="240" height="480"></canvas>
-                                <div class="board-meta">
+                                <canvas id="player2Canvas" width="240" height="480" aria-label="Игровое поле игрока 2"></canvas>
+                                <footer class="board-meta" role="contentinfo">
                                     <span>Счет: <strong id="player2Score">0</strong></span>
                                     <span>Линии: <strong id="player2Lines">0</strong></span>
-                                </div>
+                                </footer>
                             </article>
                         </div>
                     </div>
 
                     <aside class="right-side-panel">
-                        <button class="vs-button-secondary" type="button" onclick="toggleSettings()" title="Открыть настройки">⚙️ Настройки</button>
+                        <button class="vs-button-secondary" type="button" onclick="toggleSettings()" title="Открыть настройки">Настройки</button>
                         <div class="spectator-panel in-game">
                             <h3>Зрители</h3>
                             <ul id="gameSpectatorsList" class="spectator-list"></ul>
@@ -142,7 +140,6 @@
                     </aside>
                 </div>
             </section>
-
 <section id="spectatorArea" class="vs-panel match-panel spectator-area" style="display:none;">
                 <div class="match-layout">
                     <aside class="left-controls-panel spectator-controls">
@@ -219,14 +216,14 @@
         </section>
     </div>
 
-    <div id="settingsOverlay" class="settings-overlay" aria-hidden="true">
+<div id="settingsOverlay" class="settings-overlay" aria-hidden="true">
         <section class="vs-panel settings-panel">
             <div class="settings-panel-head">
                 <div>
                     <h2 class="vs-section-title">Настройки игры</h2>
                     <p class="vs-section-copy" style="margin-bottom: 0;">Кастомизируйте Ваш игровой опыт</p>
                 </div>
-                <button class="vs-button-secondary settings-close" type="button" onclick="toggleSettings(false)" title="Закрыть">✕</button>
+                <button class="vs-button-secondary settings-close" type="button" onclick="toggleSettings(false)" title="Закрыть">X</button>
             </div>
 
             <div class="settings-grid">
@@ -261,7 +258,7 @@
         </section>
     </div>
 
-    <script src="/js/services/authService.js"></script>
-    <script type="module" src="/js/game.js"></script>
+<script src="/js/services/authService.js"></script>
+<script type="module" src="/js/game.js"></script>
 </body>
 </html>

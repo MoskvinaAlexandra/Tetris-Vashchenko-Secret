@@ -1,4 +1,3 @@
-// server/routes/player.js — Player profile and stats routes
 import express from 'express';
 import { PlayerService } from '../services/PlayerService.js';
 import { MatchService } from '../services/MatchService.js';
@@ -6,10 +5,6 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-/**
- * GET /api/player/:playerId
- * Get player profile
- */
 router.get('/:playerId', async (req, res) => {
   try {
     const { playerId } = req.params;
@@ -20,10 +15,6 @@ router.get('/:playerId', async (req, res) => {
   }
 });
 
-/**
- * GET /api/player/:playerId/stats
- * Get player statistics
- */
 router.get('/:playerId/stats', async (req, res) => {
   try {
     const { playerId } = req.params;
@@ -34,10 +25,6 @@ router.get('/:playerId/stats', async (req, res) => {
   }
 });
 
-/**
- * GET /api/player/:playerId/matches
- * Get player match history
- */
 router.get('/:playerId/matches', async (req, res) => {
   try {
     const { playerId } = req.params;
@@ -49,10 +36,6 @@ router.get('/:playerId/matches', async (req, res) => {
   }
 });
 
-/**
- * GET /api/player/me/profile
- * Get current player profile (requires auth)
- */
 router.get('/me/profile', authMiddleware, async (req, res) => {
   try {
     const player = await PlayerService.getById(req.player.playerId);

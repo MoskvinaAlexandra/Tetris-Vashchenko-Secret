@@ -1,16 +1,8 @@
-// server/routes/leaderboard.js — Leaderboard routes
 import express from 'express';
 import { MatchService } from '../services/MatchService.js';
 
 const router = express.Router();
 
-/**
- * GET /api/leaderboard
- * Get leaderboard with sorting options
- * Query params:
- *   - sortBy: 'best_score' (default), 'wins', 'games_played', 'total_score', 'avg_score'
- *   - limit: number of entries (default: 100)
- */
 router.get('/', async (req, res) => {
   try {
     const sortBy = req.query.sortBy || 'best_score';
@@ -40,10 +32,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-/**
- * GET /api/leaderboard/top10
- * Get top 10 players by best score (quick endpoint)
- */
 router.get('/top10', async (req, res) => {
   try {
     const leaderboard = await MatchService.getLeaderboard('best_score', 10);

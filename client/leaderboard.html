@@ -33,7 +33,7 @@
             <div class="vs-logo">VS</div>
         </header>
 
-        <main class="vs-main">
+        <main class="vs-main" role="main">
             <section class="vs-panel">
                 <h2 class="vs-section-title">Таблица лидеров</h2>
                 <p class="vs-section-copy">Сортируйте рейтинг по любимому показателю и следите за ростом лучших игроков.</p>
@@ -52,16 +52,17 @@
                 </div>
 
                 <div class="vs-table-wrap">
-                    <table class="vs-table" id="leaderboardTable">
-                        <thead>
+                    <table class="vs-table" id="leaderboardTable" role="table" aria-label="Таблица лидеров">
+                        <caption class="visually-hidden">Глобальный рейтинг игроков Tetris</caption>
+                        <thead scope="col">
                             <tr>
-                                <th>#</th>
-                                <th>Игрок</th>
-                                <th>Лучший результат</th>
-                                <th>Победы</th>
-                                <th>Поражения</th>
-                                <th>Игр</th>
-                                <th>Линий</th>
+                                <th scope="col">#</th>
+                                <th scope="col">Игрок</th>
+                                <th scope="col" aria-sort="none">Лучший результат</th>
+                                <th scope="col">Победы</th>
+                                <th scope="col">Поражения</th>
+                                <th scope="col">Игр</th>
+                                <th scope="col">Линий</th>
                             </tr>
                         </thead>
                         <tbody id="leaderboardBody">

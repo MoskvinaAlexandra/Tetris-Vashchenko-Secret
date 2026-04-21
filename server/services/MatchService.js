@@ -1,14 +1,6 @@
-// server/services/MatchService.js — Match management and statistics (SOLID principle)
 import pool from '../db.js';
 
 export class MatchService {
-  /**
-   * Create a new match
-   * @param {string} roomCode
-   * @param {number} player1Id
-   * @param {number} player2Id
-   * @returns {Promise<{match_id, room_code, player1_id, player2_id}>}
-   */
   static async createMatch(roomCode, player1Id, player2Id) {
     try {
       const result = await pool.query(
@@ -23,16 +15,6 @@ export class MatchService {
     }
   }
 
-  /**
-   * Update match result
-   * @param {number} matchId
-   * @param {number} player1Score
-   * @param {number} player2Score
-   * @param {number} player1Lines
-   * @param {number} player2Lines
-   * @param {number} durationSeconds
-   * @returns {Promise<void>}
-   */
   static async updateMatchResult(matchId, player1Score, player2Score, player1Lines, player2Lines, durationSeconds) {
     try {
       const match = await this.getMatch(matchId);
@@ -53,11 +35,6 @@ export class MatchService {
     }
   }
 
-  /**
-   * Get match by ID
-   * @param {number} matchId
-   * @returns {Promise<match>}
-   */
   static async getMatch(matchId) {
     const result = await pool.query(
       `SELECT * FROM matches WHERE match_id = $1`,
@@ -71,12 +48,6 @@ export class MatchService {
     return result.rows[0];
   }
 
-  /**
-   * Get player matches
-   * @param {number} playerId
-   * @param {number} limit
-   * @returns {Promise<Array>}
-   */
   static async getPlayerMatches(playerId, limit = 20) {
     const result = await pool.query(
       `SELECT m.*, p1.name as player1_name, p2.name as player2_name, pw.name as winner_name
@@ -93,21 +64,15 @@ export class MatchService {
     return result.rows;
   }
 
-  /**
-   * Update player stats after match
-   * @param {number} matchId
-   */
   static async updatePlayerStats(matchId) {
     try {
       const match = await this.getMatch(matchId);
       const { player1_id, player2_id, player1_score, player2_score, player1_lines, player2_lines, winner_id } = match;
 
-      // Determine winner and loser
       const isPlayer1Winner = winner_id === player1_id;
       const winnerId = isPlayer1Winner ? player1_id : player2_id;
       const loserId = isPlayer1Winner ? player2_id : player1_id;
 
-      // Update winner stats
       await pool.query(
         `UPDATE player_stats
          SET wins = wins + 1,
@@ -124,7 +89,6 @@ export class MatchService {
          winnerId]
       );
 
-      // Update loser stats
       await pool.query(
         `UPDATE player_stats
          SET losses = losses + 1,

@@ -10,8 +10,7 @@
 </head>
 <body class="vanya-page">
 <div class="vs-shell">
-    <!-- Topbar / Navigation: authentic VS style with dynamic auth -->
-    <div class="vs-topbar">
+    <nav class="vs-topbar">
         <div class="vs-topbar-links">
             <a href="/" class="vs-link">Главная</a>
             <a href="game.html" class="vs-link">Играть</a>
@@ -25,9 +24,8 @@
             <a href="profile.html" class="vs-button-secondary" id="profileBtn" style="display:none;">Профиль</a>
             <button id="logoutBtn" class="vs-button-secondary" style="display:none;">Выход</button>
         </div>
-    </div>
+    </nav>
 
-    <!-- Elegant header with VS branding -->
     <header class="vs-header">
         <div class="vs-logo">VS</div>
         <div class="vs-title-wrap">
@@ -37,10 +35,8 @@
         <div class="vs-logo">VV</div>
     </header>
 
-    <!-- Main content: refined bio + legend card -->
     <main class="vs-main">
         <div class="vanya-container">
-            <!-- hero section: avatar + signature quote -->
             <div class="vanya-hero-grid">
                 <div class="vanya-portrait">
                     <div class="vanya-avatar">
@@ -61,8 +57,6 @@
                     </p>
                 </div>
             </div>
-
-            <!-- Legendary stats: achievements / numbers with VS card style -->
             <div class="vs-grid three vanya-stats">
                 <div class="vs-card">
                     <div class="vs-card-title">Проведено дуэлей</div>
@@ -80,8 +74,6 @@
                     <div class="vs-card-sub">в элитном дивизионе</div>
                 </div>
             </div>
-
-            <!-- story & contributions: double column layout -->
             <div class="vanya-story-grid">
                 <div class="vanya-bio-card">
                     <h3 class="vanya-section-title">Виктория секрет</h3>
@@ -103,10 +95,10 @@
                 <div class="vanya-legacy-card">
                     <h3 class="vanya-section-title">Философия дуэлей</h3>
                     <ul class="vanya-legacy-list">
-                        <li>✨ <strong>Честный рейтинг</strong> — победы засчитываются только в равных условиях.</li>
-                        <li>🎭 <strong>Зрительский режим</strong> — поддержка без токсичности, только эмодзи-реакции.</li>
-                        <li>🕯️ <strong>Victoria-стиль</strong> — палитра, которая не утомляет глаза даже после 3 часов матчей.</li>
-                        <li>♟️ <strong>Приватные лобби</strong> — дуэль по коду для друзей или закрытых турниров.</li>
+                        <li><strong>Честный рейтинг</strong> — победы засчитываются только в равных условиях.</li>
+                        <li><strong>Зрительский режим</strong> — поддержка без токсичности, только эмоджи-реакции.</li>
+                        <li><strong>Victoria-стиль</strong> — палитра, которая не утомляет глаза даже после 3 часов матчей.</li>
+                        <li><strong>Приватные лобби</strong> — дуэль по коду для друзей или закрытых турниров.</li>
                     </ul>
                     <div class="vanya-signature">
                         <span class="signature-line"></span>
@@ -114,9 +106,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- extra touch: Вклад в сообщество -->
-            <div class="vanya-community">
+            <section class="vanya-community">
                 <div class="vs-panel soft" style="background: var(--vs-panel-soft);">
                     <h3 class="vs-section-title" style="font-size: 24px; margin-bottom: 0px;">Наследие</h3>
                     <p class="vs-section-copy" style="margin-bottom: 12px;">Сообщество, эстетика и дух соперничества без агрессии</p>
@@ -134,8 +124,6 @@
         </div>
     </main>
 </div>
-
-<!-- Settings Overlay (identical to game panel for consistency) -->
 <div id="settingsOverlay" class="settings-overlay" aria-hidden="true">
     <section class="vs-panel settings-panel">
         <div class="settings-panel-head">
@@ -143,7 +131,7 @@
                 <h2 class="vs-section-title">Настройки интерфейса</h2>
                 <p class="vs-section-copy" style="margin-bottom: 0;">Victoria атмосфера под ваше настроение</p>
             </div>
-            <button class="vs-button-secondary settings-close" type="button" onclick="toggleSettings(false)" title="Закрыть">✕</button>
+            <button class="vs-button-secondary settings-close" type="button" onclick="toggleSettings(false)" title="Закрыть">X</button>
         </div>
         <div class="settings-grid">
             <label class="settings-item" for="themeToggle">
@@ -174,13 +162,10 @@
     </section>
 </div>
 
-<!-- scripts: global auth & settings + local enhancements -->
 <script src="js/services/authService.js"></script>
 <script src="js/settings.js"></script>
 <script>
-    (function() {
-        // ---------- DYNAMIC AUTH (leaderboard style) ----------
-        function updateAuthUI() {
+    function updateAuthUI() {
             const isLoggedIn = window.authService && typeof authService.isLoggedIn === 'function' && authService.isLoggedIn();
             const loginBtn = document.getElementById('loginBtn');
             const registerBtn = document.getElementById('registerBtn');

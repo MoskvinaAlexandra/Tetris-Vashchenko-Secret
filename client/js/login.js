@@ -1,4 +1,3 @@
-// client/js/login.js — Login page logic
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -13,7 +12,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
   try {
     const result = await authService.login(nameOrEmail, password);
-    successDiv.textContent = `✅ Добро пожаловать, ${result.player.name}! Перенаправление...`;
+    successDiv.textContent = `Добро пожаловать, ${result.player.name}! Перенаправление...`;
     setTimeout(() => {
       window.location.href = '/game.html';
     }, 1500);
