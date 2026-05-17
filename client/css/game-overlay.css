@@ -1,0 +1,71 @@
+.match-overlay,
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: var(--game-overlay);
+  backdrop-filter: blur(4px);
+  z-index: 20;
+}
+
+.match-overlay.is-visible,
+.settings-overlay.is-visible {
+  display: flex;
+}
+
+.match-result-card,
+.settings-panel {
+  width: min(100%, 560px);
+}
+
+.match-result-card.win {
+  border-color: rgba(71, 101, 125, 0.55);
+}
+
+.match-result-card.loss {
+  border-color: rgba(138, 79, 99, 0.45);
+}
+
+.match-result-card.draw {
+  border-color: rgba(78, 106, 125, 0.4);
+}
+
+.match-scoreline {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 16px;
+  margin: 20px 0;
+  font-family: 'Perpetua Titling MT', 'Times New Roman', serif;
+}
+
+.match-scoreline strong {
+  font-size: clamp(40px, 7vw, 64px);
+  color: var(--vs-accent);
+}
+
+.match-scoreline span {
+  font-size: 22px;
+  color: var(--vs-ink-muted);
+}
+
+.match-result-copy {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: var(--vs-ink-muted);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .match-scoreline strong {
+    font-size: 36px;
+  }
+
+  .match-scoreline span {
+    font-size: 18px;
+  }
+}

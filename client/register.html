@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vashchenko's Secret | Регистрация</title>
+    <meta name="description" content="Vashchenko's Secret - элегантный тетрис-дуэль в стиле Victoria Secret">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/auth.css">
@@ -13,10 +15,13 @@
         <nav class="vs-topbar">
             <div class="vs-topbar-links">
                 <a href="/" class="vs-link">Главная</a>
+                <a href="/game.html" class="vs-link">Играть</a>
                 <a href="/leaderboard.html" class="vs-link">Лидеры</a>
+                <a href="/vanya.html" class="vs-link">О нас</a>
             </div>
             <div class="vs-topbar-links">
-                <button class="vs-button-secondary js-settings-toggle" type="button">Настройки</button>
+                <button class="vs-button-secondary js-settings-toggle" type="button" aria-label="Открыть настройки">Настройки</button>
+                <a href="/login.html" class="vs-button-secondary" aria-label="Войти в аккаунт">Вход</a>
             </div>
         </nav>
 
@@ -34,32 +39,32 @@
                 <h2 class="vs-section-title">Регистрация</h2>
                 <p class="vs-section-copy">Создайте аккаунт и сохраните свои победы в фирменном рейтинге.</p>
 
-                <form id="registerForm" class="vs-form">
+                <form id="registerForm" class="vs-form" novalidate>
                     <div class="vs-field">
                         <label for="name">Имя игрока</label>
-                        <input class="vs-input" type="text" id="name" name="name" required minlength="3" maxlength="50" placeholder="3-50 символов">
+                        <input class="vs-input" type="text" id="name" name="name" required minlength="3" maxlength="50" placeholder="3-50 символов" pattern="[a-zA-Zа-яА-ЯёЁ0-9_-]{3,50}" title="Имя должно содержать 3-50 символов (буквы, цифры, _ или -)">
                     </div>
 
                     <div class="vs-field">
                         <label for="email">Email</label>
-                        <input class="vs-input" type="email" id="email" name="email" required placeholder="your@email.com">
+                        <input class="vs-input" type="email" id="email" name="email" required placeholder="your@email.com" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" title="Введите корректный email адрес">
                     </div>
 
                     <div class="vs-field">
                         <label for="password">Пароль</label>
-                        <input class="vs-input" type="password" id="password" name="password" required minlength="6" placeholder="Минимум 6 символов">
+                        <input class="vs-input" type="password" id="password" name="password" required minlength="6" placeholder="Минимум 6 символов" title="Пароль должен содержать минимум 6 символов">
                     </div>
 
                     <div class="vs-field">
                         <label for="confirmPassword">Подтвердите пароль</label>
-                        <input class="vs-input" type="password" id="confirmPassword" name="confirmPassword" required placeholder="Повторите пароль">
+                        <input class="vs-input" type="password" id="confirmPassword" name="confirmPassword" required placeholder="Повторите пароль" title="Пароли должны совпадать">
                     </div>
 
-                    <button type="submit" class="vs-button">Зарегистрироваться</button>
+                    <button type="submit" class="vs-button" aria-label="Зарегистрировать аккаунт">Зарегистрироваться</button>
                 </form>
 
-                <div id="error" class="vs-error" style="margin-top:14px;"></div>
-                <div id="success" class="vs-success" style="margin-top:14px;"></div>
+                <div id="error" class="vs-error margin-top-sm"></div>
+                <div id="success" class="vs-success margin-top-sm"></div>
 
                 <p class="auth-footer">Уже есть аккаунт? <a href="/login.html">Войти</a></p>
             </section>
@@ -67,7 +72,9 @@
     </div>
 
     <script src="/js/settings.js"></script>
+    <script src="/js/utils/errorHandler.js"></script>
+    <script src="/js/utils/loadingUtils.js"></script>
     <script src="/js/services/authService.js"></script>
-    <script src="/js/auth.js"></script>
+    <script src="/js/register.js"></script>
 </body>
 </html>

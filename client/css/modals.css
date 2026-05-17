@@ -1,0 +1,241 @@
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(78, 36, 55, 0.34);
+  backdrop-filter: blur(4px);
+  z-index: 30;
+}
+
+.settings-overlay.is-visible {
+  display: flex;
+}
+
+.settings-panel {
+  width: min(100%, 560px);
+}
+
+.settings-panel-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.settings-close {
+  min-width: 52px;
+}
+
+.settings-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--vs-border-soft);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.theme-dark .settings-item {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.settings-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.settings-copy strong {
+  font-size: 16px;
+}
+
+.settings-copy small {
+  color: var(--vs-ink-muted);
+}
+
+.settings-item input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--vs-accent);
+}
+
+.settings-actions {
+  justify-content: flex-end;
+}
+
+.error-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.error-modal {
+  background: var(--vs-panel);
+  border: 2px solid var(--vs-border);
+  border-radius: var(--vs-radius);
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: var(--vs-shadow);
+  text-align: center;
+  animation: slideUp 0.3s ease-out;
+}
+
+.error-modal-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.error-modal-title {
+  font-family: 'Perpetua Titling MT', serif;
+  font-size: 24px;
+  color: var(--vs-ink);
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+
+.error-modal-message {
+  color: var(--vs-ink-muted);
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.error-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.offline-notification,
+.online-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  animation: slideDown 0.3s ease-out;
+}
+
+.offline-notification-content {
+  background: var(--vs-danger);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--vs-radius);
+  box-shadow: var(--vs-shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.online-notification-content {
+  background: var(--vs-success);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--vs-radius);
+  box-shadow: var(--vs-shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.offline-icon,
+.online-icon {
+  font-size: 20px;
+}
+
+.offline-text,
+.online-text {
+  font-size: 14px;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--vs-border-soft);
+  border-top: 4px solid var(--vs-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-inline {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--vs-border-soft);
+  border-top: 3px solid var(--vs-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

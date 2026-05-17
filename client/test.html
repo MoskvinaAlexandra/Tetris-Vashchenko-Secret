@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+</head>
+<body>
+    <h1>Test Page</h1>
+    <div id="status">Loading...</div>
+    
+    <script>
+        console.log('Test page loaded');
+        document.getElementById('status').textContent = 'Page loaded successfully!';
+    </script>
+    
+    <script src="/js/utils/errorHandler.js"></script>
+    <script>
+        console.log('errorHandler.js loaded');
+        document.getElementById('status').textContent += ' errorHandler.js OK!';
+    </script>
+    
+    <script src="/js/services/authService.js"></script>
+    <script>
+        console.log('authService.js loaded');
+        console.log('window.authService:', window.authService);
+        document.getElementById('status').textContent += ' authService.js OK!';
+    </script>
+    
+    <script src="/js/utils/authUI.js"></script>
+    <script>
+        console.log('authUI.js loaded');
+        console.log('window.initAuthUI:', window.initAuthUI);
+        document.getElementById('status').textContent += ' authUI.js OK!';
+    </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+export const i18n = {
+  ru: {
+    creatingRoom: 'Создаем комнату...',
+    connectingToRoom: (code) => `Подключаемся к комнате ${code}...`,
+    waitingForOpponent: 'Ожидаем соперника...',
+    roomCreated: (code) => `Комната создана! Код: ${code}`,
+    connectingToGameRoom: 'Подключение к игровой комнате...',
+    connectionEstablished: 'Соединение установлено. Можно создать комнату или войти по коду.',
+    connectionFailed: 'Не удалось подключиться к игровому серверу.',
+    enterRoomCode: 'Введите код комнаты.',
+    createRoomFirst: 'Сначала создайте комнату.',
+    leftRoom: 'Вы покинули комнату.',
+    gameStarting: 'Игра начинается...',
+    matchStarted: 'Матч начался.',
+    gameOver: 'Игра окончена',
+    youWon: 'Вы победили',
+    youLost: 'Вы проиграли',
+    opponentDisconnected: 'Соперник отключился',
+    matchEndedEarly: 'Матч завершен досрочно: соперник вышел.',
+    roundComplete: 'Раунд завершен',
+    roundWon: 'Раунд за вами.',
+    roundLost: (winnerName) => `Раунд забрал ${winnerName || 'соперник'}.`,
+    player1: 'Игрок 1',
+    player2: 'Игрок 2',
+    waitingForPlayer: 'Ожидание игрока',
+    playerJoined: (name) => `${name || 'Игрок'} присоединился к комнате.`,
+    connectionError: 'Ошибка подключения',
+    roomNotFound: 'Комната не найдена',
+    roomFull: 'Комната заполнена',
+    authRequired: 'Требуется авторизация',
+    authRequiredToPlay: 'Авторизуйтесь, чтобы играть или смотреть матчи.',
+    loginFirst: 'Сначала войдите в аккаунт.',
+    connectionNotReady: 'Соединение еще не установлено. Обновите страницу.',
+    playerNameNotFound: 'Не удалось определить имя игрока.',
+    websocketError: (msg) => msg || 'Произошла ошибка WebSocket.',
+    copyCodeFailed: 'Не удалось скопировать код.',
+    ready: 'Готов',
+    notReady: 'Не готов',
+    spectators: 'Зрители',
+    noSpectators: 'Пока нет зрителей',
+    copyCode: 'Скопировать код',
+    codeCopied: 'Код скопирован!',
+    rematch: 'Реванш',
+    rematchRequested: 'Запрос на реванш отправлен.',
+    waitingForRematch: 'Один из игроков запросил реванш. Ждем второго.',
+    waitingForPlayers: 'Ожидание игроков',
+    waitingForRematchDecision: 'Ждем решения игроков о реванше.',
+    rematchHint: 'Нажмите «Реванш», чтобы сыграть снова в той же комнате.',
+    slotFree: 'Свободно',
+    slotReconnecting: 'Переподключение...',
+    slotReady: 'Готов',
+    slotYouHere: 'Вы здесь',
+    slotWaiting: 'Ждет',
+    roomReady: (msg) => msg || 'Комната готова к новому раунду.',
+    roomClosed: (msg) => msg || 'Комната закрыта.',
+    connectionLost: 'Соединение разорвано. Можно снова войти в комнату по коду.',
+    score: 'Очки',
+    lines: 'Линии',
+    level: 'Уровень',
+    reconnecting: 'Переподключение...',
+    reconnected: 'Соединение восстановлено',
+    offline: 'Соединение потеряно. Проверьте интернет.'
+  }
+};
+export function t(key, ...args) {
+  const lang = 'ru';
+  const translation = i18n[lang][key];
+  if (typeof translation === 'function') {
+    return translation(...args);
+  }
+  return translation || key;
+}

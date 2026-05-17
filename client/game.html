@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vashchenko's Secret | Duel Room</title>
+    <meta name="description" content="Vashchenko's Secret - элегантный тетрис-дуэль в стиле Victoria Secret">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/game.css">
 </head>
 <body class="game-page">
     <div class="vs-shell compact-shell">
-        <nav class="vs-nav">
-            <div class="vs-nav-links">
+        <nav class="vs-topbar">
+            <div class="vs-topbar-links">
                 <a href="/" class="vs-link">Главная</a>
                 <a href="/leaderboard.html" class="vs-link">Лидеры</a>
                 <a href="/profile.html" class="vs-link">Профиль</a>
@@ -39,7 +41,7 @@
                         <p class="vs-section-copy">Создайте приватный матч или войдите в комнату по коду.</p>
                     </div>
 
-                    <div class="vs-actions" style="justify-content:center;">
+                    <div class="vs-actions justify-center">
                         <button class="vs-button" type="button" onclick="createRoom()">Создать комнату</button>
                     </div>
 
@@ -58,8 +60,8 @@
                 </div>
             </section>
 
-            <section id="lobby" class="vs-panel" style="display:none;">
-                <div id="roomCodeDisplay" class="room-code-banner" style="display:none;">
+            <section id="lobby" class="vs-panel hidden">
+                <div id="roomCodeDisplay" class="room-code-banner hidden">
                     <span class="vs-card-title room-code-label">Код комнаты</span>
                     <span id="roomCode" class="room-code-value"></span>
                     <button class="vs-button-secondary" type="button" onclick="copyCode()">Копировать</button>
@@ -83,14 +85,14 @@
                         <ul id="lobbySpectatorsList" class="spectator-list"></ul>
                     </aside>
 
-                <div id="countdown" class="countdown" style="display:none;"></div>
+                <div id="countdown" class="countdown hidden"></div>
 
                 <div class="vs-actions lobby-actions-row">
                     <button id="readyBtn" class="vs-button" type="button" onclick="toggleReady()">Готов</button>
                     <button class="vs-button-secondary" type="button" onclick="leaveRoom()">Покинуть комнату</button>
                 </div>
             </section>
-            <section id="gameArea" class="vs-panel match-panel" style="display:none;">
+            <section id="gameArea" class="vs-panel match-panel hidden">
                 <div class="match-layout">
                     <aside class="left-controls-panel">
                         <div class="reaction-column">
@@ -140,7 +142,7 @@
                     </aside>
                 </div>
             </section>
-<section id="spectatorArea" class="vs-panel match-panel spectator-area" style="display:none;">
+<section id="spectatorArea" class="vs-panel match-panel spectator-area hidden">
                 <div class="match-layout">
                     <aside class="left-controls-panel spectator-controls">
                         <p class="reaction-target-label">Реакции для</p>
@@ -221,7 +223,7 @@
             <div class="settings-panel-head">
                 <div>
                     <h2 class="vs-section-title">Настройки игры</h2>
-                    <p class="vs-section-copy" style="margin-bottom: 0;">Кастомизируйте Ваш игровой опыт</p>
+                    <p class="vs-section-copy margin-bottom-none">Кастомизируйте Ваш игровой опыт</p>
                 </div>
                 <button class="vs-button-secondary settings-close" type="button" onclick="toggleSettings(false)" title="Закрыть">X</button>
             </div>
@@ -258,7 +260,9 @@
         </section>
     </div>
 
-<script src="/js/services/authService.js"></script>
-<script type="module" src="/js/game.js"></script>
+    <script src="/js/utils/errorHandler.js"></script>
+    <script src="/js/services/authService.js"></script>
+    <script src="/js/utils/themeManager.js"></script>
+    <script src="/js/game.js" type="module"></script>
 </body>
 </html>

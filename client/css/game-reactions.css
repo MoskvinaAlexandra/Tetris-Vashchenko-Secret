@@ -1,0 +1,80 @@
+.reaction-column {
+  display: grid;
+  gap: 12px;
+}
+
+.reaction-target-label {
+  margin: 0;
+  text-align: center;
+  color: var(--vs-ink-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.reaction-target-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.target-toggle-button.active-target {
+  background: var(--vs-accent);
+  color: #fff;
+  border-color: var(--vs-accent);
+}
+
+.reaction-button {
+  width: 100%;
+  min-height: clamp(2.8rem, 6vh, 4rem);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--vs-border);
+}
+
+.reaction-button span {
+  font-size: clamp(20px, 1.6vw, 28px);
+  line-height: 1;
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.reaction-pop {
+  position: absolute;
+  top: 44%;
+  transform: translateY(-50%) scale(0.72);
+  opacity: 0;
+  font-size: clamp(28px, 2.4vw, 42px);
+  line-height: 1;
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  color: var(--game-reaction-ink);
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: var(--game-reaction-bg);
+  border: 1px solid var(--game-panel-border);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.reaction-pop.center-left {
+  left: clamp(-26px, -2.4vw, -38px);
+}
+
+.reaction-pop.center-right {
+  right: clamp(-26px, -2.4vw, -38px);
+}
+
+.reaction-pop.edge-left {
+  left: 10px;
+}
+
+.reaction-pop.edge-right {
+  right: 10px;
+}
+
+.reaction-pop.visible {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}

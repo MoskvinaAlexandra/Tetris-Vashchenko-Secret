@@ -4,23 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vashchenko's Secret | Лидеры</title>
+    <meta name="description" content="Vashchenko's Secret - элегантный тетрис-дуэль в стиле Victoria Secret">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/leaderboard.css">
 </head>
 <body class="leaderboard-page">
     <div class="vs-shell">
-        <nav class="vs-nav">
-            <div class="vs-nav-links">
+        <nav class="vs-topbar">
+            <div class="vs-topbar-links">
                 <a href="/" class="vs-link">Главная</a>
                 <a href="/game.html" class="vs-link">Играть</a>
                 <a href="/leaderboard.html" class="vs-link is-active">Лидеры</a>
-                <a href="/profile.html" class="vs-link" id="profileLink" style="display:none;">Профиль</a>
+                <a href="/vanya.html" class="vs-link">О нас</a>
             </div>
-            <div class="vs-nav-links">
-                <button class="vs-button-secondary js-settings-toggle" type="button">Настройки</button>
-                <a href="/login.html" class="vs-link" id="loginBtn">Вход</a>
-                <button id="logoutBtn" class="vs-button-secondary" style="display:none;">Выход</button>
+            <div class="vs-topbar-links">
+                <button class="vs-button-secondary js-settings-toggle" type="button" aria-label="Открыть настройки">Настройки</button>
+                <a href="/login.html" class="vs-button-secondary" id="loginBtn" aria-label="Войти в аккаунт">Вход</a>
+                <a href="/register.html" class="vs-button-secondary" id="registerBtn" aria-label="Зарегистрироваться">Регистрация</a>
+                <a href="/profile.html" class="vs-button-secondary hidden" id="profileBtn" aria-label="Перейти в профиль">Профиль</a>
+                <button id="logoutBtn" class="vs-button-secondary hidden" aria-label="Выйти из аккаунта">Выход</button>
             </div>
         </nav>
 
@@ -39,7 +43,7 @@
                 <p class="vs-section-copy">Сортируйте рейтинг по любимому показателю и следите за ростом лучших игроков.</p>
 
                 <div class="leaderboard-toolbar">
-                    <label class="vs-field" style="min-width:260px;">
+                    <label class="vs-field min-width-260">
                         <span>Сортировка</span>
                         <select id="sortBy" class="vs-select">
                             <option value="best_score">Лучший результат</option>
@@ -73,13 +77,17 @@
                     </table>
                 </div>
 
-                <div id="errorMessage" class="vs-error" style="display:none; margin-top:16px;"></div>
+                <div id="errorMessage" class="vs-error hidden margin-top-md"></div>
             </section>
         </main>
     </div>
 
+    <script src="/js/utils/errorHandler.js"></script>
+    <script src="/js/utils/loadingUtils.js"></script>
+    <script src="/js/utils/themeManager.js"></script>
     <script src="/js/settings.js"></script>
     <script src="/js/services/authService.js"></script>
+    <script src="/js/utils/authUI.js"></script>
     <script src="/js/leaderboard.js"></script>
 </body>
 </html>

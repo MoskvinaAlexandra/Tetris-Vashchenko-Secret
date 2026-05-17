@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vashchenko's Secret | Вход</title>
+    <meta name="description" content="Vashchenko's Secret - элегантный тетрис-дуэль в стиле Victoria Secret">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/auth.css">
@@ -13,10 +15,13 @@
         <nav class="vs-topbar">
             <div class="vs-topbar-links">
                 <a href="/" class="vs-link">Главная</a>
+                <a href="/game.html" class="vs-link">Играть</a>
                 <a href="/leaderboard.html" class="vs-link">Лидеры</a>
+                <a href="/vanya.html" class="vs-link">О нас</a>
             </div>
             <div class="vs-topbar-links">
-                <button class="vs-button-secondary js-settings-toggle" type="button">Настройки</button>
+                <button class="vs-button-secondary js-settings-toggle" type="button" aria-label="Открыть настройки">Настройки</button>
+                <a href="/register.html" class="vs-button-secondary" aria-label="Зарегистрироваться">Регистрация</a>
             </div>
         </nav>
 
@@ -45,11 +50,11 @@
                         <input class="vs-input" type="password" id="password" name="password" required placeholder="Введите пароль">
                     </div>
 
-                    <button type="submit" class="vs-button">Войти</button>
+                    <button type="submit" class="vs-button" aria-label="Войти в систему">Войти</button>
                 </form>
 
-                <div id="error" class="vs-error" style="margin-top:14px;"></div>
-                <div id="success" class="vs-success" style="margin-top:14px;"></div>
+                <div id="error" class="vs-error margin-top-sm"></div>
+                <div id="success" class="vs-success margin-top-sm"></div>
 
                 <p class="auth-footer">Нет аккаунта? <a href="/register.html">Зарегистрироваться</a></p>
             </section>
@@ -57,6 +62,8 @@
     </div>
 
     <script src="/js/settings.js"></script>
+    <script src="/js/utils/errorHandler.js"></script>
+    <script src="/js/utils/loadingUtils.js"></script>
     <script src="/js/services/authService.js"></script>
     <script src="/js/login.js"></script>
 </body>

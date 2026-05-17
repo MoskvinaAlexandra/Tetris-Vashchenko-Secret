@@ -1,0 +1,114 @@
+.vs-message,
+.vs-error,
+.vs-success {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--vs-border-soft);
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.vs-error {
+  border-color: rgba(138, 79, 99, 0.35);
+  color: #6a3748;
+}
+
+.vs-success {
+  border-color: rgba(71, 101, 125, 0.35);
+  color: #29475c;
+}
+
+.vs-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.vs-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.vs-grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.vs-card {
+  border: 1px solid var(--vs-border-soft);
+  border-radius: 14px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.vs-card-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--vs-ink-muted);
+  margin-bottom: 10px;
+}
+
+.vs-card-value {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: bold;
+  color: var(--vs-accent);
+}
+
+.vs-table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--vs-border-soft);
+}
+
+.vs-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.vs-table th,
+.vs-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(78, 106, 125, 0.18);
+  text-align: left;
+}
+
+.vs-table th {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--vs-ink-muted);
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.vs-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.vs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(78, 106, 125, 0.24);
+  font-size: 13px;
+}
+
+.vs-badge.success {
+  color: #29475c;
+}
+
+.vs-badge.danger {
+  color: #6a3748;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

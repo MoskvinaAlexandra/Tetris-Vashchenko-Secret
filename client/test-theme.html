@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Test ThemeManager</title>
+</head>
+<body>
+    <h1>Test ThemeManager Loading</h1>
+    <div id="status">Loading...</div>
+    
+    <script>
+        window.addEventListener('error', (event) => {
+            document.getElementById('status').innerHTML = `
+                <div style="color: red;">
+                    <strong>ERROR:</strong><br>
+                    Message: ${event.message}<br>
+                    File: ${event.filename}<br>
+                    Line: ${event.lineno}:${event.colno}
+                </div>
+            `;
+        });
+    </script>
+    
+    <script src="/js/utils/themeManager.js"></script>
+    
+    <script>
+        if (window.themeManager) {
+            document.getElementById('status').innerHTML = `
+                <div style="color: green;">
+                    <strong>SUCCESS!</strong><br>
+                    themeManager loaded successfully<br>
+                    Settings: ${JSON.stringify(window.themeManager.getSettings())}
+                </div>
+            `;
+        } else {
+            document.getElementById('status').innerHTML = `
+                <div style="color: orange;">
+                    <strong>WARNING:</strong><br>
+                    themeManager is not defined
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

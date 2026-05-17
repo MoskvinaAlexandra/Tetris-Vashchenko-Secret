@@ -1,11 +1,9 @@
 import { RoomService } from '../../services/RoomService.js';
-
 export async function handleCreateRoom(ws, msg, roomManager) {
   try {
     const playerId = ws.playerId;
     const room = await RoomService.createRoom(playerId);
     const roomCode = room.room_code;
-
     roomManager.addRoom(roomCode, {
       player1: {
         ws,
@@ -26,17 +24,14 @@ export async function handleCreateRoom(ws, msg, roomManager) {
       countdownTimer: null,
       seed: null
     });
-
     ws.currentRoom = roomCode;
     ws.role = 'player1';
-
     ws.send(JSON.stringify({
       type: 'roomCreated',
       code: roomCode,
       role: 'player1',
       message: `Room created. Share code: ${roomCode}`
     }));
-
     roomManager.broadcastRoomState(roomCode);
   } catch (error) {
     console.error('Create room error:', error);

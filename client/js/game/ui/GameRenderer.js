@@ -1,40 +1,37 @@
 import { BOARD_CONFIG, COLORS, PIECES } from '../constants/gameConstants.js';
-
 export class GameRenderer {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
+    if (!this.isCanvasSupported()) {
+      throw new Error('Ваш браузер не поддерживает Canvas. Пожалуйста, обновите браузер.');
+    }
     this.ctx = this.canvas.getContext('2d');
     this.setupCanvas();
   }
-
+  isCanvasSupported() {
+    return !!(this.canvas && this.canvas.getContext && this.canvas.getContext('2d'));
+  }
   setupCanvas() {
     this.canvas.width = BOARD_CONFIG.WIDTH * BOARD_CONFIG.CELL_SIZE;
     this.canvas.height = BOARD_CONFIG.HEIGHT * BOARD_CONFIG.CELL_SIZE;
   }
-
   render(gameState) {
     this.clear();
     this.drawCellHighlights(gameState.board);
     this.drawBoard(gameState.board);
     this.drawCurrentPiece(gameState.currentPiece);
   }
-
   clear() {
     this.ctx.fillStyle = '#0a0a0a';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
-
   drawCellHighlights(board) {
     const highlightEnabled = !document.body.classList.contains('no-cell-highlight');
     if (!highlightEnabled) return;
-
     const highlightColor = 'rgba(93, 217, 161, 0.08)';
-
     for (let row = 0; row < board.length; row++) {
       for (let col = 0; col < board[row].length; col++) {
         const cellValue = board[row][col];
-        
-        // Only highlight empty cells
         if (cellValue === 0) {
           this.ctx.fillStyle = highlightColor;
           this.ctx.fillRect(
@@ -47,20 +44,13 @@ export class GameRenderer {
       }
     }
   }
-
-  /**
-   * Draw board cells
-   */
   drawBoard(board) {
     for (let row = 0; row < board.length; row++) {
       for (let col = 0; col < board[row].length; col++) {
         const cellValue = board[row][col];
-
         if (cellValue !== 0) {
           this.drawCell(col, row, COLORS[cellValue]);
         }
-
-        // Draw grid
         this.ctx.strokeStyle = '#1a1a1a';
         this.ctx.lineWidth = 1;
         this.ctx.strokeRect(
@@ -72,22 +62,15 @@ export class GameRenderer {
       }
     }
   }
-
-  /**
-   * Draw current falling piece
-   */
   drawCurrentPiece(piece) {
     if (!piece) return;
-
     const shape = PIECES[piece.type - 1][piece.rotation];
     const color = COLORS[piece.type];
-
     for (let row = 0; row < shape.length; row++) {
       for (let col = 0; col < shape[row].length; col++) {
         if (shape[row][col]) {
           const x = piece.x + col;
           const y = piece.y + row;
-
           if (y >= 0) {
             this.drawCell(x, y, color);
           }
@@ -95,10 +78,6 @@ export class GameRenderer {
       }
     }
   }
-
-  /**
-   * Draw single cell
-   */
   drawCell(x, y, color) {
     this.ctx.fillStyle = color;
     const glowEnabled = !document.body.classList.contains('no-glow');
@@ -120,23 +99,14 @@ export class GameRenderer {
     );
     this.ctx.shadowBlur = 0;
   }
-
-  /**
-   * Update UI stats
-   */
   updateStats(score, lines, level) {
     const scoreEl = document.getElementById('score') || document.getElementById('myScore');
     const linesEl = document.getElementById('lines') || document.getElementById('myLines');
     const levelEl = document.getElementById('level');
-
     if (scoreEl) scoreEl.textContent = score;
     if (linesEl) linesEl.textContent = lines;
     if (levelEl) levelEl.textContent = level;
   }
-
-  /**
-   * Show game over message
-   */
   showGameOver(score) {
     const gameOverEl = document.createElement('div');
     gameOverEl.id = 'gameOverScreen';
@@ -152,4 +122,3 @@ export class GameRenderer {
     document.body.appendChild(gameOverEl);
   }
 }
-

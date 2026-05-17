@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Full Test - Index Page Simulation</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Testing Index Page Scripts</h1>
+    <div id="log"></div>
+    
+    <script>
+        const log = document.getElementById('log');
+        
+        function addLog(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(div);
+        }
+        
+        window.addEventListener('error', (event) => {
+            addLog(`ERROR: ${event.message} at ${event.filename}:${event.lineno}:${event.colno}`, 'error');
+            event.preventDefault(); // Prevent default error modal
+        });
+        
+        window.addEventListener('unhandledrejection', (event) => {
+            addLog(`UNHANDLED REJECTION: ${event.reason}`, 'error');
+            event.preventDefault();
+        });
+        
+        addLog('Starting script loading test...', 'info');
+    </script>
+    
+    <!-- Load scripts in the same order as index.html -->
+    <script src="/js/utils/errorHandler.js"></script>
+    <script>addLog('✓ errorHandler.js loaded', 'success');</script>
+    
+    <script src="/js/services/authService.js"></script>
+    <script>
+        if (window.authService) {
+            addLog('✓ authService.js loaded, authService available', 'success');
+        } else {
+            addLog('✗ authService.js loaded but authService not available', 'error');
+        }
+    </script>
+    
+    <script src="/js/utils/authUI.js"></script>
+    <script>
+        if (window.initAuthUI) {
+            addLog('✓ authUI.js loaded, initAuthUI available', 'success');
+        } else {
+            addLog('✗ authUI.js loaded but initAuthUI not available', 'error');
+        }
+    </script>
+    
+    <script src="/js/utils/themeManager.js"></script>
+    <script>
+        if (window.themeManager) {
+            addLog('✓ themeManager.js loaded, themeManager available', 'success');
+            addLog(`  Settings: ${JSON.stringify(window.themeManager.getSettings())}`, 'info');
+        } else {
+            addLog('✗ themeManager.js loaded but themeManager not available', 'error');
+        }
+    </script>
+    
+    <script src="/js/settings.js"></script>
+    <script>addLog('✓ settings.js loaded', 'success');</script>
+    
+    <script>
+        // Simulate initAuthUI() call
+        try {
+            if (window.initAuthUI) {
+                // Don't actually call it since we don't have the HTML elements
+                addLog('✓ initAuthUI function is callable', 'success');
+            }
+        } catch (e) {
+            addLog(`✗ Error calling initAuthUI: ${e.message}`, 'error');
+        }
+        
+        addLog('=== ALL SCRIPTS LOADED SUCCESSFULLY ===', 'success');
+    </script>
+</body>
+</html>

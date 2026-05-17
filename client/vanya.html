@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Vashchenko's Secret | Vanya Edition</title>
+    <meta name="description" content="Vashchenko's Secret - элегантный тетрис-дуэль в стиле Victoria Secret">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/vanya.css">
@@ -13,16 +15,16 @@
     <nav class="vs-topbar">
         <div class="vs-topbar-links">
             <a href="/" class="vs-link">Главная</a>
-            <a href="game.html" class="vs-link">Играть</a>
-            <a href="leaderboard.html" class="vs-link">Лидеры</a>
-            <a href="vanya.html" class="vs-link is-active">О нас</a>
+            <a href="/game.html" class="vs-link">Играть</a>
+            <a href="/leaderboard.html" class="vs-link">Лидеры</a>
+            <a href="/vanya.html" class="vs-link is-active">О нас</a>
         </div>
         <div class="vs-topbar-links">
-            <button class="vs-button-secondary js-settings-toggle" type="button" aria-label="Настройки">Настройки</button>
-            <a href="login.html" class="vs-button-secondary" id="loginBtn">Вход</a>
-            <a href="register.html" class="vs-button-secondary" id="registerBtn">Регистрация</a>
-            <a href="profile.html" class="vs-button-secondary" id="profileBtn" style="display:none;">Профиль</a>
-            <button id="logoutBtn" class="vs-button-secondary" style="display:none;">Выход</button>
+            <button class="vs-button-secondary js-settings-toggle" type="button" aria-label="Открыть настройки">Настройки</button>
+            <a href="/login.html" class="vs-button-secondary" id="loginBtn" aria-label="Войти в аккаунт">Вход</a>
+            <a href="/register.html" class="vs-button-secondary" id="registerBtn" aria-label="Зарегистрироваться">Регистрация</a>
+            <a href="/profile.html" class="vs-button-secondary hidden" id="profileBtn" aria-label="Перейти в профиль">Профиль</a>
+            <button id="logoutBtn" class="vs-button-secondary hidden" aria-label="Выйти из аккаунта">Выход</button>
         </div>
     </nav>
 
@@ -107,15 +109,15 @@
                 </div>
             </div>
             <section class="vanya-community">
-                <div class="vs-panel soft" style="background: var(--vs-panel-soft);">
-                    <h3 class="vs-section-title" style="font-size: 24px; margin-bottom: 0px;">Наследие</h3>
-                    <p class="vs-section-copy" style="margin-bottom: 12px;">Сообщество, эстетика и дух соперничества без агрессии</p>
+                <div class="vs-panel soft bg-panel-soft">
+                    <h3 class="vs-section-title font-size-lg margin-bottom-none">Наследие</h3>
+                    <p class="vs-section-copy margin-bottom-xs">Сообщество, эстетика и дух соперничества без агрессии</p>
                     <div class="vanya-community-stats">
                         <div><span>🏆</span> 2 сезона лиги</div>
                         <div><span>👥</span> 450+ активных игроков</div>
                         <div><span>🎮</span> 8 200+ сыгранных матчей</div>
                     </div>
-                    <div class="vs-actions" style="justify-content: center; margin-top: 24px;">
+                    <div class="vs-actions justify-center margin-top-lg">
                         <button class="vs-button" type="button" onclick="location.href='/game.html'">Присоединиться к дуэли</button>
                         <button class="vs-button-secondary" type="button" onclick="location.href='/leaderboard.html'">Рейтинг лидеров</button>
                     </div>
@@ -129,7 +131,7 @@
         <div class="settings-panel-head">
             <div>
                 <h2 class="vs-section-title">Настройки интерфейса</h2>
-                <p class="vs-section-copy" style="margin-bottom: 0;">Victoria атмосфера под ваше настроение</p>
+                <p class="vs-section-copy margin-bottom-none">Victoria атмосфера под ваше настроение</p>
             </div>
             <button class="vs-button-secondary settings-close" type="button" onclick="toggleSettings(false)" title="Закрыть">X</button>
         </div>
@@ -162,45 +164,13 @@
     </section>
 </div>
 
+<script src="js/utils/errorHandler.js"></script>
 <script src="js/services/authService.js"></script>
+<script src="js/utils/authUI.js"></script>
+<script src="js/utils/themeManager.js"></script>
 <script src="js/settings.js"></script>
 <script>
-    function updateAuthUI() {
-            const isLoggedIn = window.authService && typeof authService.isLoggedIn === 'function' && authService.isLoggedIn();
-            const loginBtn = document.getElementById('loginBtn');
-            const registerBtn = document.getElementById('registerBtn');
-            const profileBtn = document.getElementById('profileBtn');
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (!loginBtn) return;
-            if (isLoggedIn) {
-                if (profileBtn) profileBtn.style.display = 'inline-flex';
-                if (logoutBtn) logoutBtn.style.display = 'inline-flex';
-                if (loginBtn) loginBtn.style.display = 'none';
-                if (registerBtn) registerBtn.style.display = 'none';
-                if (logoutBtn) {
-                    logoutBtn.onclick = (e) => {
-                        if (window.authService && authService.logout) {
-                            authService.logout();
-                            location.href = '/';
-                        } else {
-                            localStorage.removeItem('vs_user');
-                            location.reload();
-                        }
-                    };
-                }
-            } else {
-                if (profileBtn) profileBtn.style.display = 'none';
-                if (logoutBtn) logoutBtn.style.display = 'none';
-                if (loginBtn) loginBtn.style.display = 'inline-flex';
-                if (registerBtn) registerBtn.style.display = 'inline-flex';
-            }
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', updateAuthUI);
-        } else {
-            updateAuthUI();
-        }
+        initAuthUI();
 
         window.toggleSettings = window.toggleSettings || function(forceShow) {
             const overlay = document.getElementById('settingsOverlay');
@@ -213,6 +183,50 @@
                 overlay.classList.toggle('is-visible');
             }
         };
+
+        const bindGlowSettings = () => {
+            const glowToggle = document.getElementById('glowToggle');
+            const cellToggle = document.getElementById('cellHighlightToggle');
+            
+            if (glowToggle && window.themeManager) {
+                glowToggle.checked = themeManager.getSetting('glow');
+                glowToggle.addEventListener('change', (e) => {
+                    themeManager.updateSetting('glow', e.target.checked);
+                });
+            }
+            
+            if (cellToggle && window.themeManager) {
+                cellToggle.checked = themeManager.getSetting('cellHighlight');
+                cellToggle.addEventListener('change', (e) => {
+                    themeManager.updateSetting('cellHighlight', e.target.checked);
+                });
+            }
+        };
+
+        const bindSettingsClose = () => {
+            const closeBtn = document.getElementById('settingsClose');
+            const doneBtn = document.getElementById('settingsDone');
+            const overlay = document.getElementById('settingsOverlay');
+            if (closeBtn) closeBtn.addEventListener('click', () => toggleSettings(false));
+            if (doneBtn) doneBtn.addEventListener('click', () => toggleSettings(false));
+            if (overlay) {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) toggleSettings(false);
+                });
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                bindThemeToggle();
+                bindGlowSettings();
+                bindSettingsClose();
+            });
+        } else {
+            bindThemeToggle();
+            bindGlowSettings();
+            bindSettingsClose();
+        }
 
         const applyVanyaTheme = (isDark) => {
             const body = document.body;

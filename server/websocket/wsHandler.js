@@ -7,7 +7,6 @@ import { handleGameEnd } from './handlers/gameEndHandler.js';
 import { handleReaction } from './handlers/reactionHandler.js';
 import { handleRematchRequest } from './handlers/rematchRequestHandler.js';
 import { WebSocket } from 'ws';
-
 export async function handleWSMessage(ws, msg, roomManager) {
   try {
     if (msg.type !== 'ping') {
@@ -18,7 +17,6 @@ export async function handleWSMessage(ws, msg, roomManager) {
       }
       ws.playerId = auth.playerId;
     }
-
     switch (msg.type) {
       case 'createRoom':
         await handleCreateRoom(ws, msg, roomManager);

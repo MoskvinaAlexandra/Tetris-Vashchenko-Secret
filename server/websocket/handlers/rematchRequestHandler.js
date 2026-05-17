@@ -3,13 +3,10 @@ export async function handleRematchRequest(ws, msg, roomManager) {
   if (!room || !room.matchCompleted || !room.player1 || !room.player2) {
     return;
   }
-
   if (ws.role !== 'player1' && ws.role !== 'player2') {
     return;
   }
-
   room.rematchVotes.add(ws.role);
-
   if (room.rematchVotes.size < 2) {
     roomManager.broadcastToRoom(msg.code, {
       type: 'rematchStatus',
@@ -17,7 +14,6 @@ export async function handleRematchRequest(ws, msg, roomManager) {
     });
     return;
   }
-
   room.match = null;
   room.matchStarted = false;
   room.gameLive = false;
@@ -30,7 +26,6 @@ export async function handleRematchRequest(ws, msg, roomManager) {
   room.player1.lastGameState = null;
   room.player2.lastGameState = null;
   room.rematchVotes.clear();
-
   roomManager.broadcastToRoom(msg.code, {
     type: 'rematchLobby',
     code: msg.code,
@@ -38,6 +33,5 @@ export async function handleRematchRequest(ws, msg, roomManager) {
     player2Name: room.player2.name,
     message: 'Комната готова к реваншу. Нажмите "Готов", когда будете готовы к следующей дуэли.'
   });
-
   roomManager.broadcastRoomState(msg.code);
 }

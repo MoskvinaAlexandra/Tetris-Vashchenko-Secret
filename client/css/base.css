@@ -1,0 +1,69 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Times New Roman", Georgia, serif;
+  color: var(--vs-ink);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+    repeating-linear-gradient(
+      to right,
+      #e7b7c9 0,
+      #e7b7c9 82px,
+      #f4d3e0 82px,
+      #f4d3e0 146px
+    );
+  background-color: var(--vs-bg);
+}
+
+body.theme-dark {
+  background:
+    linear-gradient(180deg, rgba(255, 214, 228, 0.06), rgba(255, 214, 228, 0)),
+    repeating-linear-gradient(
+      to right,
+      #34131f 0,
+      #34131f 82px,
+      #471a2a 82px,
+      #471a2a 146px
+    );
+  background-color: var(--vs-bg);
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.vs-shell {
+  width: min(1400px, calc(100% - 28px));
+  min-height: calc(100vh - 28px);
+  margin: 14px auto;
+  padding: 10px;
+  border: 1px solid var(--vs-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+  box-shadow: var(--vs-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vs-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

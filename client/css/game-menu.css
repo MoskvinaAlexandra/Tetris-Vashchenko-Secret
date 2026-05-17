@@ -1,0 +1,127 @@
+.game-menu-card {
+  max-width: 760px;
+  justify-self: center;
+}
+
+.menu-hero {
+  display: grid;
+  gap: 18px;
+}
+
+.menu-room-entry {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+
+.menu-room-field {
+  width: min(100%, 360px);
+}
+
+.menu-room-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.game-status {
+  min-height: 24px;
+  text-align: center;
+  color: var(--vs-ink-muted);
+}
+
+.room-code-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.room-code-label {
+  margin: 0;
+}
+
+.room-code-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: clamp(8rem, 12vw, 10rem);
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--vs-border);
+  background: rgba(255, 255, 255, 0.45);
+  font-family: 'Perpetua Titling MT', 'Times New Roman', serif;
+  font-size: clamp(20px, 2vw, 24px);
+  letter-spacing: 0.18em;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(78, 106, 125, 0.18);
+  font-size: 12px;
+}
+
+.countdown {
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  font-family: 'Perpetua Titling MT', 'Times New Roman', serif;
+  font-size: clamp(36px, 6vw, 68px);
+  color: var(--vs-accent);
+}
+
+.lobby-actions-row {
+  justify-content: center;
+  gap: 12px;
+  margin-top: clamp(14px, 1.6vw, 20px);
+}
+
+.match-overlay-actions,
+.settings-actions {
+  justify-content: center;
+  gap: 12px;
+}
+
+.spectator-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  max-height: clamp(6rem, 15vh, 12rem);
+  overflow: auto;
+}
+
+.spectator-list li {
+  border: 1px solid rgba(78, 106, 125, 0.18);
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.28);
+  font-size: 14px;
+}
+
+.spectator-footer-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 12px;
+}
+
+.lobby-player {
+  border: 1px solid var(--vs-border);
+  border-radius: 12px;
+  padding: clamp(16px, 2vw, 24px);
+  background: rgba(255, 255, 255, 0.35);
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}

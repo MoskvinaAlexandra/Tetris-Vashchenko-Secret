@@ -1,0 +1,78 @@
+.vs-topbar,
+.vs-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 2px solid var(--vs-border);
+  background: var(--vs-bg-alt);
+}
+
+.vs-topbar-links,
+.vs-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.vs-link {
+  text-decoration: none;
+  color: var(--vs-ink);
+  padding: 6px 10px;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.vs-link:hover,
+.vs-link.is-active {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.vs-header {
+  font-family: 'Perpetua Titling MT', "Times New Roman", serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 18px 20px;
+  border: 2px solid var(--vs-border);
+  background: var(--vs-bg-alt);
+  text-align: center;
+}
+
+.vs-title-wrap {
+  display: grid;
+  gap: 6px;
+}
+
+.vs-title {
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.vs-subtitle {
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  color: var(--vs-ink-muted);
+  text-transform: uppercase;
+}
+
+.vs-logo {
+  width: 64px;
+  height: 64px;
+  border: 2px solid var(--vs-accent);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 30% 30%, #fff7fb, #f0bfd3 58%, #c56f93 100%);
+  color: var(--vs-accent);
+  font-family: 'Perpetua Titling MT', "Times New Roman", serif;
+  font-size: 24px;
+}
+
+.theme-dark .vs-logo {
+  background: radial-gradient(circle at 30% 30%, #f9d7e4, #8f3d5b 58%, #4a1828 100%);
+}

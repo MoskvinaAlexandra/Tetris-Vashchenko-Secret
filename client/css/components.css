@@ -1,0 +1,169 @@
+.vs-panel {
+  width: min(100%, 920px);
+  margin: 0 auto;
+  padding: 28px;
+  border: 2px solid var(--vs-accent);
+  border-radius: var(--vs-radius);
+  background: var(--vs-panel);
+  backdrop-filter: blur(4px);
+  box-shadow: var(--vs-shadow);
+}
+
+.vs-panel.narrow {
+  width: min(100%, 480px);
+}
+
+.vs-panel.soft {
+  background: var(--vs-panel-soft);
+}
+
+.vs-section-title {
+  font-family: 'Perpetua Titling MT', Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 3vw, 34px);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.vs-section-copy {
+  text-align: center;
+  color: var(--vs-ink-muted);
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+
+.vs-button,
+.vs-button-secondary,
+.vs-button-danger {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.vs-button {
+  background: var(--vs-accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.vs-button-secondary {
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--vs-accent);
+  border: 1.5px solid var(--vs-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.vs-button-danger {
+  background: var(--vs-danger);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.vs-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.vs-button-secondary:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.vs-button-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.vs-button:active,
+.vs-button-secondary:active,
+.vs-button-danger:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.vs-button[disabled],
+.vs-button-secondary[disabled],
+.vs-button-danger[disabled] {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+.theme-dark .vs-button {
+  background: var(--vs-accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark .vs-button-secondary {
+  background: rgba(107, 75, 97, 0.9);
+  color: #f8dce7;
+  border: 1.5px solid #8f3d5b;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.theme-dark .vs-button-secondary:hover {
+  background: rgba(127, 95, 117, 0.98);
+}
+
+.vs-form {
+  display: grid;
+  gap: 16px;
+}
+
+.vs-field {
+  display: grid;
+  gap: 8px;
+}
+
+.vs-field label {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.vs-input,
+.vs-select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--vs-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--vs-ink);
+}
+
+.vs-input:focus,
+.vs-select:focus {
+  outline: 2px solid rgba(44, 62, 80, 0.18);
+  border-color: var(--vs-accent);
+}
+
+.theme-dark .vs-input,
+.theme-dark .vs-select {
+  background: rgba(75, 45, 60, 0.9);
+  color: #f8dce7;
+  border-color: #8f3d5b;
+}
+
+.theme-dark .vs-input:focus,
+.theme-dark .vs-select:focus {
+  border-color: var(--vs-accent);
+  outline: 2px solid rgba(207, 111, 149, 0.2);
+}
+
+.vs-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.vs-actions.stack {
+  flex-direction: column;
+}
