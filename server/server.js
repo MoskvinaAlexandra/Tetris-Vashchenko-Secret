@@ -18,6 +18,8 @@ const app = express();
 const httpServer = createServer(app);
 const wss = new WebSocketServer({ server: httpServer });
 const roomManager = new RoomManager();
+console.log('RoomManager created:', roomManager.constructor.name);
+console.log('clearReconnectTimer exists:', typeof roomManager.clearReconnectTimer);
 
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(express.json());

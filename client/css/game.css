@@ -7,6 +7,7 @@
   --game-reaction-bg: rgba(255, 255, 255, 0.84);
   --game-reaction-ink: var(--vs-accent);
   --game-overlay: rgba(31, 49, 64, 0.32);
+  --game-active-ring: rgba(255, 255, 255, 0.58);
 }
 
 .game-page.theme-light {
@@ -28,6 +29,7 @@
   --game-reaction-bg: rgba(235, 205, 225, 0.98);
   --game-reaction-ink: #6c2d49;
   --game-overlay: rgba(78, 36, 55, 0.4);
+  --game-active-ring: rgba(255, 255, 255, 0.72);
 }
 
 .game-page.theme-light {
@@ -62,6 +64,7 @@
   --game-reaction-bg: rgba(66, 24, 39, 0.96);
   --game-reaction-ink: #ffe7ef;
   --game-overlay: rgba(18, 4, 10, 0.62);
+  --game-active-ring: rgba(255, 231, 239, 0.3);
 }
 
 .game-page.theme-dark {
@@ -344,14 +347,26 @@
 .left-controls-panel,
 .right-side-panel {
   display: grid;
-  gap: 12px;
-  overflow: auto;
+  gap: clamp(10px, 1vw, 12px);
   max-height: 100%;
+  min-width: 0;
+}
+
+.left-controls-panel {
+  align-content: stretch;
+  grid-template-rows: auto minmax(0, 1fr);
+  justify-items: stretch;
+  overflow: hidden;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 .right-side-panel {
   grid-template-rows: auto 1fr auto;
-  align-content: start;
+  align-content: stretch;
+  overflow: auto;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 .controls-help {
@@ -361,7 +376,43 @@
 
 .reaction-column {
   display: grid;
-  gap: 12px;
+  gap: clamp(10px, 1vw, 12px);
+  align-content: start;
+}
+
+.room-code-panel {
+  border: 1px solid var(--game-panel-border);
+  border-radius: 16px;
+  padding: clamp(8px, 0.8vw, 10px);
+  background: var(--game-panel-bg);
+  align-self: start;
+  justify-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.reaction-panel {
+  border: 1px solid var(--game-panel-border);
+  border-radius: 16px;
+  padding: clamp(8px, 0.8vw, 10px);
+  background: var(--game-panel-bg);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: clamp(10px, 1vw, 12px);
+  align-self: stretch;
+  justify-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 0;
+  height: 100%;
+}
+
+.match-room-code-btn {
+  width: 100%;
+  min-height: auto;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .reaction-target-label {
@@ -376,18 +427,54 @@
 .reaction-target-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: clamp(6px, 0.8vw, 8px);
+  min-width: 0;
+}
+
+.reaction-divider {
+  height: 1px;
+  border: none;
+  margin: 0;
+  background: var(--game-panel-border);
+}
+
+.single-target-button {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-width: 0;
+}
+
+.inert-target-button {
+  pointer-events: none;
+  cursor: default;
+}
+
+.target-toggle-button {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .target-toggle-button.active-target {
   background: var(--vs-accent);
   color: #fff;
   border-color: var(--vs-accent);
+  box-shadow: 0 0 0 2px var(--game-active-ring), 0 10px 20px rgba(0, 0, 0, 0.18);
+}
+
+.game-page.theme-dark .target-toggle-button.active-target {
+  background: linear-gradient(180deg, rgba(207, 111, 149, 1), rgba(143, 61, 91, 1));
+  border-color: #ffd9e7;
+  color: #fff8fb;
 }
 
 .reaction-button {
   width: 100%;
-  min-height: clamp(2.8rem, 6vh, 4rem);
+  min-height: clamp(2.5rem, 5vh, 3.6rem);
+  max-height: clamp(2.8rem, 5.4vh, 3.9rem);
+  min-width: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -414,6 +501,15 @@
   align-items: center;
   gap: clamp(10px, 1vw, 14px);
   width: 100%;
+  position: relative;
+}
+
+.arena-reaction-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 7;
 }
 
 .board-panel {
@@ -421,11 +517,26 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  z-index: 0;
+}
+
+.board-panel.reaction-host-active {
+  z-index: 3;
 }
 
 .board-panel.active-player {
-  outline: 2px solid rgba(44, 62, 80, 0.18);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36);
+  outline: none;
+  border-color: color-mix(in srgb, var(--vs-accent) 54%, var(--game-panel-border));
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--vs-accent) 22%, transparent),
+    0 16px 34px color-mix(in srgb, var(--vs-accent) 16%, transparent);
+}
+
+.board-panel.active-player canvas {
+  border-color: color-mix(in srgb, var(--vs-accent) 76%, var(--vs-border));
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--vs-accent) 20%, transparent),
+    var(--game-board-shadow);
 }
 
 .board-meta {
@@ -459,42 +570,102 @@
 
 .reaction-pop {
   position: absolute;
-  top: 44%;
-  transform: translateY(-50%) scale(0.72);
-  opacity: 0;
-  font-size: clamp(28px, 2.4vw, 42px);
-  line-height: 1;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 6;
+}
+
+.reaction-pop::after {
+  display: none;
+}
+
+.reaction-pop-item {
+  position: absolute;
+  min-width: clamp(120px, 12vw, 170px);
+  max-width: clamp(120px, 14vw, 210px);
+  font-size: 14px;
+  line-height: 1.2;
   font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
   color: var(--game-reaction-ink);
   padding: 10px 12px;
-  border-radius: 999px;
+  border-radius: 18px;
   background: var(--game-reaction-bg);
   border: 1px solid var(--game-panel-border);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+  text-align: center;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.72);
   transition: opacity 0.2s ease, transform 0.2s ease;
-  pointer-events: none;
-  z-index: 4;
 }
 
-.reaction-pop.center-left {
-  left: clamp(-26px, -2.4vw, -38px);
-}
-
-.reaction-pop.center-right {
-  right: clamp(-26px, -2.4vw, -38px);
-}
-
-.reaction-pop.edge-left {
-  left: 10px;
-}
-
-.reaction-pop.edge-right {
-  right: 10px;
-}
-
-.reaction-pop.visible {
+.reaction-pop-item.visible {
   opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.reaction-pop-item.anchor-left {
+  transform: translateY(-50%) scale(0.72);
+}
+
+.reaction-pop-item.anchor-left.visible {
   transform: translateY(-50%) scale(1);
+}
+
+.reaction-pop-item.anchor-right {
+  transform: translate(-100%, -50%) scale(0.72);
+}
+
+.reaction-pop-item.anchor-right.visible {
+  transform: translate(-100%, -50%) scale(1);
+}
+
+.reaction-pop-item::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  width: 18px;
+  height: 18px;
+  background: var(--game-reaction-bg);
+  border-right: 1px solid var(--game-panel-border);
+  border-bottom: 1px solid var(--game-panel-border);
+  transform: rotate(45deg);
+}
+
+.reaction-pop-item.tail-left::after {
+  left: 24px;
+}
+
+.reaction-pop-item.tail-right::after {
+  right: 24px;
+}
+
+.reaction-pop-item.spectator-reaction::after {
+  display: none;
+}
+
+.reaction-pop-item.spectator-reaction {
+  transform: translate(-50%, -100%) scale(0.72);
+}
+
+.reaction-pop-item.spectator-reaction.visible {
+  transform: translate(-50%, -100%) scale(1);
+}
+
+.reaction-pop-emoji {
+  display: block;
+  font-size: clamp(28px, 2.4vw, 42px);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.reaction-pop-label {
+  display: block;
+  font-size: 12px;
+  color: var(--vs-ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .spectator-area .match-layout {
@@ -504,7 +675,7 @@
 }
 
 .spectator-area .right-side-panel {
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto 1fr auto;
   align-content: start;
 }
 
@@ -680,6 +851,17 @@
   gap: 10px;
 }
 
+.game-page.compact-mode .room-code-panel,
+.game-page.compact-mode .reaction-panel {
+  padding: 8px;
+  gap: 8px;
+}
+
+.game-page.compact-mode .reaction-button {
+  min-height: clamp(2.35rem, 4.6vh, 3.2rem);
+  max-height: clamp(2.6rem, 5vh, 3.4rem);
+}
+
 .game-page.compact-mode .board-panel canvas {
   width: min(100%, clamp(190px, 20vw, 320px));
 }
@@ -703,16 +885,8 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .reaction-pop.center-left,
-  .reaction-pop.edge-left {
-    left: 10px;
-    right: auto;
-  }
-
-  .reaction-pop.center-right,
-  .reaction-pop.edge-right {
-    right: 10px;
-    left: auto;
+  .reaction-pop-item {
+    max-width: 180px;
   }
 }
 

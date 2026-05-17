@@ -112,6 +112,16 @@ export async function handleJoinRoom(ws, msg, roomManager) {
     };
 
     ws.role = resolvedRole;
+    
+    console.log('roomManager type:', roomManager?.constructor?.name);
+    console.log('clearReconnectTimer exists:', typeof roomManager?.clearReconnectTimer);
+    
+    if (typeof roomManager.clearReconnectTimer !== 'function') {
+      console.error('ERROR: clearReconnectTimer is not a function!');
+      console.error('roomManager keys:', Object.keys(roomManager));
+      console.error('roomManager proto:', Object.getPrototypeOf(roomManager));
+    }
+    
     roomManager.clearReconnectTimer(code, resolvedRole);
 
     const opponentRole = resolvedRole === 'player1' ? 'player2' : 'player1';

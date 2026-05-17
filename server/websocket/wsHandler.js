@@ -24,6 +24,8 @@ export async function handleWSMessage(ws, msg, roomManager) {
         await handleCreateRoom(ws, msg, roomManager);
         break;
       case 'joinRoom':
+        console.log('wsHandler: roomManager type before handleJoinRoom:', roomManager?.constructor?.name);
+        console.log('wsHandler: clearReconnectTimer type:', typeof roomManager?.clearReconnectTimer);
         await handleJoinRoom(ws, msg, roomManager);
         break;
       case 'leaveRoom':

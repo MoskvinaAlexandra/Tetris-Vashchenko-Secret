@@ -1,6 +1,7 @@
 import { TetrisGame } from './game/engine/TetrisGame.js';
 import { GameRenderer } from './game/ui/GameRenderer.js';
 import { GameLoop } from './game/engine/GameLoop.js';
+import { renderGameSidebars } from './game/ui/GameSidebars.js';
 import { GameWSClient } from './websocket/GameWSClient.js';
 
 const authService = window.authService;
@@ -36,12 +37,6 @@ class GameManager {
     this.sentGameEnd = false;
     this.rematchRequested = false;
     this.lastStateSentAt = 0;
-    this.reactionTimers = {
-      player1Center: null,
-      player2Center: null,
-      player1Edge: null,
-      player2Edge: null
-    };
     this.spectatorReactionTarget = 'player1';
     this.currentSection = 'menu';
 
@@ -49,6 +44,7 @@ class GameManager {
   }
 
   async init() {
+    renderGameSidebars();
     this.myName = authService?.getPlayerName?.() || '';
     this.settings = this.loadSettings();
     this.applySettings();
@@ -181,7 +177,7 @@ class GameManager {
       const targetRole = message.targetRole === 'player1' || message.targetRole === 'player2'
         ? message.targetRole
         : null;
-      this.showReaction(senderRole, message.reaction || '👏', targetRole);
+      this.showReaction(senderRole, message.reaction || '👏', targetRole, message.from || '');
     };
 
     this.wsClient.onRoomClosed = (message) => {
@@ -470,6 +466,7 @@ class GameManager {
   initArena() {
     document.getElementById('player1NameBoard').textContent = this.playerNames.player1;
     document.getElementById('player2NameBoard').textContent = this.playerNames.player2;
+    this.updatePlayerReactionTargetUI();
     this.renderSpectatorsLists();
   }
 
@@ -550,8 +547,9 @@ class GameManager {
   sendReaction(emoji) {
     if (!this.roomCode) return;
 
-    const targetRole = this.role === 'spectator' ? this.spectatorReactionTarget : this.role;
-    this.showReaction(this.role, emoji, targetRole);
+    const targetRole = this.role === 'spectator'
+      ? this.spectatorReactionTarget
+      : (this.role === 'player1' ? 'player2' : 'player1');
     this.wsClient.sendReaction(emoji, this.myName, targetRole);
   }
 
@@ -569,8 +567,31 @@ class GameManager {
       return;
     }
 
+    player1Btn.textContent = this.truncateReactionTargetName(this.playerNames.player1 || 'Игрок 1');
+    player2Btn.textContent = this.truncateReactionTargetName(this.playerNames.player2 || 'Игрок 2');
     player1Btn.classList.toggle('active-target', this.spectatorReactionTarget === 'player1');
     player2Btn.classList.toggle('active-target', this.spectatorReactionTarget === 'player2');
+  }
+
+  updatePlayerReactionTargetUI() {
+    const targetBtn = document.getElementById('playerReactionTargetBtn');
+    if (!targetBtn) {
+      return;
+    }
+
+    const opponentName = this.role === 'player1'
+      ? this.playerNames.player2
+      : this.role === 'player2'
+        ? this.playerNames.player1
+        : 'Соперник';
+
+    targetBtn.textContent = this.truncateReactionTargetName(opponentName || 'Соперник');
+  }
+
+  truncateReactionTargetName(name) {
+    const normalized = String(name || '').trim();
+    if (!normalized) return '...';
+    return normalized.length > 14 ? `${normalized.slice(0, 11)}...` : normalized;
   }
 
   resolveReactionRole(fromName) {
@@ -580,53 +601,282 @@ class GameManager {
     return null;
   }
 
-  showReaction(senderRole, emoji, targetRole = null) {
+  showReaction(senderRole, emoji, targetRole = null, senderName = '') {
     const normalizedEmoji = String(emoji || '').trim() || '👏';
+    const reactionLabel = this.buildReactionLabel(senderRole, senderName);
     let targets = [];
-    let timerKey = null;
 
     if (senderRole === 'player1') {
-      targets = ['reactionPlayer1Center', 'reactionPlayer1CenterSpectator'];
-      timerKey = 'player1Center';
+      const resolvedTargetRole = targetRole === 'player1' || targetRole === 'player2' ? targetRole : 'player2';
+      targets = [
+        { id: 'reactionArenaLayer', role: resolvedTargetRole },
+        { id: 'reactionArenaLayerSpectator', role: resolvedTargetRole }
+      ];
     } else if (senderRole === 'player2') {
-      targets = ['reactionPlayer2Center', 'reactionPlayer2CenterSpectator'];
-      timerKey = 'player2Center';
+      const resolvedTargetRole = targetRole === 'player1' || targetRole === 'player2' ? targetRole : 'player1';
+      targets = [
+        { id: 'reactionArenaLayer', role: resolvedTargetRole },
+        { id: 'reactionArenaLayerSpectator', role: resolvedTargetRole }
+      ];
     } else if (senderRole === 'spectator') {
       if (targetRole !== 'player1' && targetRole !== 'player2') {
         return;
       }
       const resolvedTargetRole = targetRole;
       if (resolvedTargetRole === 'player1') {
-        targets = ['reactionPlayer1Edge', 'reactionPlayer1EdgeSpectator'];
-        timerKey = 'player1Edge';
+        targets = [{ id: 'reactionPlayer1Edge' }, { id: 'reactionPlayer1EdgeSpectator' }];
       } else {
-        targets = ['reactionPlayer2Edge', 'reactionPlayer2EdgeSpectator'];
-        timerKey = 'player2Edge';
+        targets = [{ id: 'reactionPlayer2Edge' }, { id: 'reactionPlayer2EdgeSpectator' }];
       }
     }
 
-    if (!targets.length || !timerKey) return;
+    if (!targets.length) return;
 
-    targets.forEach((id) => {
-      const target = document.getElementById(id);
-      if (!target) return;
-      target.textContent = normalizedEmoji;
-      target.classList.add('visible');
+    targets.forEach((targetConfig) => {
+      this.spawnReactionBubble(targetConfig, senderRole, normalizedEmoji, reactionLabel);
     });
+  }
 
-    if (this.reactionTimers[timerKey]) {
-      clearTimeout(this.reactionTimers[timerKey]);
+  spawnReactionBubble(targetConfig, senderRole, emoji, reactionLabel) {
+    const targetId = typeof targetConfig === 'string' ? targetConfig : targetConfig.id;
+    const targetRole = typeof targetConfig === 'string' ? null : targetConfig.role || null;
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    const panel = target.closest('.board-panel');
+
+    const bubble = this.createReactionContent(emoji, reactionLabel, senderRole === 'spectator');
+    if (senderRole !== 'spectator') {
+      bubble.classList.add(targetRole === 'player2' ? 'anchor-right' : 'anchor-left');
+      bubble.classList.add(targetRole === 'player2' ? 'tail-right' : 'tail-left');
+      this.getReactionHostPanel(target, targetRole)?.classList.add('reaction-host-active');
+    }
+    target.appendChild(bubble);
+
+    if (senderRole === 'spectator') {
+      this.fitReactionLabel(target, bubble, senderRole);
+    } else {
+      this.fitReactionLabel(target, bubble, senderRole, targetId, targetRole);
     }
 
-    this.reactionTimers[timerKey] = setTimeout(() => {
-      targets.forEach((id) => {
-        const target = document.getElementById(id);
-        if (!target) return;
-        target.classList.remove('visible');
-        target.textContent = '';
-      });
-      this.reactionTimers[timerKey] = null;
+    const position = senderRole === 'spectator'
+      ? this.getSpectatorReactionPosition(target, bubble)
+      : this.getPlayerReactionPosition(target, bubble, targetRole);
+
+    bubble.style.left = `${position.left}px`;
+    bubble.style.top = `${position.top}px`;
+
+    requestAnimationFrame(() => {
+      bubble.classList.add('visible');
+    });
+
+    window.setTimeout(() => {
+      bubble.classList.remove('visible');
+      window.setTimeout(() => {
+        bubble.remove();
+        this.releaseReactionHost(this.getReactionHostPanel(target, targetRole));
+      }, 220);
     }, 1400);
+  }
+
+  getReactionHostPanel(target, targetRole) {
+    if (target.closest('.board-panel')) {
+      return target.closest('.board-panel');
+    }
+
+    if (targetRole === 'player1') {
+      return document.getElementById(target.id === 'reactionArenaLayerSpectator' ? 'spectatorPlayer1Panel' : 'player1Panel');
+    }
+
+    if (targetRole === 'player2') {
+      return document.getElementById(target.id === 'reactionArenaLayerSpectator' ? 'spectatorPlayer2Panel' : 'player2Panel');
+    }
+
+    return null;
+  }
+
+  releaseReactionHost(panel) {
+    if (!panel) return;
+    if (panel.querySelector('.reaction-pop-item')) {
+      return;
+    }
+    panel.classList.remove('reaction-host-active');
+  }
+
+  getSpectatorReactionPosition(target, bubble) {
+    const panel = target.closest('.board-panel');
+    const canvas = panel?.querySelector('canvas');
+    if (!panel || !canvas) {
+      return {
+        left: panel?.clientWidth ? panel.clientWidth / 2 : 120,
+        top: 52
+      };
+    }
+
+    const panelRect = panel.getBoundingClientRect();
+    const canvasRect = canvas.getBoundingClientRect();
+    const targetWidth = Math.max(bubble.offsetWidth || 150, 120);
+    const bubbleHalf = targetWidth / 2;
+    const margin = 12;
+    const visualGap = 20;
+    const anchorTop = (canvasRect.top - panelRect.top) - visualGap;
+    const minAnchorTop = 44;
+
+    const minLeft = Math.max(margin + bubbleHalf, (canvasRect.left - panelRect.left) + bubbleHalf);
+    const maxLeft = Math.min(
+      panelRect.width - margin - bubbleHalf,
+      (canvasRect.right - panelRect.left) - bubbleHalf
+    );
+
+    if (maxLeft <= minLeft) {
+      return {
+        left: panelRect.width / 2,
+        top: Math.max(anchorTop, minAnchorTop)
+      };
+    }
+
+    const mean = (minLeft + maxLeft) / 2;
+    const sigma = Math.max((maxLeft - minLeft) / 6, 10);
+    const random = this.randomNormal(mean, sigma);
+    return {
+      left: Math.min(maxLeft, Math.max(minLeft, random)),
+      top: Math.max(anchorTop, minAnchorTop)
+    };
+  }
+
+  getPlayerReactionPosition(target, bubble, targetRole) {
+    const arena = target.closest('.arena-grid');
+    if (!arena || (targetRole !== 'player1' && targetRole !== 'player2')) {
+      return { left: 120, top: 180 };
+    }
+
+    const arenaRect = arena.getBoundingClientRect();
+    const targetCanvas = arena.querySelector(targetRole === 'player1' ? '#player1Canvas, #spectatorCanvas1' : '#player2Canvas, #spectatorCanvas2');
+    if (!targetCanvas) {
+      return { left: 120, top: 180 };
+    }
+
+    const canvasRect = targetCanvas.getBoundingClientRect();
+    const canvasTop = canvasRect.top - arenaRect.top;
+    const canvasHeight = canvasRect.height;
+    const top = canvasTop + (canvasHeight * 0.46);
+    const gapBounds = this.getArenaReactionGapBounds(arena, bubble);
+
+    if (gapBounds) {
+      return {
+        left: targetRole === 'player2' ? gapBounds.rightEdge : gapBounds.leftEdge,
+        top
+      };
+    }
+
+    const canvasLeft = canvasRect.left - arenaRect.left;
+    const canvasRight = canvasRect.right - arenaRect.left;
+
+    return {
+      left: targetRole === 'player2' ? canvasLeft - 10 : canvasRight + 10,
+      top
+    };
+  }
+
+  getArenaReactionGapBounds(arena, bubble) {
+    const arenaRect = arena.getBoundingClientRect();
+    const canvases = Array.from(arena.querySelectorAll('canvas'));
+    if (canvases.length < 2) {
+      return null;
+    }
+
+    const [firstCanvas, secondCanvas] = canvases.sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+    const leftCanvasRect = firstCanvas.getBoundingClientRect();
+    const rightCanvasRect = secondCanvas.getBoundingClientRect();
+    const gapMargin = 12;
+
+    const gapLeft = (leftCanvasRect.right - arenaRect.left) + gapMargin;
+    const gapRight = (rightCanvasRect.left - arenaRect.left) - gapMargin;
+    const gapWidth = gapRight - gapLeft;
+
+    if (gapWidth <= 48) {
+      return null;
+    }
+
+    bubble.style.minWidth = `${Math.max(Math.min(gapWidth, 96), 64)}px`;
+    bubble.style.maxWidth = `${gapWidth}px`;
+
+    return {
+      leftEdge: gapLeft,
+      rightEdge: gapRight,
+      width: gapWidth
+    };
+  }
+
+  randomNormal(mean, sigma) {
+    let u = 0;
+    let v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    const standardNormal = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    return mean + standardNormal * sigma;
+  }
+
+  buildReactionLabel(senderRole, senderName) {
+    const normalizedName = String(senderName || '').trim();
+    if (senderRole === 'spectator') {
+      return normalizedName ? `От зрителя: ${normalizedName}` : 'От зрителя';
+    }
+
+    return normalizedName ? `От соперника: ${normalizedName}` : 'От соперника';
+  }
+
+  fitReactionLabel(target, bubble, senderRole, targetId = '', targetRole = null) {
+    const labelNode = bubble.querySelector('.reaction-pop-label');
+    if (!labelNode) return;
+
+    const shortLabel = senderRole === 'spectator' ? 'От зрителя: ...' : 'От соперника: ...';
+    let maxWidth = null;
+
+    if (senderRole === 'spectator') {
+      const panel = target.closest('.board-panel');
+      const canvas = panel?.querySelector('canvas');
+      if (panel && canvas) {
+        maxWidth = Math.max(canvas.getBoundingClientRect().width - 24, 120);
+      }
+    } else {
+      const arena = target.closest('.arena-grid');
+      if (arena) {
+        const gapBounds = this.getArenaReactionGapBounds(arena, bubble);
+        maxWidth = gapBounds?.width || 96;
+      }
+    }
+
+    if (!maxWidth) {
+      return;
+    }
+
+    bubble.style.maxWidth = `${Math.max(maxWidth, 64)}px`;
+    if (bubble.offsetWidth <= maxWidth) {
+      return;
+    }
+
+    labelNode.textContent = shortLabel;
+    if (bubble.offsetWidth <= maxWidth) {
+      return;
+    }
+
+    labelNode.textContent = '...';
+  }
+
+  createReactionContent(emoji, label, isSpectatorReaction = false) {
+    const bubble = document.createElement('div');
+    bubble.className = `reaction-pop-item ${isSpectatorReaction ? 'spectator-reaction' : ''}`.trim();
+
+    const emojiNode = document.createElement('span');
+    emojiNode.className = 'reaction-pop-emoji';
+    emojiNode.textContent = emoji;
+
+    const labelNode = document.createElement('span');
+    labelNode.className = 'reaction-pop-label';
+    labelNode.textContent = label;
+
+    bubble.append(emojiNode, labelNode);
+    return bubble;
   }
 
   canUseRoomActions() {
@@ -662,7 +912,18 @@ class GameManager {
   }
 
   updateRoomCode(code) {
-    document.getElementById('roomCode').textContent = code || '';
+    const normalizedCode = code || '';
+    document.getElementById('roomCode').textContent = normalizedCode;
+
+    const buttonLabel = normalizedCode || '----';
+    const matchRoomCodeBtn = document.getElementById('matchRoomCodeBtn');
+    const spectatorRoomCodeBtn = document.getElementById('spectatorRoomCodeBtn');
+    if (matchRoomCodeBtn) {
+      matchRoomCodeBtn.textContent = buttonLabel;
+    }
+    if (spectatorRoomCodeBtn) {
+      spectatorRoomCodeBtn.textContent = buttonLabel;
+    }
   }
 
   updateLobbyView(players = null) {
@@ -674,6 +935,7 @@ class GameManager {
 
     document.getElementById('player1LobbyStatus').textContent = this.buildLobbyStatus(player1, 'player1');
     document.getElementById('player2LobbyStatus').textContent = this.buildLobbyStatus(player2, 'player2');
+    this.updatePlayerReactionTargetUI();
 
     document.getElementById('readyBtn').textContent = this.isReady ? 'Не готов' : 'Готов';
   }
@@ -722,10 +984,29 @@ class GameManager {
     document.getElementById(`spectatorLines${suffix}`).textContent = state.lines ?? 0;
   }
 
+  clearReactionDisplays() {
+    [
+      'reactionPlayer1Center',
+      'reactionPlayer2Center',
+      'reactionPlayer1Edge',
+      'reactionPlayer2Edge',
+      'reactionArenaLayer',
+      'reactionArenaLayerSpectator',
+      'reactionPlayer1EdgeSpectator',
+      'reactionPlayer2EdgeSpectator'
+    ].forEach((id) => {
+      const element = document.getElementById(id);
+      if (!element) return;
+      element.replaceChildren();
+    });
+  }
+
   resetRoundFlags() {
     this.isReady = false;
     this.sentGameEnd = false;
     this.rematchRequested = false;
+    this.spectatorReactionTarget = 'player1';
+    this.clearReactionDisplays();
     document.getElementById('rematchBtn').disabled = false;
     document.getElementById('rematchBtn').textContent = 'Реванш';
   }
@@ -740,6 +1021,8 @@ class GameManager {
     this.game = null;
     this.renderers = {};
     this.spectators = [];
+    this.spectatorReactionTarget = 'player1';
+    this.clearReactionDisplays();
 
     this.showOnly('menu');
     document.getElementById('roomCodeDisplay').style.display = 'none';

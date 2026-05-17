@@ -23,10 +23,12 @@ export async function handleReaction(ws, msg, roomManager) {
 
   const normalizedTargetRole = String(msg.targetRole || '').trim().toLowerCase();
   let targetRole = null;
-  if (normalizedTargetRole === 'player1' || normalizedTargetRole === 'player2') {
+  if (senderRole === 'player1') {
+    targetRole = 'player2';
+  } else if (senderRole === 'player2') {
+    targetRole = 'player1';
+  } else if (normalizedTargetRole === 'player1' || normalizedTargetRole === 'player2') {
     targetRole = normalizedTargetRole;
-  } else if (senderRole === 'player1' || senderRole === 'player2') {
-    targetRole = senderRole;
   } else {
     targetRole = 'player1';
   }
