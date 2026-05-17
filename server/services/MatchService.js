@@ -15,14 +15,14 @@ export class MatchService {
     }
   }
 
-  static async updateMatchResult(matchId, player1Score, player2Score, player1Lines, player2Lines, durationSeconds) {
+  static async updateMatchResult(matchId, player1Score, player2Score, player1Lines, player2Lines, durationSeconds, winnerRole) {
     try {
       const match = await this.getMatch(matchId);
-      const winnerId = player1Score >= player2Score ? match.player1_id : match.player2_id;
+      const winnerId = winnerRole === 'player1' ? match.player1_id : match.player2_id;
 
       await pool.query(
-        `UPDATE matches 
-         SET player1_score = $1, player2_score = $2, player1_lines = $3, player2_lines = $4, 
+        `UPDATE matches
+         SET player1_score = $1, player2_score = $2, player1_lines = $3, player2_lines = $4,
              duration_seconds = $5, winner_id = $6
          WHERE match_id = $7`,
         [player1Score, player2Score, player1Lines, player2Lines, durationSeconds, winnerId, matchId]

@@ -97,3 +97,14 @@
     text-align: center;
   }
 }
+
+@media (max-width: 900px) {
+  .profile-page .vs-nav {
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+
+  .profile-page .vs-nav-links {
+    width: auto;
+  }
+}

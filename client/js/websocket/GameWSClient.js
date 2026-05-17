@@ -91,6 +91,7 @@ export class GameWSClient {
     this.send({
       type: 'gameEnd',
       code: this.roomCode,
+      loserRole: this.role,
       player1Score,
       player2Score,
       player1Lines,

@@ -14,11 +14,13 @@ class LeaderboardManager {
     const profileLink = document.getElementById('profileLink');
     const logoutBtn = document.getElementById('logoutBtn');
     const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
 
     if (authService.isLoggedIn()) {
       profileLink.style.display = 'inline-flex';
       logoutBtn.style.display = 'inline-flex';
       loginBtn.style.display = 'none';
+      if (registerBtn) registerBtn.style.display = 'none';
 
       logoutBtn.addEventListener('click', () => {
         authService.logout();
@@ -28,6 +30,7 @@ class LeaderboardManager {
       profileLink.style.display = 'none';
       logoutBtn.style.display = 'none';
       loginBtn.style.display = 'inline-flex';
+      if (registerBtn) registerBtn.style.display = 'inline-flex';
     }
   }
 

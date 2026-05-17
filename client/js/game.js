@@ -10,7 +10,7 @@ const SETTINGS_KEY = 'vs_game_settings';
 const DEFAULT_SETTINGS = {
   darkTheme: false,
   glow: true,
-  cellHighlight: true,
+  whiteBoard: false,
   compact: true
 };
 
@@ -25,6 +25,8 @@ class GameManager {
     this.roomCode = null;
     this.myName = '';
     this.isReady = false;
+
+    this.isHeaderDisabled = false;
 
     this.playerNames = {
       player1: 'Игрок 1',
@@ -49,6 +51,9 @@ class GameManager {
     this.settings = this.loadSettings();
     this.applySettings();
     this.bindSettingsControls();
+    this.listenToGlobalSettings();
+
+    this.updateGameNavAuthUI();
 
     if (!authService?.isLoggedIn?.()) {
       this.setStatus('Авторизуйтесь, чтобы играть или смотреть матчи.', '#6a3748');
@@ -71,10 +76,12 @@ class GameManager {
 
   setupWSCallbacks() {
     this.wsClient.onRoomCreated = (message) => {
+      console.log('onRoomCreated - setting role to:', message.role);
       this.roomCode = message.code;
       this.role = message.role;
       this.wsClient.roomCode = message.code;
       this.wsClient.role = message.role;
+      console.log('onRoomCreated - this.role is now:', this.role);
       this.playerNames.player1 = this.myName;
       this.playerNames.player2 = 'Ожидание игрока';
       this.spectators = [];
@@ -88,10 +95,12 @@ class GameManager {
     };
 
     this.wsClient.onJoined = (message) => {
+      console.log('onJoined - setting role to:', message.role);
       this.roomCode = message.code;
       this.role = message.role;
       this.wsClient.roomCode = message.code;
       this.wsClient.role = message.role;
+      console.log('onJoined - this.role is now:', this.role);
       this.resetRoundFlags();
       this.hideMatchOverlay();
       this.updateRoomCode(message.code);
@@ -208,18 +217,28 @@ class GameManager {
     });
   }
 
+  updateGameNavAuthUI() {
+    const profileNavLink = document.getElementById('profileNavLink');
+    const loginNavLink = document.getElementById('loginNavLink');
+    const registerNavLink = document.getElementById('registerNavLink');
+
+    const loggedIn = Boolean(authService?.isLoggedIn?.());
+
+    if (profileNavLink) profileNavLink.style.display = loggedIn ? 'inline-flex' : 'none';
+    if (loginNavLink) loginNavLink.style.display = loggedIn ? 'none' : 'inline-flex';
+    if (registerNavLink) registerNavLink.style.display = loggedIn ? 'none' : 'inline-flex';
+  }
+
   bindSettingsControls() {
     const themeToggle = document.getElementById('themeToggle');
     const glowToggle = document.getElementById('glowToggle');
-    const cellHighlightToggle = document.getElementById('cellHighlightToggle');
 
-    if (!themeToggle || !glowToggle || !cellHighlightToggle) {
+    if (!themeToggle || !glowToggle) {
       return;
     }
 
     themeToggle.checked = this.settings.darkTheme;
     glowToggle.checked = this.settings.glow;
-    cellHighlightToggle.checked = this.settings.cellHighlight;
 
     themeToggle.addEventListener('change', () => {
       this.settings.darkTheme = themeToggle.checked;
@@ -233,10 +252,11 @@ class GameManager {
       this.applySettings();
       this.rerenderBoards();
     });
+  }
 
-    cellHighlightToggle.addEventListener('change', () => {
-      this.settings.cellHighlight = cellHighlightToggle.checked;
-      this.persistSettings();
+  listenToGlobalSettings() {
+    window.addEventListener('settingsChanged', (event) => {
+      this.settings = { ...this.settings, ...event.detail };
       this.applySettings();
       this.rerenderBoards();
     });
@@ -260,7 +280,7 @@ class GameManager {
     document.body.classList.toggle('theme-light', !this.settings.darkTheme);
     document.body.classList.toggle('compact-mode', this.settings.compact);
     document.body.classList.toggle('no-glow', !this.settings.glow);
-    document.body.classList.toggle('no-cell-highlight', !this.settings.cellHighlight);
+    document.body.classList.toggle('white-board', this.settings.whiteBoard);
   }
 
   rerenderBoards() {
@@ -274,8 +294,20 @@ class GameManager {
   }
 
   toggleSettings(force) {
-    const overlay = document.getElementById('settingsOverlay');
-    const shouldOpen = typeof force === 'boolean' ? force : !overlay.classList.contains('is-visible');
+    // Открытие/закрытие оверлея реализовано в client/js/settings.js
+    // window.toggleSettings уже синхронизирует класс is-visible на #globalSettingsOverlay.
+    if (typeof window.toggleSettings === 'function') {
+      return window.toggleSettings(force);
+    }
+
+    // Fallback на случай если settings.js не загрузился
+    const overlay = document.getElementById('globalSettingsOverlay');
+    if (!overlay) return;
+
+    const shouldOpen = typeof force === 'boolean'
+      ? force
+      : !overlay.classList.contains('is-visible');
+
     overlay.classList.toggle('is-visible', shouldOpen);
     overlay.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
   }
@@ -317,7 +349,46 @@ class GameManager {
     this.setStatus('Запрос на реванш отправлен.');
   }
 
+  setHeaderButtonsEnabled(enabled) {
+    const headerNav = document.querySelector('nav.vs-nav');
+    if (!headerNav) return;
+
+    const rightLinksBlock = headerNav.querySelector('.vs-nav-links:last-child');
+    if (!rightLinksBlock) return;
+
+    const settingsBtn = rightLinksBlock.querySelector('button[onclick="toggleSettings()"], button[onclick="toggleSettings();"]');
+    const controls = rightLinksBlock.querySelectorAll('a, button');
+
+    rightLinksBlock.style.pointerEvents = enabled ? '' : 'none';
+    controls.forEach((el) => {
+      if (enabled) {
+        el.removeAttribute('aria-disabled');
+      } else {
+        el.setAttribute('aria-disabled', 'true');
+      }
+    });
+
+    // Надёжный перехват inline onclick="toggleSettings()" через handler по click
+    // (pointer-events обычно хватает, но это гарантирует 100% блокировку).
+    if (settingsBtn) {
+      settingsBtn.dataset.bbHeaderDisabled = enabled ? '' : '1';
+
+      if (!settingsBtn.dataset.bbHeaderHandlerAttached) {
+        settingsBtn.addEventListener('click', (e) => {
+          if (settingsBtn.dataset.bbHeaderDisabled === '1') {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        }, true);
+        settingsBtn.dataset.bbHeaderHandlerAttached = '1';
+      }
+    }
+
+    this.isHeaderDisabled = !enabled;
+  }
+
   startPlayerMode() {
+    this.setHeaderButtonsEnabled(false);
     this.showOnly('gameArea');
     this.initArena();
     this.highlightActivePanel();
@@ -360,6 +431,7 @@ class GameManager {
   }
 
   startSpectatorMode() {
+    this.setHeaderButtonsEnabled(false);
     this.showOnly('spectatorArea');
     this.updateSpectatorReactionTargetUI();
 
@@ -403,10 +475,23 @@ class GameManager {
     const player2Lines = Number(document.getElementById('player2Lines').textContent) || 0;
     const duration = this.startTime ? Math.max(1, Math.floor((Date.now() - this.startTime) / 1000)) : 0;
 
+    console.log('=== CLIENT SENDING GAME END ===');
+    console.log('My role (loserRole):', this.role);
+    console.log('player1Score:', player1Score);
+    console.log('player2Score:', player2Score);
+    console.log('================================');
+
     this.wsClient.sendGameEnd(player1Score, player2Score, player1Lines, player2Lines, duration);
   }
 
   finishMatch(message) {
+    console.log('=== CLIENT RECEIVED MATCH ENDED ===');
+    console.log('Winner:', message.winner);
+    console.log('Winner name:', message.winnerName);
+    console.log('My role:', this.role);
+    console.log('Did I win?', message.winner === this.role);
+    console.log('===================================');
+
     this.gameLoop?.stop();
     this.renderMatchOverlay(message);
 
@@ -534,14 +619,24 @@ class GameManager {
   }
 
   leaveRoom() {
-    this.gameLoop?.stop();
+    try {
+      this.gameLoop?.stop();
 
-    if (this.wsClient?.ws && this.wsClient.ws.readyState === WebSocket.OPEN) {
-      this.wsClient.leaveRoom();
-      this.wsClient.ws.close(1000, 'leave-room');
+      if (this.wsClient?.ws && this.wsClient.ws.readyState === WebSocket.OPEN) {
+        this.wsClient.leaveRoom();
+        this.wsClient.ws.close(1000, 'leave-room');
+      }
+    } catch (e) {
+      console.error('leaveRoom failed:', e);
+    } finally {
+      // Всегда возвращаем в меню, даже если с WS что-то пошло не так
+      try {
+        this.resetToMenu('Вы покинули комнату.');
+      } catch (e) {
+        console.error('resetToMenu failed after leaveRoom:', e);
+        this.setStatus('Не удалось корректно выйти из матча.', '#6a3748');
+      }
     }
-
-    this.resetToMenu('Вы покинули комнату.');
   }
 
   sendReaction(emoji) {
@@ -646,8 +741,9 @@ class GameManager {
 
     const bubble = this.createReactionContent(emoji, reactionLabel, senderRole === 'spectator');
     if (senderRole !== 'spectator') {
+      // Расположение/якорь — как было (по адресату), хвост — по отправителю
       bubble.classList.add(targetRole === 'player2' ? 'anchor-right' : 'anchor-left');
-      bubble.classList.add(targetRole === 'player2' ? 'tail-right' : 'tail-left');
+      bubble.classList.add(senderRole === 'player2' ? 'tail-right' : 'tail-left');
       this.getReactionHostPanel(target, targetRole)?.classList.add('reaction-host-active');
     }
     target.appendChild(bubble);
@@ -1012,6 +1108,7 @@ class GameManager {
   }
 
   resetToMenu(statusMessage) {
+    this.setHeaderButtonsEnabled(true);
     this.gameLoop?.stop();
     this.hideMatchOverlay();
     this.toggleSettings(false);
@@ -1058,7 +1155,12 @@ window.sendReaction = (emoji) => window.gameManager?.sendReaction(emoji);
 window.setSpectatorReactionTarget = (role) => window.gameManager?.setSpectatorReactionTarget(role);
 window.copyCode = () => window.gameManager?.copyCode();
 window.requestRematch = () => window.gameManager?.requestRematch();
-window.toggleSettings = (force) => window.gameManager?.toggleSettings(force);
+/**
+ * Производственное поведение:
+ * game.html вызывает inline onclick="toggleSettings()".
+ * settings.js подключен и определяет window.toggleSettings — не вмешиваемся.
+ * Этот блок оставлен для совместимости, но больше ничего не делает.
+ */
 
 window.addEventListener('DOMContentLoaded', async () => {
   window.gameManager = new GameManager();

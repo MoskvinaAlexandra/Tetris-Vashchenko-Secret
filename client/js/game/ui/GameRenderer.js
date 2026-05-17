@@ -14,44 +14,23 @@ export class GameRenderer {
 
   render(gameState) {
     this.clear();
-    this.drawCellHighlights(gameState.board);
     this.drawBoard(gameState.board);
     this.drawCurrentPiece(gameState.currentPiece);
   }
 
   clear() {
-    this.ctx.fillStyle = '#0a0a0a';
+    const isWhiteBoard = document.body.classList.contains('white-board');
+    this.ctx.fillStyle = isWhiteBoard ? '#ffffff' : '#0a0a0a';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-  }
-
-  drawCellHighlights(board) {
-    const highlightEnabled = !document.body.classList.contains('no-cell-highlight');
-    if (!highlightEnabled) return;
-
-    const highlightColor = 'rgba(93, 217, 161, 0.08)';
-
-    for (let row = 0; row < board.length; row++) {
-      for (let col = 0; col < board[row].length; col++) {
-        const cellValue = board[row][col];
-        
-        // Only highlight empty cells
-        if (cellValue === 0) {
-          this.ctx.fillStyle = highlightColor;
-          this.ctx.fillRect(
-            col * BOARD_CONFIG.CELL_SIZE + 1,
-            row * BOARD_CONFIG.CELL_SIZE + 1,
-            BOARD_CONFIG.CELL_SIZE - 2,
-            BOARD_CONFIG.CELL_SIZE - 2
-          );
-        }
-      }
-    }
   }
 
   /**
    * Draw board cells
    */
   drawBoard(board) {
+    const isWhiteBoard = document.body.classList.contains('white-board');
+    const gridColor = isWhiteBoard ? '#e0e0e0' : '#1a1a1a';
+
     for (let row = 0; row < board.length; row++) {
       for (let col = 0; col < board[row].length; col++) {
         const cellValue = board[row][col];
@@ -61,7 +40,7 @@ export class GameRenderer {
         }
 
         // Draw grid
-        this.ctx.strokeStyle = '#1a1a1a';
+        this.ctx.strokeStyle = gridColor;
         this.ctx.lineWidth = 1;
         this.ctx.strokeRect(
           col * BOARD_CONFIG.CELL_SIZE,
@@ -103,7 +82,7 @@ export class GameRenderer {
     this.ctx.fillStyle = color;
     const glowEnabled = !document.body.classList.contains('no-glow');
     this.ctx.shadowColor = color;
-    this.ctx.shadowBlur = glowEnabled ? 4 : 0;
+    this.ctx.shadowBlur = glowEnabled ? 20 : 0;
     this.ctx.fillRect(
       x * BOARD_CONFIG.CELL_SIZE + 1,
       y * BOARD_CONFIG.CELL_SIZE + 1,

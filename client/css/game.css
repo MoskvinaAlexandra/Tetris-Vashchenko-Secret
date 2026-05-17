@@ -396,8 +396,8 @@
   border-radius: 16px;
   padding: clamp(8px, 0.8vw, 10px);
   background: var(--game-panel-bg);
-  display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: clamp(10px, 1vw, 12px);
   align-self: stretch;
   justify-self: stretch;
@@ -452,9 +452,10 @@
 .target-toggle-button {
   min-width: 0;
   width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .target-toggle-button.active-target {

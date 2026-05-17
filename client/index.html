@@ -11,8 +11,9 @@
     <div class="vs-shell">
         <nav class="vs-topbar">
             <div class="vs-topbar-links">
+                <a href="/" class="vs-link is-active">Главная</a>
                 <a href="/leaderboard.html" class="vs-link">Лидеры</a>
-                <a href="/vanya.html" class="vs-link">О нас</a>
+                <a href="/vanya.html" class="vs-link">О Ване</a>
             </div>
             <div class="vs-topbar-links">
                 <button class="vs-button-secondary js-settings-toggle" type="button">Настройки</button>
@@ -37,8 +38,8 @@
                 <h2 class="vs-section-title">Salon Menu</h2>
                 <p class="vs-section-copy">Дуэли, статистика и фирменная эстетика без лишнего хаоса.</p>
                 <div class="vs-actions stack">
-                    <button class="vs-button" type="button" onclick="location.href='/game.html'">Играть</button>
-                    <button class="vs-button" type="button" onclick="location.href='/leaderboard.html'">Статистика</button>
+                    <button class="vs-button" type="button" onclick="(authService && authService.isLoggedIn && authService.isLoggedIn()) ? location.href='/game.html' : location.href='/login.html'">Играть</button>
+                    <button class="vs-button" type="button" onclick="location.href='/leaderboard.html'">Лидеры</button>
                     <button class="vs-button-secondary" type="button" onclick="location.href='/vanya.html'">Ваня Ващенко</button>
                 </div>
             </section>

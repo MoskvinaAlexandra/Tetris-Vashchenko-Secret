@@ -6,6 +6,11 @@ export async function handleGameEnd(ws, msg, roomManager) {
     return;
   }
 
+  console.log('=== GAME END DEBUG ===');
+  console.log('loserRole from message:', msg.loserRole);
+  console.log('player1 name:', room.player1.name);
+  console.log('player2 name:', room.player2.name);
+
   room.matchCompleted = true;
   room.matchStarted = false;
   room.gameLive = false;
@@ -18,17 +23,26 @@ export async function handleGameEnd(ws, msg, roomManager) {
     const player2Score = Number(msg.player2Score) || 0;
     const durationSeconds = Number(msg.duration) || 0;
 
+    // Тот, кто отправил gameEnd (loserRole), проиграл (достиг верха поля)
+    // Победитель — противоположный игрок
+    const loserRole = msg.loserRole;
+    const winner = loserRole === 'player1' ? 'player2' : 'player1';
+    const winnerName = winner === 'player1' ? room.player1.name : room.player2.name;
+
+    console.log('Calculated winner:', winner);
+    console.log('Winner name:', winnerName);
+    console.log('Scores - player1:', player1Score, 'player2:', player2Score);
+    console.log('======================');
+
     await MatchService.updateMatchResult(
       room.match.match_id,
       player1Score,
       player2Score,
       Number(msg.player1Lines) || 0,
       Number(msg.player2Lines) || 0,
-      durationSeconds
+      durationSeconds,
+      winner
     );
-
-    const winner = player1Score >= player2Score ? 'player1' : 'player2';
-    const winnerName = winner === 'player1' ? room.player1.name : room.player2.name;
 
     roomManager.broadcastToRoom(msg.code, {
       type: 'matchEnded',

@@ -3,7 +3,8 @@
   const DEFAULT_SETTINGS = {
     darkTheme: false,
     glow: true,
-    compact: false
+    compact: false,
+    whiteBoard: false
   };
 
   function loadSettings() {
@@ -29,6 +30,23 @@
       return;
     }
 
+    const isGameContext = window.__SETTINGS_CONTEXT__ === 'game';
+
+    const gameSettingsHTML = isGameContext ? `
+      <label class="settings-item" for="globalGlowToggle">
+        <span class="settings-copy">
+          <strong>Свечение фигур</strong>
+        </span>
+        <input id="globalGlowToggle" type="checkbox">
+      </label>
+      <label class="settings-item" for="globalWhiteBoardToggle">
+        <span class="settings-copy">
+          <strong>Белое поле</strong>
+        </span>
+        <input id="globalWhiteBoardToggle" type="checkbox">
+      </label>
+    ` : '';
+
     const overlay = document.createElement('div');
     overlay.id = 'globalSettingsOverlay';
     overlay.className = 'settings-overlay';
@@ -38,7 +56,7 @@
         <div class="settings-panel-head">
           <div>
             <h2 class="vs-section-title">Настройки</h2>
-            <p class="vs-section-copy">Victoria Secret theme controls for the whole salon.</p>
+            <p class="vs-section-copy">Victoria Secret theme controls${isGameContext ? ' and game options' : ' for the whole salon'}.</p>
           </div>
           <button class="vs-button-secondary settings-close" type="button" id="globalSettingsClose">X</button>
         </div>
@@ -47,10 +65,10 @@
           <label class="settings-item" for="globalThemeToggle">
             <span class="settings-copy">
               <strong>Темная тема</strong>
-              <small>Переключает весь интерфейс между pink и burgundy.</small>
             </span>
             <input id="globalThemeToggle" type="checkbox">
           </label>
+          ${gameSettingsHTML}
         </div>
 
         <div class="vs-actions settings-actions">
@@ -61,14 +79,36 @@
 
     document.body.appendChild(overlay);
 
-    const checkbox = document.getElementById('globalThemeToggle');
-    checkbox.checked = Boolean(settings.darkTheme);
-    checkbox.addEventListener('change', () => {
+    const themeCheckbox = document.getElementById('globalThemeToggle');
+    themeCheckbox.checked = Boolean(settings.darkTheme);
+    themeCheckbox.addEventListener('change', () => {
       const nextSettings = loadSettings();
-      nextSettings.darkTheme = checkbox.checked;
+      nextSettings.darkTheme = themeCheckbox.checked;
       saveSettings(nextSettings);
       applyTheme(nextSettings);
     });
+
+    if (isGameContext) {
+      const glowCheckbox = document.getElementById('globalGlowToggle');
+      const whiteBoardCheckbox = document.getElementById('globalWhiteBoardToggle');
+
+      glowCheckbox.checked = Boolean(settings.glow);
+      whiteBoardCheckbox.checked = Boolean(settings.whiteBoard);
+
+      glowCheckbox.addEventListener('change', () => {
+        const nextSettings = loadSettings();
+        nextSettings.glow = glowCheckbox.checked;
+        saveSettings(nextSettings);
+        window.dispatchEvent(new CustomEvent('settingsChanged', { detail: nextSettings }));
+      });
+
+      whiteBoardCheckbox.addEventListener('change', () => {
+        const nextSettings = loadSettings();
+        nextSettings.whiteBoard = whiteBoardCheckbox.checked;
+        saveSettings(nextSettings);
+        window.dispatchEvent(new CustomEvent('settingsChanged', { detail: nextSettings }));
+      });
+    }
 
     const close = () => toggleOverlay(false);
     document.getElementById('globalSettingsClose').addEventListener('click', close);
@@ -88,6 +128,9 @@
     overlay.classList.toggle('is-visible', shouldOpen);
     overlay.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
   }
+
+  // Совместимость со старыми inline-onclick в HTML
+  window.toggleSettings = (force) => toggleOverlay(force);
 
   document.addEventListener('DOMContentLoaded', () => {
     const settings = loadSettings();
