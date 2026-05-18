@@ -492,17 +492,28 @@
 .center-arena-wrap {
   min-width: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   overflow: visible;
 }
 
 .arena-grid.fixed-slots {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: center;
-  gap: clamp(10px, 1vw, 14px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(10px, 1.5vw, 24px);
   width: 100%;
   position: relative;
+}
+
+.arena-grid.fixed-slots .board-panel {
+  flex: 0.7;
+  transition: all 0.3s ease;
+  min-width: 0;
+}
+
+.arena-grid.fixed-slots .board-panel.active-player {
+  flex: 1.3;
 }
 
 .arena-reaction-layer {
@@ -534,10 +545,24 @@
 }
 
 .board-panel.active-player canvas {
-  border-color: color-mix(in srgb, var(--vs-accent) 76%, var(--vs-border));
-  box-shadow:
-    0 0 0 5px color-mix(in srgb, var(--vs-accent) 20%, transparent),
-    var(--game-board-shadow);
+  width: 100%; 
+  max-width: 380px;
+  z-index: 2;
+}
+
+.board-panel:not(.active-player) canvas {
+  width: 100%;
+  max-width: 240px;
+  opacity: 0.8;
+}
+
+.board-panel:not(.active-player) .board-meta {
+  font-size: 11px;
+  gap: 5px;
+}
+
+.board-panel:not(.active-player) .board-meta strong {
+  font-size: 12px;
 }
 
 .board-meta {
