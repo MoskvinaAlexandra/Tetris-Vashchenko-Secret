@@ -905,4 +905,159 @@
   .settings-panel-head {
     flex-direction: column;
   }
+
+  .game-controls-hint,
+  .lobby-controls-hint {
+    margin: 12px 0;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .hint-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .hint-controls {
+    gap: 6px;
+  }
+
+  .hint-row {
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .hint-key {
+    font-size: 16px;
+    font-weight: 700;
+    padding: 6px 8px;
+    min-width: 36px;
+    min-height: 32px;
+  }
+
+  .hint-caption {
+    font-size: 16px;
+    font-weight: 700;
+    min-width: 36px;
+    min-height: 32px;
+  }
+
+}
+
+.game-controls-hint {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--vs-border);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--vs-ink);
+  font-family: "Times New Roman", serif;
+}
+
+.game-page.theme-dark .game-controls-hint {
+  border-color: var(--vs-border);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  color: var(--vs-ink);
+}
+
+.hint-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: block;
+  color: var(--vs-accent);
+  letter-spacing: 0.3px;
+}
+
+.hint-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hint-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.hint-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.75));
+  border: 1.5px solid var(--vs-accent);
+  border-radius: 6px;
+  font-weight: 700;
+  font-family: "Segoe UI Symbol", "Segoe UI", Arial, sans-serif;
+  font-style: normal;
+  min-width: 42px;
+  min-height: 36px;
+  text-align: center;
+  color: var(--vs-accent);
+  font-size: 18px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.hint-caption {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: "Segoe UI Symbol", "Segoe UI", Arial, sans-serif;
+  font-style: normal;
+  min-width: 42px;
+  min-height: 36px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.hint-key:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.85));
+}
+
+.game-page.theme-dark .hint-key {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.08));
+  border-color: var(--vs-accent);
+  color: var(--vs-accent);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.game-page.theme-dark .hint-key:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.12));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.lobby-controls-hint {
+  margin: 18px 0 12px 0;
+  padding: 16px 18px;
+  border: 1.5px solid var(--vs-border);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.35));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--vs-ink);
+  font-family: "Times New Roman", serif;
+}
+
+.game-page.theme-dark .lobby-controls-hint {
+  border-color: var(--vs-border);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  color: var(--vs-ink);
 }

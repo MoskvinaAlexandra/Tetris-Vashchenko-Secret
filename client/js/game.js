@@ -392,6 +392,7 @@ class GameManager {
     this.showOnly('gameArea');
     this.initArena();
     this.highlightActivePanel();
+    this.hideControlsHints();
 
     this.renderers = {
       player1: new GameRenderer('player1Canvas'),
@@ -433,6 +434,7 @@ class GameManager {
   startSpectatorMode() {
     this.setHeaderButtonsEnabled(false);
     this.showOnly('spectatorArea');
+    this.hideControlsHints();
     this.updateSpectatorReactionTargetUI();
 
     this.renderers = {
@@ -1137,6 +1139,13 @@ class GameManager {
       level: 1,
       isGameOver: false
     };
+  }
+
+  hideControlsHints() {
+    const hints = document.querySelectorAll('.game-controls-hint');
+    hints.forEach(hint => {
+      hint.style.display = 'none';
+    });
   }
 
   setStatus(text, color = 'var(--vs-ink-muted)') {

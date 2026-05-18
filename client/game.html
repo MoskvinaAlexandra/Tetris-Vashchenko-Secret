@@ -87,6 +87,25 @@
 
                 <div id="countdown" class="countdown" style="display:none;"></div>
 
+                <div class="lobby-controls-hint">
+                    <div class="hint-title">Управление</div>
+                    <div class="hint-controls">
+                        <div class="hint-row">
+                            <span class="hint-key">←</span>
+                            <span class="hint-key">→</span>
+                            <span class="hint-caption">Влево/Вправо</span>
+                        </div>
+                        <div class="hint-row">
+                            <span class="hint-key">↓</span>
+                            <span class="hint-caption">Вниз</span>
+                        </div>
+                        <div class="hint-row">
+                            <span class="hint-key">Пробел</span>
+                            <span class="hint-caption">Мгновенное падение</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="vs-actions lobby-actions-row">
                     <button id="readyBtn" class="vs-button" type="button" onclick="toggleReady()">Готов</button>
                     <button class="vs-button-secondary" type="button" onclick="leaveRoom()">Покинуть комнату</button>
@@ -101,8 +120,7 @@
 <article id="player1Panel" class="board-panel player1" role="region" aria-label="Доска игрока 1">
                                 <div id="reactionPlayer1Edge" class="reaction-pop edge-left" aria-live="polite"></div>
                                 <h2 id="player1NameBoard">Игрок 1</h2>
-                                <canvas id="player1Canvas" width="240" height="480" aria-label="Игровое поле игрока 1"></canvas>
-                                <footer class="board-meta" role="contentinfo">
+                                <canvas id="player1Canvas" width="240" height="480" aria-label="Игровое поле игрока 1"></canvas>                                <footer class="board-meta" role="contentinfo">
                                     <span>Счет: <strong id="player1Score">0</strong></span>
                                     <span>Линии: <strong id="player1Lines">0</strong></span>
                                 </footer>

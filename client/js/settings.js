@@ -21,8 +21,9 @@
   }
 
   function applyTheme(settings) {
-    document.body.classList.toggle('theme-dark', Boolean(settings.darkTheme));
-    document.body.classList.toggle('theme-light', !settings.darkTheme);
+    const isDark = Boolean(settings.darkTheme);
+    document.documentElement.classList.toggle('theme-dark', isDark);
+    document.body.classList.remove('theme-dark', 'theme-light');
   }
 
   function ensureOverlay(settings) {

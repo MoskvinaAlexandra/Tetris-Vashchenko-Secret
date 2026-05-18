@@ -15,6 +15,12 @@
   --vs-success: #a05674;
   --vs-shadow: 0 18px 40px rgba(140, 61, 96, 0.16);
   --vs-radius: 14px;
+  --vs-pattern-1: #e7b7c9;
+  --vs-pattern-2: #f4d3e0;
+  --vs-pattern-overlay: rgba(255, 255, 255, 0.3);
+  --vs-main-pattern-1: #e4b0c4;
+  --vs-main-pattern-2: #f1ccda;
+  --vs-main-overlay: rgba(255, 255, 255, 0.16);
 }
 
 .theme-dark {
@@ -33,6 +39,12 @@
   --vs-danger: #d96c8d;
   --vs-success: #b96a88;
   --vs-shadow: 0 22px 44px rgba(0, 0, 0, 0.34);
+  --vs-pattern-1: #34131f;
+  --vs-pattern-2: #471a2a;
+  --vs-pattern-overlay: rgba(255, 214, 228, 0.06);
+  --vs-main-pattern-1: #34131f;
+  --vs-main-pattern-2: #471a2a;
+  --vs-main-overlay: rgba(255, 218, 231, 0.05);
 }
 
 * {
@@ -50,28 +62,16 @@ body {
   font-family: "Times New Roman", serif;
   color: var(--vs-ink);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, var(--vs-pattern-overlay), rgba(255, 255, 255, 0)),
     repeating-linear-gradient(
       to right,
-      #e7b7c9 0,
-      #e7b7c9 82px,
-      #f4d3e0 82px,
-      #f4d3e0 146px
+      var(--vs-pattern-1) 0,
+      var(--vs-pattern-1) 82px,
+      var(--vs-pattern-2) 82px,
+      var(--vs-pattern-2) 146px
     );
   background-color: var(--vs-bg);
-}
-
-body.theme-dark {
-  background:
-    linear-gradient(180deg, rgba(255, 214, 228, 0.06), rgba(255, 214, 228, 0)),
-    repeating-linear-gradient(
-      to right,
-      #34131f 0,
-      #34131f 82px,
-      #471a2a 82px,
-      #471a2a 146px
-    );
-  background-color: var(--vs-bg);
+  min-height: 100vh;
 }
 
 a {
@@ -184,25 +184,13 @@ textarea {
   border: 2px solid var(--vs-border);
   padding: 24px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
+    linear-gradient(180deg, var(--vs-main-overlay), rgba(255, 255, 255, 0.04)),
     repeating-linear-gradient(
       to right,
-      #e4b0c4 0,
-      #e4b0c4 82px,
-      #f1ccda 82px,
-      #f1ccda 146px
-    );
-}
-
-.theme-dark .vs-main {
-  background:
-    linear-gradient(180deg, rgba(255, 218, 231, 0.05), rgba(255, 218, 231, 0.02)),
-    repeating-linear-gradient(
-      to right,
-      #34131f 0,
-      #34131f 82px,
-      #471a2a 82px,
-      #471a2a 146px
+      var(--vs-main-pattern-1) 0,
+      var(--vs-main-pattern-1) 82px,
+      var(--vs-main-pattern-2) 82px,
+      var(--vs-main-pattern-2) 146px
     );
 }
 
