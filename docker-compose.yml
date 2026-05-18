@@ -1,0 +1,66 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: tetris-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-tetris}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tetris-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Node.js Backend + Static Files
+  app:
+    build: .
+    container_name: tetris-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-tetris}
+      JWT_SECRET: ${JWT_SECRET:-change-this-secret-in-production}
+      PORT: 3000
+      DB_SSL: ${DB_SSL:-false}
+      AUTO_INIT_DB: ${AUTO_INIT_DB:-true}
+    volumes:
+      - ./server:/app/server
+      - ./client:/app/client
+      - /app/server/node_modules
+    networks:
+      - tetris-network
+    expose:
+      - "3000"
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: tetris-nginx
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./client:/usr/share/nginx/html:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - tetris-network
+
+volumes:
+  postgres_data:
+
+networks:
+  tetris-network:
+    driver: bridge
