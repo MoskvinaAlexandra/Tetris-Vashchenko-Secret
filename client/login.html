@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>Vashchenko's Secret | Вход</title>
+    <script>
+        (function() {
+            try {
+                const settings = JSON.parse(localStorage.getItem('vs_game_settings'));
+                if (settings && settings.darkTheme) {
+                    document.documentElement.classList.add('theme-dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
     <link href="https://fonts.cdnfonts.com/css/perpetua-titling-mt" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/auth.css">
