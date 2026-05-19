@@ -615,9 +615,33 @@ class GameManager {
       return;
     }
 
-    navigator.clipboard.writeText(code)
-      .then(() => this.setStatus(`Код ${code} скопирован.`))
-      .catch(() => this.setStatus('Не удалось скопировать код.', '#6a3748'));
+    // Попытка использовать Clipboard API (работает только на HTTPS)
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code)
+        .then(() => this.setStatus(`Код ${code} скопирован.`))
+        .catch(() => this.fallbackCopyCode(code));
+    } else {
+      // Fallback для HTTP
+      this.fallbackCopyCode(code);
+    }
+  }
+
+  fallbackCopyCode(code) {
+    const textarea = document.createElement('textarea');
+    textarea.value = code;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    
+    try {
+      document.execCommand('copy');
+      this.setStatus(`Код ${code} скопирован.`);
+    } catch (err) {
+      this.setStatus('Не удалось скопировать код.', '#6a3748');
+    } finally {
+      document.body.removeChild(textarea);
+    }
   }
 
   leaveRoom() {

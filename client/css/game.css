@@ -546,13 +546,15 @@
 
 .board-panel.active-player canvas {
   width: 100%; 
-  max-width: 380px;
+  max-width: 340px;
+  max-height: calc(100vh - 180px);
   z-index: 2;
 }
 
 .board-panel:not(.active-player) canvas {
   width: 100%;
   max-width: 240px;
+  max-height: calc(100vh - 220px);
   opacity: 0.8;
 }
 
@@ -581,6 +583,8 @@
 
 .board-panel canvas {
   width: min(100%, clamp(200px, 22vw, 380px));
+  height: auto;
+  max-height: calc(100vh - 200px);
   aspect-ratio: 1 / 2;
   display: block;
   margin: 0 auto;
@@ -980,6 +984,103 @@
     min-height: 32px;
   }
 
+}
+
+/* Адаптация по высоте экрана */
+@media (max-height: 900px) {
+  .board-panel.active-player canvas {
+    max-height: calc(100vh - 160px);
+    max-width: 300px;
+  }
+
+  .board-panel:not(.active-player) canvas {
+    max-height: calc(100vh - 200px);
+    max-width: 220px;
+  }
+
+  .board-meta {
+    font-size: 12px;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .board-panel h2 {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-height: 800px) {
+  .board-panel.active-player canvas {
+    max-height: calc(100vh - 140px);
+    max-width: 280px;
+  }
+
+  .board-panel:not(.active-player) canvas {
+    max-height: calc(100vh - 180px);
+    max-width: 200px;
+  }
+
+  .board-meta {
+    font-size: 11px;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .board-panel h2 {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .match-layout {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .board-panel,
+  .left-controls-panel,
+  .right-side-panel {
+    padding: 10px;
+  }
+}
+
+@media (max-height: 700px) {
+  .board-panel.active-player canvas {
+    max-height: calc(100vh - 120px);
+    max-width: 260px;
+  }
+
+  .board-panel:not(.active-player) canvas {
+    max-height: calc(100vh - 160px);
+    max-width: 180px;
+  }
+
+  .board-meta {
+    font-size: 10px;
+    gap: 5px;
+    margin-top: 5px;
+  }
+
+  .board-panel h2 {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+
+  .match-layout {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .board-panel,
+  .left-controls-panel,
+  .right-side-panel {
+    padding: 8px;
+  }
+
+  .reaction-button {
+    min-height: 2.2rem;
+    max-height: 2.8rem;
+  }
 }
 
 .game-controls-hint {
