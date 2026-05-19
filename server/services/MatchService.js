@@ -80,7 +80,7 @@ export class MatchService {
              total_lines_cleared = total_lines_cleared + $2,
              best_score = GREATEST(best_score, $1),
              best_lines = GREATEST(best_lines, $2),
-             avg_score = ROUND(total_score::decimal / (games_played + 1), 2),
+             avg_score = ROUND((total_score + $1)::decimal / (games_played + 1), 2),
              updated_at = NOW()
          WHERE player_id = $3`,
         [isPlayer1Winner ? player1_score : player2_score,
@@ -96,7 +96,7 @@ export class MatchService {
              total_lines_cleared = total_lines_cleared + $2,
              best_score = GREATEST(best_score, $1),
              best_lines = GREATEST(best_lines, $2),
-             avg_score = ROUND(total_score::decimal / (games_played + 1), 2),
+             avg_score = ROUND((total_score + $1)::decimal / (games_played + 1), 2),
              updated_at = NOW()
          WHERE player_id = $3`,
         [isPlayer1Winner ? player2_score : player1_score,

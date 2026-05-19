@@ -1,7 +1,7 @@
 class AuthService {
   constructor() {
-    this.token = localStorage.getItem('token');
-    this.player = JSON.parse(localStorage.getItem('player') || 'null');
+    this.token = sessionStorage.getItem('token');
+    this.player = JSON.parse(sessionStorage.getItem('player') || 'null');
   }
 
   async register(name, email, password) {
@@ -66,19 +66,19 @@ class AuthService {
 
   setToken(token) {
     this.token = token;
-    localStorage.setItem('token', token);
+    sessionStorage.setItem('token', token);
   }
 
   setPlayer(player) {
     this.player = player;
-    localStorage.setItem('player', JSON.stringify(player));
+    sessionStorage.setItem('player', JSON.stringify(player));
   }
 
   logout() {
     this.token = null;
     this.player = null;
-    localStorage.removeItem('token');
-    localStorage.removeItem('player');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('player');
   }
 
   getAuthHeader() {
