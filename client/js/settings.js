@@ -130,7 +130,7 @@
     overlay.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
   }
 
-  // Совместимость со старыми inline-onclick в HTML
+  
   window.toggleSettings = (force) => toggleOverlay(force);
 
   document.addEventListener('DOMContentLoaded', () => {

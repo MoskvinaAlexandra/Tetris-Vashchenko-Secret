@@ -842,7 +842,7 @@
   line-height: 1.4;
 }
 
-/* Custom checkbox styling */
+
 .settings-item input[type="checkbox"] {
   min-width: 48px;
   min-height: 28px;
@@ -986,7 +986,7 @@
 
 }
 
-/* Адаптация по высоте экрана */
+
 @media (max-height: 900px) {
   .board-panel.active-player canvas {
     max-height: calc(100vh - 160px);

@@ -21,7 +21,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   }
 });
 
-// Check if already logged in
+
 if (authService.isLoggedIn()) {
   window.location.href = '/game.html';
 }

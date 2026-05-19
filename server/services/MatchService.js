@@ -108,12 +108,7 @@ export class MatchService {
     }
   }
 
-  /**
-   * Get leaderboard
-   * @param {string} sortBy - 'best_score', 'wins', or 'games_played'
-   * @param {number} limit
-   * @returns {Promise<Array>}
-   */
+  
   static async getLeaderboard(sortBy = 'best_score', limit = 100) {
     const validSortFields = ['best_score', 'wins', 'games_played', 'total_score', 'avg_score'];
     if (!validSortFields.includes(sortBy)) {

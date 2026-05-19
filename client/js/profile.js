@@ -1,20 +1,20 @@
-// Check auth
+
 if (!authService.isLoggedIn()) {
   window.location.href = '/login.html';
 }
 
-// Load profile data
+
 async function loadProfile() {
   try {
     const profile = await PlayerService.getMyProfile();
     const playerId = authService.getCurrentPlayerId();
 
-    // Update player info
+    
     document.getElementById('playerName').textContent = profile.name;
     document.getElementById('playerEmail').textContent = profile.email;
     document.getElementById('joinDate').textContent = `Присоединился: ${new Date(profile.created_at).toLocaleDateString('ru-RU')}`;
 
-    // Update stats
+    
     const stats = profile.stats;
     document.getElementById('bestScore').textContent = stats.best_score;
     document.getElementById('wins').textContent = stats.wins;
@@ -25,7 +25,7 @@ async function loadProfile() {
     document.getElementById('bestLines').textContent = stats.best_lines;
     document.getElementById('totalScore').textContent = stats.total_score;
 
-    // Load match history
+    
     await loadMatches(playerId);
   } catch (err) {
     console.error('Failed to load profile:', err);
@@ -87,7 +87,7 @@ async function loadMatches(playerId) {
   }
 }
 
-// Logout button
+
 document.getElementById('logoutBtn').addEventListener('click', () => {
   if (confirm('Вы уверены, что хотите выйти?')) {
     authService.logout();
@@ -95,6 +95,6 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   }
 });
 
-// Load on page load
+
 loadProfile();
 

@@ -15,11 +15,11 @@ async function initDb() {
     try {
         console.log('Initializing database schema...');
 
-        // Read migration file
+        
         const migrationPath = path.join(__dirname, 'db/migrations/001_initial_schema.sql');
         const schema = fs.readFileSync(migrationPath, 'utf8');
 
-        // Execute schema
+        
         await pool.query(schema);
 
         console.log('Database schema initialized successfully');

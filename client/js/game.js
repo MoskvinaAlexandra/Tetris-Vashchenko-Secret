@@ -294,13 +294,13 @@ class GameManager {
   }
 
   toggleSettings(force) {
-    // Открытие/закрытие оверлея реализовано в client/js/settings.js
-    // window.toggleSettings уже синхронизирует класс is-visible на #globalSettingsOverlay.
+    
+    
     if (typeof window.toggleSettings === 'function') {
       return window.toggleSettings(force);
     }
 
-    // Fallback на случай если settings.js не загрузился
+    
     const overlay = document.getElementById('globalSettingsOverlay');
     if (!overlay) return;
 
@@ -368,8 +368,8 @@ class GameManager {
       }
     });
 
-    // Надёжный перехват inline onclick="toggleSettings()" через handler по click
-    // (pointer-events обычно хватает, но это гарантирует 100% блокировку).
+    
+    
     if (settingsBtn) {
       settingsBtn.dataset.bbHeaderDisabled = enabled ? '' : '1';
 
@@ -615,13 +615,13 @@ class GameManager {
       return;
     }
 
-    // Попытка использовать Clipboard API (работает только на HTTPS)
+    
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(code)
         .then(() => this.setStatus(`Код ${code} скопирован.`))
         .catch(() => this.fallbackCopyCode(code));
     } else {
-      // Fallback для HTTP
+      
       this.fallbackCopyCode(code);
     }
   }
@@ -655,7 +655,7 @@ class GameManager {
     } catch (e) {
       console.error('leaveRoom failed:', e);
     } finally {
-      // Всегда возвращаем в меню, даже если с WS что-то пошло не так
+      
       try {
         this.resetToMenu('Вы покинули комнату.');
       } catch (e) {
@@ -767,7 +767,7 @@ class GameManager {
 
     const bubble = this.createReactionContent(emoji, reactionLabel, senderRole === 'spectator');
     if (senderRole !== 'spectator') {
-      // Расположение/якорь — как было (по адресату), хвост — по отправителю
+      
       bubble.classList.add(targetRole === 'player2' ? 'anchor-right' : 'anchor-left');
       bubble.classList.add(senderRole === 'player2' ? 'tail-right' : 'tail-left');
       this.getReactionHostPanel(target, targetRole)?.classList.add('reaction-host-active');
@@ -1188,12 +1188,7 @@ window.sendReaction = (emoji) => window.gameManager?.sendReaction(emoji);
 window.setSpectatorReactionTarget = (role) => window.gameManager?.setSpectatorReactionTarget(role);
 window.copyCode = () => window.gameManager?.copyCode();
 window.requestRematch = () => window.gameManager?.requestRematch();
-/**
- * Производственное поведение:
- * game.html вызывает inline onclick="toggleSettings()".
- * settings.js подключен и определяет window.toggleSettings — не вмешиваемся.
- * Этот блок оставлен для совместимости, но больше ничего не делает.
- */
+
 
 window.addEventListener('DOMContentLoaded', async () => {
   window.gameManager = new GameManager();

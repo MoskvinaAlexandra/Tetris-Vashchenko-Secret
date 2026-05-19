@@ -6,7 +6,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
   const password = document.getElementById('password').value;
   const confirmPassword = document.getElementById('confirmPassword').value;
 
-  // Validation
+  
   if (password !== confirmPassword) {
     showError('Пароли не совпадают');
     return;
@@ -33,7 +33,7 @@ function showError(message) {
   document.getElementById('error').textContent = '❌ ' + message;
 }
 
-// Check if already logged in
+
 if (authService.isLoggedIn()) {
   window.location.href = '/game.html';
 }

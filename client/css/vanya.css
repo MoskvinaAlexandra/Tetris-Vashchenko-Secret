@@ -1,5 +1,5 @@
-/* VANYA PAGE — Victoria Secret / Vashchenko's Signature Styling */
-/* this file extends global style.css and preserves the VS aesthetic */
+
+
 
 .vanya-page {
     --vanya-accent-glow: rgba(140, 61, 96, 0.2);
@@ -11,7 +11,7 @@
     --vanya-accent-glow: rgba(207, 111, 149, 0.28);
 }
 
-/* main container refinement */
+
 .vanya-container {
     max-width: 1280px;
     margin: 0 auto;
@@ -20,7 +20,7 @@
     gap: 2.2rem;
 }
 
-/* Hero grid : portrait + intro */
+
 .vanya-hero-grid {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -108,7 +108,7 @@
     max-width: 85%;
 }
 
-/* stats cards customisation */
+
 .vanya-stats {
     margin: 0.5rem 0;
 }
@@ -133,7 +133,7 @@
     letter-spacing: 0.3px;
 }
 
-/* Story & legacy double grid */
+
 .vanya-story-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -205,7 +205,7 @@
     font-size: 0.85rem;
 }
 
-/* legacy list */
+
 .vanya-legacy-list {
     list-style: none;
     padding: 0;
@@ -248,7 +248,7 @@
     color: var(--vs-ink-muted);
 }
 
-/* community banner */
+
 .vanya-community {
     margin-top: 0.5rem;
 }
@@ -277,7 +277,7 @@
     font-size: 1.2rem;
 }
 
-/* responsive adjustments */
+
 @media (max-width: 980px) {
     .vanya-hero-grid {
         grid-template-columns: 1fr;
@@ -324,24 +324,24 @@
     }
 }
 
-/* subtle addition: soft glow for cards when dark mode */
+
 .theme-dark .vanya-bio-card,
 .theme-dark .vanya-legacy-card {
     background: rgba(54, 20, 33, 0.8);
 }
 
-/* setting overlay improvements to match vanya page */
+
 .settings-overlay .settings-panel {
     background: var(--vs-panel);
     border: 2px solid var(--vs-accent);
 }
 
-/* keep interactions smooth */
+
 button, .vs-button, .vs-button-secondary {
     cursor: pointer;
 }
 
-/* touch-ups for vs-badge inside vanya */
+
 .vs-badge {
     font-size: 0.7rem;
     font-weight: 500;

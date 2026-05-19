@@ -23,8 +23,8 @@ export async function handleGameEnd(ws, msg, roomManager) {
     const player2Score = Number(msg.player2Score) || 0;
     const durationSeconds = Number(msg.duration) || 0;
 
-    // Тот, кто отправил gameEnd (loserRole), проиграл (достиг верха поля)
-    // Победитель — противоположный игрок
+    
+    
     const loserRole = msg.loserRole;
     const winner = loserRole === 'player1' ? 'player2' : 'player1';
     const winnerName = winner === 'player1' ? room.player1.name : room.player2.name;

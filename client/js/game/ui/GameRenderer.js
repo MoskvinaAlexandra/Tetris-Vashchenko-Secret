@@ -24,9 +24,7 @@ export class GameRenderer {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  /**
-   * Draw board cells
-   */
+  
   drawBoard(board) {
     const isWhiteBoard = document.body.classList.contains('white-board');
     const gridColor = isWhiteBoard ? '#e0e0e0' : '#1a1a1a';
@@ -39,7 +37,7 @@ export class GameRenderer {
           this.drawCell(col, row, COLORS[cellValue]);
         }
 
-        // Draw grid
+        
         this.ctx.strokeStyle = gridColor;
         this.ctx.lineWidth = 1;
         this.ctx.strokeRect(
@@ -52,9 +50,7 @@ export class GameRenderer {
     }
   }
 
-  /**
-   * Draw current falling piece
-   */
+  
   drawCurrentPiece(piece) {
     if (!piece) return;
 
@@ -75,9 +71,7 @@ export class GameRenderer {
     }
   }
 
-  /**
-   * Draw single cell
-   */
+  
   drawCell(x, y, color) {
     this.ctx.fillStyle = color;
     const glowEnabled = !document.body.classList.contains('no-glow');
@@ -100,9 +94,7 @@ export class GameRenderer {
     this.ctx.shadowBlur = 0;
   }
 
-  /**
-   * Update UI stats
-   */
+  
   updateStats(score, lines, level) {
     const scoreEl = document.getElementById('score') || document.getElementById('myScore');
     const linesEl = document.getElementById('lines') || document.getElementById('myLines');
@@ -113,9 +105,7 @@ export class GameRenderer {
     if (levelEl) levelEl.textContent = level;
   }
 
-  /**
-   * Show game over message
-   */
+  
   showGameOver(score) {
     const gameOverEl = document.createElement('div');
     gameOverEl.id = 'gameOverScreen';

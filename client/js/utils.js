@@ -1,4 +1,4 @@
-// Utils
+
 function copyCode() {
   navigator.clipboard.writeText(roomCode).then(() => {
     const old = document.getElementById('roomCode').textContent;

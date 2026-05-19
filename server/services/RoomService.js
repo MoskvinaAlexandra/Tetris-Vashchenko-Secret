@@ -33,11 +33,7 @@ export class RoomService {
     }
   }
 
-  /**
-   * Get room by code
-   * @param {string} roomCode
-   * @returns {Promise<{room_code, created_by_player_id, created_at, is_active, ended_at}>}
-   */
+  
   static async getRoom(roomCode) {
     const result = await pool.query(
       `SELECT room_code, created_by_player_id, created_at, is_active, ended_at FROM rooms WHERE room_code = $1`,
@@ -51,11 +47,7 @@ export class RoomService {
     return result.rows[0];
   }
 
-  /**
-   * Get room participants
-   * @param {string} roomCode
-   * @returns {Promise<Array>}
-   */
+  
   static async getParticipants(roomCode) {
     const result = await pool.query(
       `SELECT rp.id, rp.player_id, rp.role, rp.joined_at, p.name
@@ -69,11 +61,7 @@ export class RoomService {
     return result.rows;
   }
 
-  /**
-   * Remove participant from room
-   * @param {string} roomCode
-   * @param {number} playerId
-   */
+  
   static async removeParticipant(roomCode, playerId) {
     try {
       await pool.query(
@@ -86,10 +74,7 @@ export class RoomService {
     }
   }
 
-  /**
-   * End room
-   * @param {string} roomCode
-   */
+  
   static async endRoom(roomCode) {
     try {
       await pool.query(
@@ -102,11 +87,7 @@ export class RoomService {
     }
   }
 
-  /**
-   * Get active rooms
-   * @param {number} limit
-   * @returns {Promise<Array>}
-   */
+  
   static async getActiveRooms(limit = 50) {
     const result = await pool.query(
       `SELECT room_code, created_by_player_id, created_at, is_active
