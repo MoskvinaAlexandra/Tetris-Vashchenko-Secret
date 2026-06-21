@@ -47,9 +47,10 @@
         <main class="vs-main centered">
             <section class="vs-panel narrow soft">
                 <h2 class="vs-section-title">Salon Menu</h2>
-                <p class="vs-section-copy">Дуэли, статистика и фирменная эстетика без лишнего хаоса.</p>
+                <p class="vs-section-copy">Дуэли, одиночный режим, статистика и фирменная эстетика без лишнего хаоса.</p>
                 <div class="vs-actions stack">
-                    <button class="vs-button" type="button" onclick="(authService && authService.isLoggedIn && authService.isLoggedIn()) ? location.href='/game.html' : location.href='/login.html'">Играть</button>
+                    <button class="vs-button" type="button" onclick="(authService && authService.isLoggedIn && authService.isLoggedIn()) ? location.href='/game.html' : location.href='/login.html'">Дуэли</button>
+                    <button class="vs-button-secondary" type="button" onclick="(authService && authService.isLoggedIn && authService.isLoggedIn()) ? location.href='/game.html?mode=solo' : location.href='/login.html'">Одиночный режим</button>
                     <button class="vs-button" type="button" onclick="location.href='/leaderboard.html'">Лидеры</button>
                     <button class="vs-button-secondary" type="button" onclick="location.href='/vanya.html'">Ваня Ващенко</button>
                 </div>

@@ -38,8 +38,8 @@
         <header class="vs-header compact-header">
             <div class="vs-logo">VS</div>
             <div class="vs-title-wrap">
-                <h1 class="vs-title">Duel Room</h1>
-                <p class="vs-subtitle">Victoria Secret salon for room duels and spectators</p>
+                <h1 id="gameModeTitle" class="vs-title">Duel Room</h1>
+                <p id="gameModeSubtitle" class="vs-subtitle">Victoria Secret salon for room duels and spectators</p>
             </div>
             <div class="vs-logo">VS</div>
         </header>
@@ -153,7 +153,7 @@
                     <div id="gameRightSidebar"></div>
                 </div>
             </section>
-<section id="spectatorArea" class="vs-panel match-panel spectator-area" style="display:none;">
+            <section id="spectatorArea" class="vs-panel match-panel spectator-area" style="display:none;">
                 <div class="match-layout">
                     <div id="spectatorLeftSidebar"></div>
 
@@ -185,6 +185,58 @@
                     <div id="spectatorRightSidebar"></div>
                 </div>
             </section>
+            <section id="soloArea" class="vs-panel match-panel solo-area" style="display:none;">
+                <div class="solo-layout">
+                    <aside class="left-controls-panel solo-left-panel">
+                        <div class="solo-intro-card">
+                            <p class="reaction-target-label">Одиночный режим</p>
+                            <h3 class="vs-card-title">Локальная партия</h3>
+                            <p class="solo-copy">Собирайте линии, без комнаты и соперника. Управление остается тем же.</p>
+                        </div>
+                        <div class="game-controls-hint solo-controls-hint">
+                            <div class="hint-title">Управление</div>
+                            <div class="hint-controls">
+                                <div class="hint-row">
+                                    <span class="hint-key">←</span>
+                                    <span class="hint-key">→</span>
+                                    <span class="hint-caption">Влево/Вправо</span>
+                                </div>
+                                <div class="hint-row">
+                                    <span class="hint-key">↓</span>
+                                    <span class="hint-caption">Вниз</span>
+                                </div>
+                                <div class="hint-row">
+                                    <span class="hint-key">Пробел</span>
+                                    <span class="hint-caption">Мгновенное падение</span>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <div class="center-arena-wrap">
+                        <div class="solo-arena">
+                            <article id="soloPanel" class="board-panel solo-board" role="region" aria-label="Одиночное игровое поле">
+                                <h2 id="soloPlayerName">Игрок</h2>
+                                <canvas id="soloCanvas" width="240" height="480" aria-label="Игровое поле одиночного режима"></canvas>
+                                <footer class="board-meta" role="contentinfo">
+                                    <span>Счет: <strong id="myScore">0</strong></span>
+                                    <span>Линии: <strong id="myLines">0</strong></span>
+                                    <span>Уровень: <strong id="level">1</strong></span>
+                                </footer>
+                            </article>
+                        </div>
+                    </div>
+
+                    <aside class="right-side-panel solo-right-panel">
+                        <button class="vs-button-secondary leave-match-btn" type="button" onclick="toggleSettings()" title="Открыть настройки">Настройки</button>
+                        <div class="solo-status-card">
+                            <h3>Без комнаты</h3>
+                            <p>Матч идет локально, без WebSocket и без зрителей.</p>
+                        </div>
+                        <button class="vs-button-secondary leave-match-btn" type="button" onclick="leaveRoom()">В меню</button>
+                    </aside>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -207,7 +259,7 @@
             </div>
             <div class="vs-actions match-overlay-actions">
                 <button id="rematchBtn" class="vs-button" type="button" onclick="requestRematch()">Реванш</button>
-                <button class="vs-button-secondary" type="button" onclick="leaveRoom()">Покинуть комнату</button>
+                <button id="matchExitBtn" class="vs-button-secondary" type="button" onclick="leaveRoom()">Покинуть комнату</button>
             </div>
         </section>
     </div>
