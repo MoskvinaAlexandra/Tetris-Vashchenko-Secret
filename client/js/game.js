@@ -819,6 +819,19 @@ class GameManager {
     player2Btn.textContent = this.truncateReactionTargetName(this.playerNames.player2 || 'Игрок 2');
     player1Btn.classList.toggle('active-target', this.spectatorReactionTarget === 'player1');
     player2Btn.classList.toggle('active-target', this.spectatorReactionTarget === 'player2');
+
+    this.updateSpectatorBoardFocus();
+  }
+
+  updateSpectatorBoardFocus() {
+    const player1Panel = document.getElementById('spectatorPlayer1Panel');
+    const player2Panel = document.getElementById('spectatorPlayer2Panel');
+    if (!player1Panel || !player2Panel) {
+      return;
+    }
+
+    player1Panel.classList.toggle('active-player', this.spectatorReactionTarget === 'player1');
+    player2Panel.classList.toggle('active-player', this.spectatorReactionTarget === 'player2');
   }
 
   updatePlayerReactionTargetUI() {

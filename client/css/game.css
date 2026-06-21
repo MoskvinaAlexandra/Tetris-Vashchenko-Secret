@@ -304,6 +304,7 @@
   overflow: hidden;
   box-sizing: border-box;
   max-width: 100%;
+  transition: height 0.34s ease, box-shadow 0.34s ease, border-color 0.34s ease;
 }
 
 .board-panel.active-player .board-canvas-frame {
