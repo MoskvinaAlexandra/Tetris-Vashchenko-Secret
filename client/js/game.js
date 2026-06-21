@@ -27,6 +27,7 @@ class GameManager {
     this.isReady = false;
 
     this.isHeaderDisabled = false;
+    this.isSoloMode = false;
 
     this.playerNames = {
       player1: 'Игрок 1',
@@ -48,6 +49,8 @@ class GameManager {
   async init() {
     renderGameSidebars();
     this.myName = authService?.getPlayerName?.() || '';
+    this.isSoloMode = new URLSearchParams(window.location.search).get('mode') === 'solo';
+    this.updateModePresentation();
     this.settings = this.loadSettings();
     this.applySettings();
     this.bindSettingsControls();
@@ -56,6 +59,10 @@ class GameManager {
     this.updateGameNavAuthUI();
 
     if (!authService?.isLoggedIn?.()) {
+      if (this.isSoloMode) {
+        window.location.href = '/login.html?returnTo=%2Fgame.html%3Fmode%3Dsolo';
+        return;
+      }
       this.setStatus('Авторизуйтесь, чтобы играть или смотреть матчи.', '#6a3748');
       return;
     }
@@ -67,11 +74,36 @@ class GameManager {
     this.setStatus('Подключение к игровой комнате...');
     try {
       await this.wsClient.connect();
-      this.setStatus('Соединение установлено. Можно создать комнату или войти по коду.');
+      if (this.isSoloMode) {
+        this.startSoloMode();
+        this.setStatus('Соединение установлено. Одиночный режим готов.');
+      } else {
+        this.setStatus('Соединение установлено. Можно создать комнату или войти по коду.');
+      }
     } catch (error) {
       console.error('WebSocket connect failed:', error);
-      this.setStatus('Не удалось подключиться к игровому серверу.', '#6a3748');
+      if (this.isSoloMode) {
+        this.startSoloMode();
+        this.setStatus('Одиночный режим запущен без подключения к серверу.');
+      } else {
+        this.setStatus('Не удалось подключиться к игровому серверу.', '#6a3748');
+      }
+      return;
     }
+  }
+
+  updateModePresentation() {
+    const title = document.getElementById('gameModeTitle');
+    const subtitle = document.getElementById('gameModeSubtitle');
+
+    if (this.isSoloMode) {
+      if (title) title.textContent = 'Одиночный режим';
+      if (subtitle) subtitle.textContent = 'Локальная партия без комнаты, зрителей и дуэли.';
+      return;
+    }
+
+    if (title) title.textContent = 'Duel Room';
+    if (subtitle) subtitle.textContent = 'Victoria Secret salon for room duels and spectators';
   }
 
   setupWSCallbacks() {
@@ -339,6 +371,11 @@ class GameManager {
   }
 
   requestRematch() {
+    if (this.isSoloMode) {
+      this.restartSoloGame();
+      return;
+    }
+
     if (this.role === 'spectator' || !this.roomCode || this.rematchRequested) {
       return;
     }
@@ -453,6 +490,83 @@ class GameManager {
     this.updateSpectatorStats('player2', empty);
 
     this.setStatus('Матч начался.');
+  }
+
+  startSoloMode(seed = Date.now()) {
+    this.gameLoop?.stop();
+    this.isSoloMode = true;
+    this.role = 'player1';
+    this.roomCode = null;
+    this.playerNames.player1 = this.myName || 'Игрок';
+    this.playerNames.player2 = 'Одиночный режим';
+
+    this.setHeaderButtonsEnabled(false);
+    this.showOnly('soloArea');
+
+    const soloName = document.getElementById('soloPlayerName');
+    const exitBtn = document.getElementById('matchExitBtn');
+    if (soloName) {
+      soloName.textContent = this.myName || 'Игрок';
+    }
+    if (exitBtn) {
+      exitBtn.textContent = 'В меню';
+    }
+
+    this.renderers = {
+      player1: new GameRenderer('soloCanvas')
+    };
+
+    this.game = new TetrisGame(seed);
+    this.gameLoop = new GameLoop(this.game, this.renderers.player1);
+    this.lastStateSentAt = 0;
+    this.startTime = Date.now();
+    this.resetRoundFlags();
+
+    this.gameLoop.onUpdate = (state) => {
+      if (state.isGameOver && !this.sentGameEnd) {
+        this.finishSoloGame(state);
+      }
+    };
+
+    const initialState = this.game.getState();
+    this.renderers.player1.render(initialState);
+    this.renderers.player1.updateStats(initialState.score, initialState.lines, initialState.level);
+    this.gameLoop.start();
+    this.setStatus('Одиночный режим начался.');
+  }
+
+  restartSoloGame() {
+    this.hideMatchOverlay();
+    this.startSoloMode(Date.now());
+    this.setStatus('Запускаем новую одиночную партию.');
+  }
+
+  finishSoloGame(state) {
+    this.gameLoop?.stop();
+    this.sentGameEnd = true;
+
+    const resultCard = document.getElementById('matchResultCard');
+    const title = document.getElementById('matchResultTitle');
+    const text = document.getElementById('matchResultText');
+    const hint = document.getElementById('matchResultHint');
+    const rematchBtn = document.getElementById('rematchBtn');
+    const exitBtn = document.getElementById('matchExitBtn');
+
+    document.getElementById('matchScoreLeft').textContent = state.score ?? 0;
+    document.getElementById('matchScoreRight').textContent = state.lines ?? 0;
+    resultCard.classList.remove('win', 'loss', 'draw');
+    resultCard.classList.add('draw');
+
+    title.textContent = 'Партия завершена';
+    text.textContent = `Счет: ${state.score ?? 0}. Линии: ${state.lines ?? 0}. Уровень: ${state.level ?? 1}.`;
+    hint.textContent = 'Нажмите «Новая игра», чтобы сразу начать заново.';
+    rematchBtn.disabled = false;
+    rematchBtn.textContent = 'Новая игра';
+    if (exitBtn) {
+      exitBtn.textContent = 'В меню';
+    }
+
+    this.showMatchOverlay();
   }
 
   renderRemoteState(state, role) {
@@ -575,10 +689,14 @@ class GameManager {
     const text = document.getElementById('matchResultText');
     const hint = document.getElementById('matchResultHint');
     const rematchBtn = document.getElementById('rematchBtn');
+    const exitBtn = document.getElementById('matchExitBtn');
 
     document.getElementById('matchScoreLeft').textContent = message.player1Score ?? 0;
     document.getElementById('matchScoreRight').textContent = message.player2Score ?? 0;
     resultCard.classList.remove('win', 'loss', 'draw');
+    if (exitBtn) {
+      exitBtn.textContent = 'Покинуть комнату';
+    }
 
     if (this.role === 'spectator') {
       title.textContent = 'Раунд завершен';
@@ -648,7 +766,12 @@ class GameManager {
     try {
       this.gameLoop?.stop();
 
-      if (this.wsClient?.ws && this.wsClient.ws.readyState === WebSocket.OPEN) {
+      if (this.isSoloMode) {
+        window.location.href = '/';
+        return;
+      }
+
+      if (this.roomCode && this.wsClient?.ws && this.wsClient.ws.readyState === WebSocket.OPEN) {
         this.wsClient.leaveRoom();
         this.wsClient.ws.close(1000, 'leave-room');
       }
@@ -1027,8 +1150,8 @@ class GameManager {
 
   showOnly(sectionId) {
     this.currentSection = sectionId;
-    document.body.classList.toggle('in-match', sectionId === 'gameArea' || sectionId === 'spectatorArea');
-    ['menu', 'lobby', 'gameArea', 'spectatorArea'].forEach((id) => {
+    document.body.classList.toggle('in-match', sectionId === 'gameArea' || sectionId === 'spectatorArea' || sectionId === 'soloArea');
+    ['menu', 'lobby', 'gameArea', 'spectatorArea', 'soloArea'].forEach((id) => {
       document.getElementById(id).style.display = id === sectionId ? 'block' : 'none';
     });
   }
@@ -1141,11 +1264,13 @@ class GameManager {
 
     this.roomCode = null;
     this.role = null;
+    this.isSoloMode = false;
     this.game = null;
     this.renderers = {};
     this.spectators = [];
     this.spectatorReactionTarget = 'player1';
     this.clearReactionDisplays();
+    this.updateModePresentation();
 
     this.showOnly('menu');
     document.getElementById('roomCodeDisplay').style.display = 'none';
