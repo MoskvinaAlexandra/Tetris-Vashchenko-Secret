@@ -878,6 +878,15 @@
   color: var(--vs-ink-muted);
 }
 
+.match-result-card.solo-result .match-scoreline {
+  gap: 0;
+}
+
+.match-result-card.solo-result .match-scoreline span,
+.match-result-card.solo-result #matchScoreRight {
+  display: none;
+}
+
 .match-result-copy {
   display: grid;
   gap: 10px;

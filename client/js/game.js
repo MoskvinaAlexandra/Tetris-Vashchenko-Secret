@@ -558,8 +558,9 @@ class GameManager {
     const exitBtn = document.getElementById('matchExitBtn');
 
     document.getElementById('matchScoreLeft').textContent = state.score ?? 0;
-    document.getElementById('matchScoreRight').textContent = state.lines ?? 0;
-    resultCard.classList.remove('win', 'loss', 'draw');
+    document.getElementById('matchScoreRight').textContent = '';
+    resultCard.classList.remove('win', 'loss', 'draw', 'solo-result');
+    resultCard.classList.add('solo-result');
     resultCard.classList.add('draw');
 
     title.textContent = 'Партия завершена';
