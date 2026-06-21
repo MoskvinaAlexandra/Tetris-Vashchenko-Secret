@@ -903,14 +903,16 @@ class GameManager {
     const targetRole = typeof targetConfig === 'string' ? null : targetConfig.role || null;
     const target = document.getElementById(targetId);
     if (!target) return;
-    const panel = target.closest('.board-panel');
+    const panel = senderRole === 'player1' || senderRole === 'player2'
+      ? this.getReactionPanelByRole(senderRole, target)
+      : target.closest('.board-panel');
 
     const bubble = this.createReactionContent(emoji, reactionLabel, senderRole === 'spectator');
     if (senderRole !== 'spectator') {
-      
-      bubble.classList.add(targetRole === 'player2' ? 'anchor-right' : 'anchor-left');
-      bubble.classList.add(senderRole === 'player2' ? 'tail-right' : 'tail-left');
-      this.getReactionHostPanel(target, targetRole)?.classList.add('reaction-host-active');
+
+      bubble.classList.add(senderRole === 'player1' ? 'anchor-left' : 'anchor-right');
+      bubble.classList.add(senderRole === 'player1' ? 'tail-left' : 'tail-right');
+      panel?.classList.add('reaction-host-active');
     }
     target.appendChild(bubble);
 
@@ -922,7 +924,7 @@ class GameManager {
 
     const position = senderRole === 'spectator'
       ? this.getSpectatorReactionPosition(target, bubble)
-      : this.getPlayerReactionPosition(target, bubble, targetRole);
+      : this.getPlayerReactionPosition(senderRole, target, bubble);
 
     bubble.style.left = `${position.left}px`;
     bubble.style.top = `${position.top}px`;
@@ -935,25 +937,22 @@ class GameManager {
       bubble.classList.remove('visible');
       window.setTimeout(() => {
         bubble.remove();
-        this.releaseReactionHost(this.getReactionHostPanel(target, targetRole));
+        this.releaseReactionHost(panel);
       }, 220);
     }, 1400);
   }
 
-  getReactionHostPanel(target, targetRole) {
-    if (target.closest('.board-panel')) {
+  getReactionPanelByRole(role, target) {
+    if (role !== 'player1' && role !== 'player2') {
       return target.closest('.board-panel');
     }
 
-    if (targetRole === 'player1') {
-      return document.getElementById(target.id === 'reactionArenaLayerSpectator' ? 'spectatorPlayer1Panel' : 'player1Panel');
+    const isSpectatorLayer = target?.id === 'reactionArenaLayerSpectator';
+    if (role === 'player1') {
+      return document.getElementById(isSpectatorLayer ? 'spectatorPlayer1Panel' : 'player1Panel');
     }
 
-    if (targetRole === 'player2') {
-      return document.getElementById(target.id === 'reactionArenaLayerSpectator' ? 'spectatorPlayer2Panel' : 'player2Panel');
-    }
-
-    return null;
+    return document.getElementById(isSpectatorLayer ? 'spectatorPlayer2Panel' : 'player2Panel');
   }
 
   releaseReactionHost(panel) {
@@ -966,8 +965,8 @@ class GameManager {
 
   getSpectatorReactionPosition(target, bubble) {
     const panel = target.closest('.board-panel');
-    const canvas = panel?.querySelector('canvas');
-    if (!panel || !canvas) {
+    const frame = panel?.querySelector('.board-canvas-frame');
+    if (!panel || !frame) {
       return {
         left: panel?.clientWidth ? panel.clientWidth / 2 : 120,
         top: 52
@@ -975,18 +974,18 @@ class GameManager {
     }
 
     const panelRect = panel.getBoundingClientRect();
-    const canvasRect = canvas.getBoundingClientRect();
+    const frameRect = frame.getBoundingClientRect();
     const targetWidth = Math.max(bubble.offsetWidth || 150, 120);
     const bubbleHalf = targetWidth / 2;
     const margin = 12;
     const visualGap = 20;
-    const anchorTop = (canvasRect.top - panelRect.top) - visualGap;
+    const anchorTop = (frameRect.top - panelRect.top) - visualGap;
     const minAnchorTop = 44;
 
-    const minLeft = Math.max(margin + bubbleHalf, (canvasRect.left - panelRect.left) + bubbleHalf);
+    const minLeft = Math.max(margin + bubbleHalf, (frameRect.left - panelRect.left) + bubbleHalf);
     const maxLeft = Math.min(
       panelRect.width - margin - bubbleHalf,
-      (canvasRect.right - panelRect.left) - bubbleHalf
+      (frameRect.right - panelRect.left) - bubbleHalf
     );
 
     if (maxLeft <= minLeft) {
@@ -1005,54 +1004,48 @@ class GameManager {
     };
   }
 
-  getPlayerReactionPosition(target, bubble, targetRole) {
+  getPlayerReactionPosition(senderRole, target, bubble) {
     const arena = target.closest('.arena-grid');
-    if (!arena || (targetRole !== 'player1' && targetRole !== 'player2')) {
+    if (!arena || (senderRole !== 'player1' && senderRole !== 'player2')) {
       return { left: 120, top: 180 };
     }
 
     const arenaRect = arena.getBoundingClientRect();
-    const targetCanvas = arena.querySelector(targetRole === 'player1' ? '#player1Canvas, #spectatorCanvas1' : '#player2Canvas, #spectatorCanvas2');
-    if (!targetCanvas) {
+    const senderFrame = this.getBoardFrameByRole(senderRole, target);
+    if (!senderFrame) {
       return { left: 120, top: 180 };
     }
 
-    const canvasRect = targetCanvas.getBoundingClientRect();
-    const canvasTop = canvasRect.top - arenaRect.top;
-    const canvasHeight = canvasRect.height;
-    const top = canvasTop + (canvasHeight * 0.46);
-    const gapBounds = this.getArenaReactionGapBounds(arena, bubble);
-
-    if (gapBounds) {
-      return {
-        left: targetRole === 'player2' ? gapBounds.rightEdge : gapBounds.leftEdge,
-        top
-      };
-    }
-
-    const canvasLeft = canvasRect.left - arenaRect.left;
-    const canvasRight = canvasRect.right - arenaRect.left;
+    const frameRect = senderFrame.getBoundingClientRect();
+    const frameTop = frameRect.top - arenaRect.top;
+    const frameHeight = frameRect.height;
+    const top = frameTop + (frameHeight * 0.46);
+    const gapOffset = 10;
 
     return {
-      left: targetRole === 'player2' ? canvasLeft - 10 : canvasRight + 10,
+      left: senderRole === 'player1'
+        ? (frameRect.right - arenaRect.left) + gapOffset
+        : (frameRect.left - arenaRect.left) - gapOffset,
       top
     };
   }
 
   getArenaReactionGapBounds(arena, bubble) {
     const arenaRect = arena.getBoundingClientRect();
-    const canvases = Array.from(arena.querySelectorAll('canvas'));
-    if (canvases.length < 2) {
+    const frames = Array.from(arena.querySelectorAll('.board-canvas-frame'));
+    if (frames.length < 2) {
       return null;
     }
 
-    const [firstCanvas, secondCanvas] = canvases.sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
-    const leftCanvasRect = firstCanvas.getBoundingClientRect();
-    const rightCanvasRect = secondCanvas.getBoundingClientRect();
+    const [firstFrame, secondFrame] = frames
+      .map((element) => element.getBoundingClientRect())
+      .sort((a, b) => a.left - b.left);
+    const leftFrameRect = firstFrame;
+    const rightFrameRect = secondFrame;
     const gapMargin = 12;
 
-    const gapLeft = (leftCanvasRect.right - arenaRect.left) + gapMargin;
-    const gapRight = (rightCanvasRect.left - arenaRect.left) - gapMargin;
+    const gapLeft = (leftFrameRect.right - arenaRect.left) + gapMargin;
+    const gapRight = (rightFrameRect.left - arenaRect.left) - gapMargin;
     const gapWidth = gapRight - gapLeft;
 
     if (gapWidth <= 48) {
@@ -1067,6 +1060,18 @@ class GameManager {
       rightEdge: gapRight,
       width: gapWidth
     };
+  }
+
+  getBoardFrameByRole(role, target) {
+    if (role !== 'player1' && role !== 'player2') {
+      return null;
+    }
+
+    const isSpectatorLayer = target?.id === 'reactionArenaLayerSpectator';
+    const panelId = role === 'player1'
+      ? (isSpectatorLayer ? 'spectatorPlayer1Panel' : 'player1Panel')
+      : (isSpectatorLayer ? 'spectatorPlayer2Panel' : 'player2Panel');
+    return document.getElementById(panelId)?.querySelector('.board-canvas-frame');
   }
 
   randomNormal(mean, sigma) {
@@ -1096,9 +1101,9 @@ class GameManager {
 
     if (senderRole === 'spectator') {
       const panel = target.closest('.board-panel');
-      const canvas = panel?.querySelector('canvas');
-      if (panel && canvas) {
-        maxWidth = Math.max(canvas.getBoundingClientRect().width - 24, 120);
+      const frame = panel?.querySelector('.board-canvas-frame');
+      if (panel && frame) {
+        maxWidth = Math.max(frame.getBoundingClientRect().width - 24, 120);
       }
     } else {
       const arena = target.closest('.arena-grid');
