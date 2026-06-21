@@ -307,6 +307,15 @@
   transition: height 0.34s ease, box-shadow 0.34s ease, border-color 0.34s ease;
 }
 
+.board-visual-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(10px, 1vw, 14px);
+  width: 100%;
+  min-width: 0;
+}
+
 .board-panel.active-player .board-canvas-frame {
   height: var(--board-frame-active-height);
 }
@@ -322,6 +331,40 @@
   border: none;
   box-shadow: none;
   aspect-ratio: auto;
+}
+
+.board-next-piece {
+  flex: 0 0 clamp(88px, 8.2vw, 124px);
+  width: clamp(88px, 8.2vw, 124px);
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  justify-items: center;
+  padding: 12px 10px 10px;
+  border: 1px solid rgba(78, 106, 125, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.38);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-sizing: border-box;
+  transition: transform 0.34s ease, border-color 0.34s ease, background 0.34s ease;
+}
+
+.board-next-piece canvas {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  border: none;
+  box-shadow: none;
+}
+
+.board-next-piece-label {
+  font-family: 'Perpetua Titling MT', 'Times New Roman', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  line-height: 1.1;
+  color: var(--vs-ink-muted);
+  text-align: center;
 }
 
 .lobby-player,
@@ -610,11 +653,11 @@
     0 16px 34px color-mix(in srgb, var(--vs-accent) 16%, transparent);
 }
 
-.board-panel.active-player canvas {
+.board-panel.active-player .board-canvas-frame canvas {
   z-index: 2;
 }
 
-.board-panel:not(.active-player) canvas {
+.board-panel:not(.active-player) .board-canvas-frame canvas {
   opacity: 0.8;
 }
 
@@ -960,10 +1003,6 @@
   max-height: clamp(2.6rem, 5vh, 3.4rem);
 }
 
-.game-page.compact-mode .board-panel canvas {
-  width: 100%;
-}
-
 .game-page.compact-mode {
   --board-frame-active-height: min(calc(100vh - 200px), clamp(520px, 56vw, 760px));
   --board-frame-inactive-height: calc(var(--board-frame-active-height) * 2 / 3);
@@ -1021,7 +1060,7 @@
   margin: 0;
 }
 
-.game-page.no-glow .board-panel canvas {
+.game-page.no-glow .board-canvas-frame canvas {
   box-shadow: none;
 }
 
@@ -1042,6 +1081,16 @@
 
   .reaction-pop-item {
     max-width: 180px;
+  }
+
+  .board-visual-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .board-next-piece {
+    width: min(124px, 100%);
+    flex-basis: auto;
   }
 }
 

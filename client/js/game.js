@@ -433,8 +433,8 @@ class GameManager {
     this.hideControlsHints();
 
     this.renderers = {
-      player1: new GameRenderer('player1Canvas'),
-      player2: new GameRenderer('player2Canvas')
+      player1: new GameRenderer('player1Canvas', 'player1NextCanvas'),
+      player2: new GameRenderer('player2Canvas', 'player2NextCanvas')
     };
 
     this.game = new TetrisGame(this.matchSeed);
@@ -476,8 +476,8 @@ class GameManager {
     this.updateSpectatorReactionTargetUI();
 
     this.renderers = {
-      player1: new GameRenderer('spectatorCanvas1'),
-      player2: new GameRenderer('spectatorCanvas2')
+      player1: new GameRenderer('spectatorCanvas1', 'spectatorNextCanvas1'),
+      player2: new GameRenderer('spectatorCanvas2', 'spectatorNextCanvas2')
     };
 
     document.getElementById('spectatorPlayer1Name').textContent = this.playerNames.player1;
@@ -518,7 +518,7 @@ class GameManager {
     }
 
     this.renderers = {
-      player1: new GameRenderer('soloCanvas')
+      player1: new GameRenderer('soloCanvas', 'soloNextCanvas')
     };
 
     this.game = new TetrisGame(seed);

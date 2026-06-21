@@ -131,8 +131,14 @@
                             <article id="player1Panel" class="board-panel player1" role="region" aria-label="Доска игрока 1">
                                 <div id="reactionPlayer1Edge" class="reaction-pop edge-left" aria-live="polite"></div>
                                 <h2 id="player1NameBoard">Игрок 1</h2>
-                                <div class="board-canvas-frame">
-                                    <canvas id="player1Canvas" width="240" height="480" aria-label="Игровое поле игрока 1"></canvas>
+                                <div class="board-visual-row">
+                                    <div class="board-canvas-frame">
+                                        <canvas id="player1Canvas" width="240" height="480" aria-label="Игровое поле игрока 1"></canvas>
+                                    </div>
+                                    <aside class="board-next-piece" aria-label="Следующая фигура игрока 1">
+                                        <span class="board-next-piece-label">Следующая</span>
+                                        <canvas id="player1NextCanvas" width="120" height="120" aria-hidden="true"></canvas>
+                                    </aside>
                                 </div>
                                 <footer class="board-meta" role="contentinfo">
                                     <span>Счет: <strong id="player1Score">0</strong></span>
@@ -143,8 +149,14 @@
                             <article id="player2Panel" class="board-panel player2" role="region" aria-label="Доска игрока 2">
                                 <div id="reactionPlayer2Edge" class="reaction-pop edge-right" aria-live="polite"></div>
                                 <h2 id="player2NameBoard">Игрок 2</h2>
-                                <div class="board-canvas-frame">
-                                    <canvas id="player2Canvas" width="240" height="480" aria-label="Игровое поле игрока 2"></canvas>
+                                <div class="board-visual-row">
+                                    <div class="board-canvas-frame">
+                                        <canvas id="player2Canvas" width="240" height="480" aria-label="Игровое поле игрока 2"></canvas>
+                                    </div>
+                                    <aside class="board-next-piece" aria-label="Следующая фигура игрока 2">
+                                        <span class="board-next-piece-label">Следующая</span>
+                                        <canvas id="player2NextCanvas" width="120" height="120" aria-hidden="true"></canvas>
+                                    </aside>
                                 </div>
                                 <footer class="board-meta" role="contentinfo">
                                     <span>Счет: <strong id="player2Score">0</strong></span>
@@ -167,8 +179,14 @@
                             <article id="spectatorPlayer1Panel" class="board-panel player1">
                                 <div id="reactionPlayer1EdgeSpectator" class="reaction-pop edge-left"></div>
                                 <h2 id="spectatorPlayer1Name">Игрок 1</h2>
-                                <div class="board-canvas-frame">
-                                    <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
+                                <div class="board-visual-row">
+                                    <div class="board-canvas-frame">
+                                        <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
+                                    </div>
+                                    <aside class="board-next-piece" aria-label="Следующая фигура игрока 1">
+                                        <span class="board-next-piece-label">Следующая</span>
+                                        <canvas id="spectatorNextCanvas1" width="120" height="120" aria-hidden="true"></canvas>
+                                    </aside>
                                 </div>
                                 <div class="board-meta">
                                     <span>Счет: <strong id="spectatorScore1">0</strong></span>
@@ -179,8 +197,14 @@
                             <article id="spectatorPlayer2Panel" class="board-panel player2">
                                 <div id="reactionPlayer2EdgeSpectator" class="reaction-pop edge-right"></div>
                                 <h2 id="spectatorPlayer2Name">Игрок 2</h2>
-                                <div class="board-canvas-frame">
-                                    <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
+                                <div class="board-visual-row">
+                                    <div class="board-canvas-frame">
+                                        <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
+                                    </div>
+                                    <aside class="board-next-piece" aria-label="Следующая фигура игрока 2">
+                                        <span class="board-next-piece-label">Следующая</span>
+                                        <canvas id="spectatorNextCanvas2" width="120" height="120" aria-hidden="true"></canvas>
+                                    </aside>
                                 </div>
                                 <div class="board-meta">
                                     <span>Счет: <strong id="spectatorScore2">0</strong></span>
@@ -225,8 +249,14 @@
                         <div class="solo-arena">
                             <article id="soloPanel" class="board-panel solo-board" role="region" aria-label="Одиночное игровое поле">
                                 <h2 id="soloPlayerName">Игрок</h2>
-                                <div class="board-canvas-frame">
-                                    <canvas id="soloCanvas" width="240" height="480" aria-label="Игровое поле одиночного режима"></canvas>
+                                <div class="board-visual-row">
+                                    <div class="board-canvas-frame">
+                                        <canvas id="soloCanvas" width="240" height="480" aria-label="Игровое поле одиночного режима"></canvas>
+                                    </div>
+                                    <aside class="board-next-piece" aria-label="Следующая фигура">
+                                        <span class="board-next-piece-label">Следующая</span>
+                                        <canvas id="soloNextCanvas" width="120" height="120" aria-hidden="true"></canvas>
+                                    </aside>
                                 </div>
                                 <footer class="board-meta" role="contentinfo">
                                     <span>Счет: <strong id="myScore">0</strong></span>
