@@ -505,11 +505,15 @@ class GameManager {
 
     const soloName = document.getElementById('soloPlayerName');
     const exitBtn = document.getElementById('matchExitBtn');
+    const soloPanel = document.getElementById('soloPanel');
     if (soloName) {
       soloName.textContent = this.myName || 'Игрок';
     }
     if (exitBtn) {
       exitBtn.textContent = 'В меню';
+    }
+    if (soloPanel) {
+      soloPanel.classList.add('active-player');
     }
 
     this.renderers = {
