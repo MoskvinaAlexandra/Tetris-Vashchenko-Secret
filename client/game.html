@@ -128,19 +128,24 @@
 
                     <div class="center-arena-wrap">
                         <div id="playerArena" class="arena-grid fixed-slots">
-<article id="player1Panel" class="board-panel player1" role="region" aria-label="Доска игрока 1">
+                            <article id="player1Panel" class="board-panel player1" role="region" aria-label="Доска игрока 1">
                                 <div id="reactionPlayer1Edge" class="reaction-pop edge-left" aria-live="polite"></div>
                                 <h2 id="player1NameBoard">Игрок 1</h2>
-                                <canvas id="player1Canvas" width="240" height="480" aria-label="Игровое поле игрока 1"></canvas>                                <footer class="board-meta" role="contentinfo">
+                                <div class="board-canvas-frame">
+                                    <canvas id="player1Canvas" width="240" height="480" aria-label="Игровое поле игрока 1"></canvas>
+                                </div>
+                                <footer class="board-meta" role="contentinfo">
                                     <span>Счет: <strong id="player1Score">0</strong></span>
                                     <span>Линии: <strong id="player1Lines">0</strong></span>
                                 </footer>
                             </article>
 
-<article id="player2Panel" class="board-panel player2" role="region" aria-label="Доска игрока 2">
+                            <article id="player2Panel" class="board-panel player2" role="region" aria-label="Доска игрока 2">
                                 <div id="reactionPlayer2Edge" class="reaction-pop edge-right" aria-live="polite"></div>
                                 <h2 id="player2NameBoard">Игрок 2</h2>
-                                <canvas id="player2Canvas" width="240" height="480" aria-label="Игровое поле игрока 2"></canvas>
+                                <div class="board-canvas-frame">
+                                    <canvas id="player2Canvas" width="240" height="480" aria-label="Игровое поле игрока 2"></canvas>
+                                </div>
                                 <footer class="board-meta" role="contentinfo">
                                     <span>Счет: <strong id="player2Score">0</strong></span>
                                     <span>Линии: <strong id="player2Lines">0</strong></span>
@@ -162,7 +167,9 @@
                             <article id="spectatorPlayer1Panel" class="board-panel player1">
                                 <div id="reactionPlayer1EdgeSpectator" class="reaction-pop edge-left"></div>
                                 <h2 id="spectatorPlayer1Name">Игрок 1</h2>
-                                <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
+                                <div class="board-canvas-frame">
+                                    <canvas id="spectatorCanvas1" width="240" height="480"></canvas>
+                                </div>
                                 <div class="board-meta">
                                     <span>Счет: <strong id="spectatorScore1">0</strong></span>
                                     <span>Линии: <strong id="spectatorLines1">0</strong></span>
@@ -172,7 +179,9 @@
                             <article id="spectatorPlayer2Panel" class="board-panel player2">
                                 <div id="reactionPlayer2EdgeSpectator" class="reaction-pop edge-right"></div>
                                 <h2 id="spectatorPlayer2Name">Игрок 2</h2>
-                                <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
+                                <div class="board-canvas-frame">
+                                    <canvas id="spectatorCanvas2" width="240" height="480"></canvas>
+                                </div>
                                 <div class="board-meta">
                                     <span>Счет: <strong id="spectatorScore2">0</strong></span>
                                     <span>Линии: <strong id="spectatorLines2">0</strong></span>
@@ -216,7 +225,9 @@
                         <div class="solo-arena">
                             <article id="soloPanel" class="board-panel solo-board" role="region" aria-label="Одиночное игровое поле">
                                 <h2 id="soloPlayerName">Игрок</h2>
-                                <canvas id="soloCanvas" width="240" height="480" aria-label="Игровое поле одиночного режима"></canvas>
+                                <div class="board-canvas-frame">
+                                    <canvas id="soloCanvas" width="240" height="480" aria-label="Игровое поле одиночного режима"></canvas>
+                                </div>
                                 <footer class="board-meta" role="contentinfo">
                                     <span>Счет: <strong id="myScore">0</strong></span>
                                     <span>Линии: <strong id="myLines">0</strong></span>

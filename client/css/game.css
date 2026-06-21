@@ -8,6 +8,8 @@
   --game-reaction-ink: var(--vs-accent);
   --game-overlay: rgba(31, 49, 64, 0.32);
   --game-active-ring: rgba(255, 255, 255, 0.58);
+  --board-frame-active-height: min(calc(100vh - 180px), clamp(520px, 56vw, 760px));
+  --board-frame-inactive-height: calc(var(--board-frame-active-height) * 2 / 3);
 }
 
 .game-page.theme-light {
@@ -260,7 +262,7 @@
 
 .solo-layout {
   display: grid;
-  grid-template-columns: minmax(14rem, 16vw) minmax(0, 1fr) minmax(12rem, 18vw);
+  grid-template-columns: minmax(10rem, 14vw) minmax(0, 1fr) minmax(12rem, 18vw);
   gap: clamp(10px, 1.2vw, 16px);
   min-height: 100%;
   height: 100%;
@@ -273,6 +275,52 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  margin: 0 auto;
+}
+
+.solo-board {
+  width: 100%;
+  min-height: 100%;
+}
+
+.solo-area .solo-board.active-player {
+  outline: none;
+  border-color: color-mix(in srgb, var(--vs-accent) 54%, var(--game-panel-border));
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--vs-accent) 22%, transparent),
+    0 16px 34px color-mix(in srgb, var(--vs-accent) 16%, transparent);
+}
+
+.board-canvas-frame {
+  width: auto;
+  height: var(--board-frame-inactive-height);
+  aspect-ratio: 1 / 2;
+  display: block;
+  margin: 0 auto;
+  border: 2px solid var(--vs-border);
+  border-radius: 14px;
+  background: var(--game-board-bg);
+  box-shadow: var(--game-board-shadow);
+  overflow: hidden;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.board-panel.active-player .board-canvas-frame {
+  height: var(--board-frame-active-height);
+}
+
+.board-panel:not(.active-player) .board-canvas-frame {
+  height: var(--board-frame-inactive-height);
+}
+
+.board-canvas-frame canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+  box-shadow: none;
+  aspect-ratio: auto;
 }
 
 .lobby-player,
@@ -562,16 +610,10 @@
 }
 
 .board-panel.active-player canvas {
-  width: 100%; 
-  max-width: 340px;
-  max-height: calc(100vh - 180px);
   z-index: 2;
 }
 
 .board-panel:not(.active-player) canvas {
-  width: 100%;
-  max-width: 240px;
-  max-height: calc(100vh - 220px);
   opacity: 0.8;
 }
 
@@ -599,16 +641,9 @@
 }
 
 .board-panel canvas {
-  width: min(100%, clamp(200px, 22vw, 380px));
-  height: auto;
-  max-height: calc(100vh - 200px);
-  aspect-ratio: 1 / 2;
+  width: 100%;
+  height: 100%;
   display: block;
-  margin: 0 auto;
-  border: 2px solid var(--vs-border);
-  border-radius: 14px;
-  background: var(--game-board-bg);
-  box-shadow: var(--game-board-shadow);
 }
 
 .leave-match-btn {
@@ -923,7 +958,12 @@
 }
 
 .game-page.compact-mode .board-panel canvas {
-  width: min(100%, clamp(190px, 20vw, 320px));
+  width: 100%;
+}
+
+.game-page.compact-mode {
+  --board-frame-active-height: min(calc(100vh - 200px), clamp(520px, 56vw, 760px));
+  --board-frame-inactive-height: calc(var(--board-frame-active-height) * 2 / 3);
 }
 
 .solo-left-panel,
@@ -1058,16 +1098,6 @@
 
 
 @media (max-height: 900px) {
-  .board-panel.active-player canvas {
-    max-height: calc(100vh - 160px);
-    max-width: 300px;
-  }
-
-  .board-panel:not(.active-player) canvas {
-    max-height: calc(100vh - 200px);
-    max-width: 220px;
-  }
-
   .board-meta {
     font-size: 12px;
     gap: 8px;
@@ -1081,16 +1111,6 @@
 }
 
 @media (max-height: 800px) {
-  .board-panel.active-player canvas {
-    max-height: calc(100vh - 140px);
-    max-width: 280px;
-  }
-
-  .board-panel:not(.active-player) canvas {
-    max-height: calc(100vh - 180px);
-    max-width: 200px;
-  }
-
   .board-meta {
     font-size: 11px;
     gap: 6px;
@@ -1115,16 +1135,6 @@
 }
 
 @media (max-height: 700px) {
-  .board-panel.active-player canvas {
-    max-height: calc(100vh - 120px);
-    max-width: 260px;
-  }
-
-  .board-panel:not(.active-player) canvas {
-    max-height: calc(100vh - 160px);
-    max-width: 180px;
-  }
-
   .board-meta {
     font-size: 10px;
     gap: 5px;
