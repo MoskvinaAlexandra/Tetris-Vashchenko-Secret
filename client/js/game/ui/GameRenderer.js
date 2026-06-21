@@ -105,20 +105,5 @@ export class GameRenderer {
     if (levelEl) levelEl.textContent = level;
   }
 
-  
-  showGameOver(score) {
-    const gameOverEl = document.createElement('div');
-    gameOverEl.id = 'gameOverScreen';
-    gameOverEl.innerHTML = `
-      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                  background: #0a0a0a; border: 2px solid #0f0; padding: 20px; text-align: center; 
-                  border-radius: 10px; color: #0f0; font-family: monospace;">
-        <h1>GAME OVER</h1>
-        <p>Final Score: ${score}</p>
-        <button onclick="location.reload()" style="padding: 10px 20px; background: #0f0; color: #0a0a0a; border: none; cursor: pointer; margin-top: 10px;">Restart</button>
-      </div>
-    `;
-    document.body.appendChild(gameOverEl);
-  }
 }
 
