@@ -1,4 +1,5 @@
 import pool from '../db.js';
+import { PlayerService } from './PlayerService.js';
 
 export class MatchService {
   static async createMatch(roomCode, player1Id, player2Id) {
@@ -72,6 +73,13 @@ export class MatchService {
       const winnerId = isPlayer1Winner ? player1_id : player2_id;
       const loserId = isPlayer1Winner ? player2_id : player1_id;
 
+      try {
+        await PlayerService.getStats(winnerId);
+        await PlayerService.getStats(loserId);
+      } catch (err) {
+        console.error('Failed to ensure player_stats rows exist:', err.message);
+      }
+      
       await pool.query(
         `UPDATE player_stats
          SET wins = wins + 1,
