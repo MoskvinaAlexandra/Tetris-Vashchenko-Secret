@@ -733,6 +733,8 @@
   max-width: clamp(100px, 12vw, 170px);
   padding: 8px 10px;
   font-size: 12px;
+  transition: opacity 0.2s ease, transform 0.2s ease, left 0.34s ease, top 0.34s ease;
+  will-change: left, top, transform, opacity;
 }
 
 .reaction-pop-item.spectator-reaction.visible {

@@ -42,6 +42,7 @@ class GameManager {
     this.lastStateSentAt = 0;
     this.spectatorReactionTarget = 'player1';
     this.currentSection = 'menu';
+    this.spectatorReactionRelayoutTimer = null;
 
     this.settings = { ...DEFAULT_SETTINGS };
   }
@@ -821,6 +822,7 @@ class GameManager {
     player2Btn.classList.toggle('active-target', this.spectatorReactionTarget === 'player2');
 
     this.updateSpectatorBoardFocus();
+    this.scheduleSpectatorReactionRelayout();
   }
 
   updateSpectatorBoardFocus() {
@@ -885,9 +887,9 @@ class GameManager {
       }
       const resolvedTargetRole = targetRole;
       if (resolvedTargetRole === 'player1') {
-        targets = [{ id: 'reactionPlayer1Edge' }, { id: 'reactionPlayer1EdgeSpectator' }];
+        targets = [{ id: 'reactionPlayer1Edge', role: 'player1' }, { id: 'reactionPlayer1EdgeSpectator', role: 'player1' }];
       } else {
-        targets = [{ id: 'reactionPlayer2Edge' }, { id: 'reactionPlayer2EdgeSpectator' }];
+        targets = [{ id: 'reactionPlayer2Edge', role: 'player2' }, { id: 'reactionPlayer2EdgeSpectator', role: 'player2' }];
       }
     }
 
@@ -903,9 +905,8 @@ class GameManager {
     const targetRole = typeof targetConfig === 'string' ? null : targetConfig.role || null;
     const target = document.getElementById(targetId);
     if (!target) return;
-    const panel = senderRole === 'player1' || senderRole === 'player2'
-      ? this.getReactionPanelByRole(senderRole, target)
-      : target.closest('.board-panel');
+    const panel = target.closest('.board-panel');
+    const host = senderRole === 'spectator' ? panel : target;
 
     const bubble = this.createReactionContent(emoji, reactionLabel, senderRole === 'spectator');
     if (senderRole !== 'spectator') {
@@ -914,7 +915,7 @@ class GameManager {
       bubble.classList.add(senderRole === 'player1' ? 'tail-left' : 'tail-right');
       panel?.classList.add('reaction-host-active');
     }
-    target.appendChild(bubble);
+    host?.appendChild(bubble);
 
     if (senderRole === 'spectator') {
       this.fitReactionLabel(target, bubble, senderRole);
@@ -923,11 +924,16 @@ class GameManager {
     }
 
     const position = senderRole === 'spectator'
-      ? this.getSpectatorReactionPosition(target, bubble)
+      ? this.getSpectatorReactionPosition(panel, bubble, targetRole)
       : this.getPlayerReactionPosition(senderRole, target, bubble);
 
-    bubble.style.left = `${position.left}px`;
-    bubble.style.top = `${position.top}px`;
+    if (senderRole === 'spectator') {
+      bubble.style.left = `${position.left}px`;
+      bubble.style.top = `${position.top}px`;
+    } else {
+      bubble.style.left = `${position.left}px`;
+      bubble.style.top = `${position.top}px`;
+    }
 
     requestAnimationFrame(() => {
       bubble.classList.add('visible');
@@ -942,19 +948,6 @@ class GameManager {
     }, 1400);
   }
 
-  getReactionPanelByRole(role, target) {
-    if (role !== 'player1' && role !== 'player2') {
-      return target.closest('.board-panel');
-    }
-
-    const isSpectatorLayer = target?.id === 'reactionArenaLayerSpectator';
-    if (role === 'player1') {
-      return document.getElementById(isSpectatorLayer ? 'spectatorPlayer1Panel' : 'player1Panel');
-    }
-
-    return document.getElementById(isSpectatorLayer ? 'spectatorPlayer2Panel' : 'player2Panel');
-  }
-
   releaseReactionHost(panel) {
     if (!panel) return;
     if (panel.querySelector('.reaction-pop-item')) {
@@ -963,8 +956,31 @@ class GameManager {
     panel.classList.remove('reaction-host-active');
   }
 
-  getSpectatorReactionPosition(target, bubble) {
-    const panel = target.closest('.board-panel');
+  scheduleSpectatorReactionRelayout() {
+    if (this.spectatorReactionRelayoutTimer) {
+      clearTimeout(this.spectatorReactionRelayoutTimer);
+    }
+
+    this.spectatorReactionRelayoutTimer = window.setTimeout(() => {
+      this.spectatorReactionRelayoutTimer = null;
+      this.reflowSpectatorReactionBubbles();
+    }, 360);
+  }
+
+  reflowSpectatorReactionBubbles() {
+    const bubbles = document.querySelectorAll('.reaction-pop-item.spectator-reaction');
+    bubbles.forEach((bubble) => {
+      const panel = bubble.parentElement?.closest('.board-panel');
+      if (!panel) return;
+
+      const targetRole = panel.id === 'spectatorPlayer1Panel' ? 'player1' : 'player2';
+      const position = this.getSpectatorReactionPosition(panel, bubble, targetRole);
+      bubble.style.left = `${position.left}px`;
+      bubble.style.top = `${position.top}px`;
+    });
+  }
+
+  getSpectatorReactionPosition(panel, bubble, targetRole) {
     const frame = panel?.querySelector('.board-canvas-frame');
     if (!panel || !frame) {
       return {
@@ -981,16 +997,13 @@ class GameManager {
     const visualGap = 20;
     const anchorTop = (frameRect.top - panelRect.top) - visualGap;
     const minAnchorTop = 44;
-
-    const minLeft = Math.max(margin + bubbleHalf, (frameRect.left - panelRect.left) + bubbleHalf);
-    const maxLeft = Math.min(
-      panelRect.width - margin - bubbleHalf,
-      (frameRect.right - panelRect.left) - bubbleHalf
-    );
+    const minLeft = (frameRect.left - panelRect.left) + margin + bubbleHalf;
+    const maxLeft = (frameRect.right - panelRect.left) - margin - bubbleHalf;
 
     if (maxLeft <= minLeft) {
+      const centerLeft = (frameRect.left - panelRect.left) + (frameRect.width / 2);
       return {
-        left: panelRect.width / 2,
+        left: centerLeft,
         top: Math.max(anchorTop, minAnchorTop)
       };
     }
@@ -998,6 +1011,7 @@ class GameManager {
     const mean = (minLeft + maxLeft) / 2;
     const sigma = Math.max((maxLeft - minLeft) / 6, 10);
     const random = this.randomNormal(mean, sigma);
+
     return {
       left: Math.min(maxLeft, Math.max(minLeft, random)),
       top: Math.max(anchorTop, minAnchorTop)
@@ -1283,6 +1297,10 @@ class GameManager {
     this.gameLoop?.stop();
     this.hideMatchOverlay();
     this.toggleSettings(false);
+    if (this.spectatorReactionRelayoutTimer) {
+      clearTimeout(this.spectatorReactionRelayoutTimer);
+      this.spectatorReactionRelayoutTimer = null;
+    }
 
     this.roomCode = null;
     this.role = null;
