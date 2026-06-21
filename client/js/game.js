@@ -59,6 +59,10 @@ class GameManager {
     this.updateGameNavAuthUI();
 
     if (!authService?.isLoggedIn?.()) {
+      if (this.isSoloMode) {
+        window.location.href = '/login.html?returnTo=%2Fgame.html%3Fmode%3Dsolo';
+        return;
+      }
       this.setStatus('Авторизуйтесь, чтобы играть или смотреть матчи.', '#6a3748');
       return;
     }
@@ -761,6 +765,11 @@ class GameManager {
   leaveRoom() {
     try {
       this.gameLoop?.stop();
+
+      if (this.isSoloMode) {
+        window.location.href = '/';
+        return;
+      }
 
       if (this.roomCode && this.wsClient?.ws && this.wsClient.ws.readyState === WebSocket.OPEN) {
         this.wsClient.leaveRoom();
